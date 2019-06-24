@@ -4,14 +4,14 @@
 // Please see the file LICENSE in the source
 // distribution of this software for license terms.
 
-const { getImageBuffersInFolder } = require('./imagereader');
+const { getImageBuffer } = require('../../fs/imagereader');
 const { generateEXIFJson } = require('./exifjs');
 const rabbit = require('../../rabbitmq/receive');
 // Project constants
 // const IMG_DIRECTORY = './photos';
 
-const runLamda = (albumName) => {
-  const imageBuffersWithPath = getImageBuffersInFolder(albumName);
+const runLamda = (imagePath) => {
+  const imageBuffersWithPath = getImageBuffer(imagePath);
   const exifJsonArray = imageBuffersWithPath.map(generateEXIFJson);
   console.log(exifJsonArray);
 };
