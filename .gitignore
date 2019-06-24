@@ -61,3 +61,6 @@ typings/
 .next
 photos
 uploads
+images
+out
+src/faceapi/**/*.js
