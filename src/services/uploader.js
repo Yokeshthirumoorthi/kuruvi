@@ -1,7 +1,7 @@
 const express = require('express');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
-const pg = require('./pgdb');
+const pg = require('../database/postgres');
 
 const app = express();
 const port = 8000;

@@ -1,5 +1,5 @@
 const { Client } = require('pg');
-const rabbit = require('./rabbitmq');
+const rabbit = require('../rabbitmq/send');
 
 const tableName = 'photos';
 const loadDataInRelation = (data) => {
