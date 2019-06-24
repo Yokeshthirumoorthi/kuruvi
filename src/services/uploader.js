@@ -2,6 +2,8 @@ const express = require('express');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const pg = require('../database/postgres');
+const rabbit = require('../rabbitmq/send');
+
 
 const app = express();
 const port = 8000;
@@ -17,16 +19,27 @@ app.post('/upload', function(req, res) {
     return res.status(400).send('No files were uploaded.');
   }
 
+  const onSuccessCallback = rabbit.sendMessage;
   // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-  let imageFile = req.files.file;
+  const imageFile = req.files.file;
+  const albumName = "uploads";
+  const folderName =`${__dirname}/${albumName}`;
+  const fileName = `${req.body.filename}`;
+  const filePath = `${folderName}/${fileName}`;
 
-  imageFile.mv(`${__dirname}/uploads/${req.body.filename}`, function(err) {
+  const data = {
+    album: albumName,
+    path: filePath,
+    filename: fileName
+  }
+
+  imageFile.mv(filePath, function(err) {
     if (err) {
       return res.status(500).send(err);
     }
-    pg.loadDataInRelation(["uploads",`${__dirname}/uploads`, `${req.body.filename}`]);
+    pg.loadDataInRelation(data,onSuccessCallback);
     res.json({file: `public/${req.body.filename}.jpg`});
   });
 });
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`));
+app.listen(port, () => console.log(`App listening on port ${port}!`));

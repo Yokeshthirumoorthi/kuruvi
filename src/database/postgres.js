@@ -1,8 +1,7 @@
 const { Client } = require('pg');
-const rabbit = require('../rabbitmq/send');
 
 const tableName = 'photos';
-const loadDataInRelation = (data) => {
+const loadDataInRelation = (data, onSuccessCallback) => {
   const client = new Client({
       user: 'postgres',
       host: 'localhost',
@@ -13,6 +12,8 @@ const loadDataInRelation = (data) => {
 
   client.connect();
 
+  const dataAsArray = [data.album, data.path, data.filename];
+
   const insert_row = (tableName) => `INSERT INTO ${tableName}(
     album,
     path,
@@ -21,9 +22,9 @@ const loadDataInRelation = (data) => {
 
   const INSERT_ROW = insert_row(tableName);
 
-  client.query(INSERT_ROW, data)
+  client.query(INSERT_ROW, dataAsArray)
       .then(_ => client.end())
-      .then(_ => rabbit.sendMessage(data[1]))
+      .then(_ => onSuccessCallback(data.path))
       .catch(e => console.error(e.stack))
 };
 
