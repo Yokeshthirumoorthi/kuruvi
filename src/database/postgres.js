@@ -57,6 +57,23 @@ const getPhotoFullPath = async (photo_id) => {
   return path;
 }
 
+const getAlbumPhotoPath = async (photo_id) => {
+
+  const client = await pool.connect();
+
+  const { rows } = await client.query('SELECT * FROM photos WHERE id = $1',[photo_id]);
+
+  const photo = rows[0];
+
+  const albums = await client.query('SELECT name FROM albums WHERE id = $1',[photo.album_id]);
+
+  const album_name = albums.rows[0].name;
+
+  const pathDetails = {album: album_name, photo: photo.name};
+
+  return pathDetails;
+}
+
 const insertExif = async (photo_id, data) => {
   const client = await pool.connect();
   try {
@@ -92,4 +109,4 @@ const insertFaceDescriptors = async (photo_id, data) => {
   return rows[0].id;
 }
 
-module.exports = {createAlbum, insertPhoto, getPhotoFullPath, insertExif, insertFaceDescriptors}
+module.exports = {createAlbum, insertPhoto, getPhotoFullPath, insertExif, insertFaceDescriptors, getAlbumPhotoPath}
