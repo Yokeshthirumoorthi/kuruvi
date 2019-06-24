@@ -7,6 +7,7 @@ const _ = require('lodash');
 const exif = require('exif-parser');
 const fs = require('../fs/imagereader');
 const rabbit = require('../rabbitmq/receive');
+const pg = require('../database/postgres');
 
 // Given an imagebuffer, extract exif out of it
 const getEXIF = (imageBuffer) => {
@@ -52,4 +53,7 @@ const runLamda = (imagePath) => {
   console.log(exifJsonArray);
 };
 
-rabbit.receiveMessage(runLamda);
+rabbit.receiveMessage((photo_id) => {
+  pg.getPhotoFullPath(photo_id).then(runLamda)
+});
+

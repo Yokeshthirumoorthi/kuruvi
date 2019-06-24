@@ -39,4 +39,20 @@ const insertPhoto = async (data) => {
   return rows[0].id;
 }
 
-module.exports = {createAlbum, insertPhoto}
+const getPhotoFullPath = async (photo_id) => {
+
+  const client = await pool.connect();
+
+  const { rows } = await client.query('SELECT * FROM photos WHERE id = $1',[photo_id]);
+
+  const photo = rows[0];
+
+  const albums = await client.query('SELECT path FROM albums WHERE id = $1',[photo.album_id]);
+
+  const album_path = albums.rows[0].path;
+
+  const path = `${album_path}/${photo.name}`;
+  return path;
+}
+
+module.exports = {createAlbum, insertPhoto, getPhotoFullPath}
