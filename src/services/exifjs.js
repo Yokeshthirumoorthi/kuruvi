@@ -48,7 +48,7 @@ const showError = (error, path) => {
 
 const runLamda = (imagePath) => {
   const imageBuffersWithPath = fs.getImageBuffer(imagePath);
-  const exifJsonArray = imageBuffersWithPath.map(generateEXIFJson);
+  const exifJsonArray = generateEXIFJson(imageBuffersWithPath);
   console.log(exifJsonArray);
 };
 
