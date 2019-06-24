@@ -5,6 +5,8 @@
 
 const _ = require('lodash');
 const exif = require('exif-parser');
+const fs = require('../fs/imagereader');
+const rabbit = require('../rabbitmq/receive');
 
 // Given an imagebuffer, extract exif out of it
 const getEXIF = (imageBuffer) => {
@@ -44,4 +46,10 @@ const showError = (error, path) => {
   console.log("************************");
 };
 
-module.exports = {generateEXIFJson}
+const runLamda = (imagePath) => {
+  const imageBuffersWithPath = fs.getImageBuffer(imagePath);
+  const exifJsonArray = imageBuffersWithPath.map(generateEXIFJson);
+  console.log(exifJsonArray);
+};
+
+rabbit.receiveMessage(runLamda);
