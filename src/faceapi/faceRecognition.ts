@@ -36,5 +36,6 @@ rabbit.receiveMessage((photo_id) => {
   pg.getPhotoFullPath(photo_id).then(async (imagePath) => {
     const recognitionJson=  await recognize(imagePath, imagePath);
     console.log(recognitionJson);
+    recognitionJson._labeledDescriptors.map(async faceDescriptor => await pg.insertFaceDescriptors(photo_id, faceDescriptor));
   })
 });
