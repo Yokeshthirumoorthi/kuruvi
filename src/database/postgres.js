@@ -52,7 +52,30 @@ const getPhotoFullPath = async (photo_id) => {
   const album_path = albums.rows[0].path;
 
   const path = `${album_path}/${photo.name}`;
+
   return path;
 }
 
-module.exports = {createAlbum, insertPhoto, getPhotoFullPath}
+const insertExif = async (photo_id, data) => {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN')
+
+    const values = [data.make, data.model, data.create_on, data.img_width, data.img_height];
+    const { rows } = await client.query(`INSERT INTO exif (make, model, create_on, img_width, img_height)
+                                    VALUES ($1, $2, $3, $4, $5) RETURNING id`, values);
+
+    const insertPhotoExifRel = 'INSERT INTO photos_exif(photo_id, exif_id) VALUES ($1, $2)'
+    const insertRelValues = [photo_id, rows[0].id]
+
+    await client.query(insertPhotoExifRel, insertRelValues)
+    await client.query('COMMIT')
+  } catch (e) {
+    await client.query('ROLLBACK')
+    throw e
+  } finally {
+    client.release()
+  }
+}
+
+module.exports = {createAlbum, insertPhoto, getPhotoFullPath, insertExif}

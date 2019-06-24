@@ -49,11 +49,15 @@ const showError = (error, path) => {
 
 const runLamda = (imagePath) => {
   const imageBuffersWithPath = fs.getImageBuffer(imagePath);
-  const exifJsonArray = generateEXIFJson(imageBuffersWithPath);
-  console.log(exifJsonArray);
+  const exifJson = generateEXIFJson(imageBuffersWithPath);
+  console.log(exifJson);
+  return exifJson;
 };
 
 rabbit.receiveMessage((photo_id) => {
-  pg.getPhotoFullPath(photo_id).then(runLamda)
+  pg.getPhotoFullPath(photo_id).then((imagePath) => {
+    const exifJson= runLamda(imagePath);
+    pg.insertExif(photo_id, exifJson);
+  })
 });
 
