@@ -19,7 +19,6 @@ app.post('/upload', function(req, res) {
     return res.status(400).send('No files were uploaded.');
   }
 
-  const onSuccessCallback = rabbit.sendMessage;
   // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
   const imageFile = req.files.file;
   const albumName = "uploads";
@@ -29,15 +28,15 @@ app.post('/upload', function(req, res) {
 
   const data = {
     album: albumName,
-    path: filePath,
+    path: folderName,
     filename: fileName
-  }
+  };
 
   imageFile.mv(filePath, function(err) {
     if (err) {
       return res.status(500).send(err);
     }
-    pg.loadDataInRelation(data,onSuccessCallback);
+    pg.insertPhoto(data).then(res=>rabbit.sendMessage(String(res)));
     res.json({file: `public/${req.body.filename}.jpg`});
   });
 });
