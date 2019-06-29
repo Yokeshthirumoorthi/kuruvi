@@ -21,8 +21,8 @@ app.post('/upload', function(req, res) {
 
   // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
   const imageFile = req.files.file;
-  const albumName = "uploads";
-  const folderName =`${__dirname}/${albumName}`;
+  const albumName = "album1";
+  const folderName =`${__dirname}/uploads/${albumName}`;
   const fileName = `${req.body.filename}`;
   const filePath = `${folderName}/${fileName}`;
 

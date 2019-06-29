@@ -71,6 +71,18 @@ services:
       - RABBITMQ_DEFAULT_USER=rabbitmquser
       - RABBITMQ_DEFAULT_PASS=some_password
 
+  node-exif:
+    container_name: node-exif
+    build:
+      context: ./node-exif
+      dockerfile: Dockerfile
+    volumes:
+      - albums:/usr/src/app/uploads
+    networks:
+      - frontend
+    restart: on-failure
+
+
 volumes:
   albums:
   pgdata:

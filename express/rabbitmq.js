@@ -23,7 +23,7 @@ const sendMessage = (msg) => {
             console.log(" [x] Sent %s", msg);
         });
         setTimeout(function() {
-            connection.close();
+            // connection.close();
             process.exit(0);
         }, 500);
     });
