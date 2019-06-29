@@ -1,7 +1,7 @@
 const express = require('express');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
-// const pg = require('../database/postgres');
+const pg = require('./postgres');
 // const rabbit = require('../rabbitmq/send');
 
 
@@ -36,7 +36,7 @@ app.post('/upload', function(req, res) {
     if (err) {
       return res.status(500).send(err);
     }
-    // pg.insertPhoto(data).then(res=>rabbit.sendMessage(String(res)));
+    pg.insertPhoto(data);//.then(res=>rabbit.sendMessage(String(res)));
     res.json({file: `public/${req.body.filename}.jpg`});
   });
 });
