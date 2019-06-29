@@ -1,0 +1,37 @@
+version: '3.3'
+
+services:
+
+  express:
+    container_name: web-server
+    build:
+      context: ./express
+      dockerfile: Dockerfile
+    volumes:
+      - albums:/usr/src/app/uploads
+    ports:
+      - '8000:8000'
+    networks:
+      - frontend
+    # environment:
+    #   - NODE_ENV=development
+
+  react-web:
+    build:
+      context: ./react-web
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    networks:
+      - frontend
+    # environment:
+    #   - MYSQL_ROOT_PASSWORD=test
+    #   - MYSQL_DATABASE=docker_in_motion
+    # volumes:
+    #   - albums:/var/lib/mysql
+
+volumes:
+   albums:
+
+networks:
+  frontend:
