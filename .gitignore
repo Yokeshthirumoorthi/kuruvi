@@ -64,3 +64,4 @@ uploads
 images
 out
 src/faceapi/**/*.js
+target

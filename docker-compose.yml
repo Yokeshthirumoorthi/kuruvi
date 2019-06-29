@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.5'
 
 services:
 
@@ -13,10 +13,9 @@ services:
       - '8000:8000'
     networks:
       - frontend
-    # environment:
-    #   - NODE_ENV=development
 
   react-web:
+    container_name: react-web
     build:
       context: ./react-web
       dockerfile: Dockerfile
@@ -24,14 +23,41 @@ services:
       - '3000:3000'
     networks:
       - frontend
-    # environment:
-    #   - MYSQL_ROOT_PASSWORD=test
-    #   - MYSQL_DATABASE=docker_in_motion
-    # volumes:
-    #   - albums:/var/lib/mysql
+
+  database-api:
+    container_name: rust-postgres
+    build:
+      context: ./rust-postgres
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    networks:
+      - frontend
+
+  postgresql:
+    container_name: postgres-db
+    image: "postgres:9"
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data/pgdata
+    environment:
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /var/lib/postgresql/data/pgdata
+    networks:
+      - frontend
+
+  pgadmin4:
+    container_name: pgadmin4
+    image: "thajeztah/pgadmin4"
+    ports:
+      - "5050:5050"
+    networks:
+      - frontend
 
 volumes:
-   albums:
+  albums:
+  pgdata:
 
 networks:
   frontend:
