@@ -61,9 +61,7 @@ services:
     networks:
       - frontend
     ports:
-      # - '4369:4369'
       - '5672:5672'
-      # - '25672:25672'
       - '15672:15672'
     volumes:
       - 'rabbitmq_data:/var/lib/rabbitmq'
@@ -82,9 +80,44 @@ services:
       - frontend
     restart: on-failure
 
+  node-imgproxy:
+    container_name: node-imgproxy
+    build:
+      context: ./node-imgproxy
+      dockerfile: Dockerfile
+    volumes:
+      - albums:/usr/src/app/uploads
+      - resized_albums:/usr/src/app/resized
+    networks:
+      - frontend
+    restart: on-failure
+
+  imgproxy:
+    container_name: imgproxy
+    image: "darthsim/imgproxy:latest"
+    volumes:
+      - albums:/usr/src/app/uploads
+    ports:
+      - '8080:8080'
+    networks:
+      - frontend
+    restart: on-failure
+
+  caddy-fs:
+    container_name: caddy-fs
+    image: "abiosoft/caddy"
+    volumes:
+      - albums:/srv
+      - resized_albums:/srv/resized
+    ports:
+      - '2015:2015'
+    networks:
+      - frontend
+    restart: on-failure
 
 volumes:
   albums:
+  resized_albums:
   pgdata:
   rabbitmq_data:
     driver: local
