@@ -1,0 +1,20 @@
+{
+  "name": "faceapi",
+  "version": "0.0.1",
+  "description": "recognize faces in a photo",
+  "main": "faceRecognition.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs-node": "^1.0.2",
+    "amqplib": "latest",
+    "canvas": "^2.0.1",
+    "face-api.js": "^0.20.0",
+    "pg": "^7.11.0",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.5.2"
+  },
+  "author": "yokeshthirumoorthi@gmail.com",
+  "license": "MIT"
+}
