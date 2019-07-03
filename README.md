@@ -4,8 +4,6 @@ WIP.
 
 Kuruvi: a smart photo collection and management application.
 
-Kuruvi can be used to provide a fast and secure way to replace all the image resizing code of your web application (like calling ImageMagick or GraphicsMagick, or using libraries), while also being able to resize everything on the fly, fast and easy. Kuruvi is also indispensable when handling lots of image resizing, especially when images come from a remote source.
-
 ## Build and Run Instructions
 
 ```
@@ -72,12 +70,10 @@ I am always open to [your feedback](https://github.com/Yokeshthirumoorthi/kuruvi
 ## Credits
 This application uses Open Source components. You can find the source code of their open source projects along with license information below. I acknowledge and am grateful to these developers for their contributions to open source.
 
-```
 - **[Imgproxy](https://github.com/imgproxy/imgproxy)**
 - **[Face Api-js](https://github.com/justadudewhohacks/face-api.js?files=1)**
 - **[Node exif](https://github.com/gomfunkel/node-exif)**
 <!-- Sample Photos: https://github.com/ianare/exif-samples.git -->
-```
 
 ## License
 
