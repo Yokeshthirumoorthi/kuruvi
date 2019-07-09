@@ -1,0 +1,27 @@
+// This is WIP
+// Run the below command to update the architecture diagram
+// dot -Tpng docs/architecture-diagram.dot -o docs/img/architecture-diagram.png
+digraph finite_state_machine {
+	rankdir=LR;
+	size="8,5";
+	node [shape="hexagon"]
+  // square brackets hold attributes
+  WS [ label="Web Server" ]
+	B [ label="DB Adapter Service"]
+  C [ label="Exif Service"]
+	D [ label="Image Resize Service"]
+	E [ label="Face Api Service"]
+	F [ label="FS Manager Service"]
+	G [ label="Static Web Server"]
+	H [ label="Database"]
+	I [ label="File System"]
+  J [ label="DB" shape="square" ]
+
+  // edges have attributes too
+  WS -> B [dir=both]
+  C -> B [dir=both]
+  D -> B [dir=both]
+  E -> B [dir=both]
+  C -> F [dir=both]
+  D -> F [dir=both]
+}
