@@ -1,27 +1,28 @@
-// This is WIP
-// Run the below command to update the architecture diagram
-// dot -Tpng docs/architecture-diagram.dot -o docs/img/architecture-diagram.png
+/***********************************************************
+
+		To generate architecture diagram, run the below
+		command from the root of the project
+
+		$ dot -Tpng docs/architecture-diagram.dot -o docs/img/architecture-diagram.png
+
+************************************************************/
+
 digraph finite_state_machine {
 	rankdir=LR;
-	size="8,5";
-	node [shape="hexagon"]
-  // square brackets hold attributes
-  WS [ label="Web Server" ]
-	B [ label="DB Adapter Service"]
-  C [ label="Exif Service"]
-	D [ label="Image Resize Service"]
-	E [ label="Face Api Service"]
-	F [ label="FS Manager Service"]
-	G [ label="Static Web Server"]
-	H [ label="Database"]
-	I [ label="File System"]
-  J [ label="DB" shape="square" ]
+//	size="4,4";
+	node [shape=polygon, sides=6]
+	edge [arrowhead=none]
 
-  // edges have attributes too
-  WS -> B [dir=both]
-  C -> B [dir=both]
-  D -> B [dir=both]
-  E -> B [dir=both]
-  C -> F [dir=both]
-  D -> F [dir=both]
+  // square brackets hold attributes
+  ws [ label="Web \nServer" ]
+	db_adapter [ label="DB Adapter \nService"]
+  exif [ label="Exif \nService"]
+	img_resize [ label="Image Resize \nService"]
+	face_api [ label="Face Api \nService"]
+	fs_manager [ label="FS Manager \nService"]
+	fs [ label="File \nSystem"]
+  db [ label="PGSQL" shape="square", rank="0" ]
+
+	db -> db_adapter -> {ws, exif, face_api, img_resize}
+	-> fs_manager -> fs
 }
