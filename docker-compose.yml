@@ -5,7 +5,7 @@ services:
   express:
     container_name: web-server
     build:
-      context: ./express
+      context: ./src/express
       dockerfile: Dockerfile
     volumes:
       - albums:/usr/src/app/uploads
@@ -18,7 +18,7 @@ services:
   react-web:
     container_name: react-web
     build:
-      context: ./react-web
+      context: ./src/react-web
       dockerfile: Dockerfile
     ports:
       - '3000:3000'
@@ -28,7 +28,7 @@ services:
   database-api:
     container_name: rust-postgres
     build:
-      context: ./rust-postgres
+      context: ./src/rust-postgres
       dockerfile: Dockerfile
     ports:
       - "3001:3001"
@@ -73,7 +73,7 @@ services:
   node-exif:
     container_name: node-exif
     build:
-      context: ./node-exif
+      context: ./src/node-exif
       dockerfile: Dockerfile
     volumes:
       - albums:/usr/src/app/uploads
@@ -84,7 +84,7 @@ services:
   node-database:
     container_name: node-database
     build:
-      context: ./node-database
+      context: ./src/node-database
       dockerfile: Dockerfile
     networks:
       - frontend
@@ -95,7 +95,7 @@ services:
   node-imgproxy:
     container_name: node-imgproxy
     build:
-      context: ./node-imgproxy
+      context: ./src/node-imgproxy
       dockerfile: Dockerfile
     volumes:
       - albums:/usr/src/app/uploads
