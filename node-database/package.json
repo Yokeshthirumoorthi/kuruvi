@@ -1,0 +1,17 @@
+{
+  "name": "database",
+  "version": "1.0.0",
+  "description": "Database manager service",
+  "main": "grpc_server.js",
+  "scripts": {
+    "start": "node grpc-server.js"
+  },
+  "dependencies": {
+    "pg": "^7.11.0",
+    "@grpc/proto-loader": "^0.1.0",
+    "google-protobuf": "^3.0.0",
+    "grpc": "^1.11.0"
+  },
+  "author": "yokesh",
+  "license": "MIT"
+}
