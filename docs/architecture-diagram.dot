@@ -9,7 +9,7 @@
 
 digraph finite_state_machine {
   rankdir=LR;
-	size="8,4";
+	// size="8,4";
 	// square brackets hold attributes
 	node [fontname=Arial fixedsize=false shape=polygon sides=4]
 	edge [arrowhead=normal dir=both color="#aaaaaa"]
