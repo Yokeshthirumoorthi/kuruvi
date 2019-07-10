@@ -8,21 +8,50 @@
 ************************************************************/
 
 digraph finite_state_machine {
-	rankdir=LR;
-//	size="4,4";
-	node [shape=polygon, sides=6]
-	edge [arrowhead=none]
+  rankdir=LR;
+	size="8,4";
+	// square brackets hold attributes
+	node [fontname=Arial
+				fixedsize=false
+				shape=polygon
+				sides=4]
+	edge [arrowhead=normal
+				dir=both
+				color="#aaaaaa"]
 
-  // square brackets hold attributes
-  ws [ label="Web \nServer" ]
-	db_adapter [ label="DB Adapter \nService"]
-  exif [ label="Exif \nService"]
-	img_resize [ label="Image Resize \nService"]
-	face_api [ label="Face Api \nService"]
-	fs_manager [ label="FS Manager \nService"]
-	fs [ label="File \nSystem"]
-  db [ label="PGSQL" shape="square", rank="0" ]
+  ws 					[ label="Web \nServer" ]
+	db_adapter 	[ label="DB Adapter \nService"]
+  exif 				[ label="Exif \nService"]
+	img_resize 	[ label="Image \nService"]
+	face_api 		[ label="Face Api \nService"]
+	fs_manager 	[ label="FS Manager \nService"]
+	fs 					[ label="File \nSystem"
+								shape="square"]
+  db 					[ label="PGSQL"
+								shape="square"]
+	frontend 		[ shape="box"]
 
-	db -> db_adapter -> {ws, exif, face_api, img_resize}
-	-> fs_manager -> fs
+	/*****************************
+	 Do the image meta processing as
+	 soon the image is uploaded
+	*****************************/
+	frontend -> ws -> {exif, img_resize}
+
+	/*****************************
+		And these services are expected to run async
+	*****************************/
+	{rank=L1; exif, img_resize}
+	{rank=L2; db_adapter, fs_manager}
+
+	/*****************************
+		All the services are connected
+		to db and file system
+	*****************************/
+	{ws, exif, face_api, img_resize}
+		-> db_adapter	-> db
+
+	{ws, exif, face_api, img_resize}
+		-> fs_manager -> fs
+
+	img_resize -> face_api
 }
