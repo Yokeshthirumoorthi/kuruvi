@@ -11,25 +11,18 @@ digraph finite_state_machine {
   rankdir=LR;
 	size="8,4";
 	// square brackets hold attributes
-	node [fontname=Arial
-				fixedsize=false
-				shape=polygon
-				sides=4]
-	edge [arrowhead=normal
-				dir=both
-				color="#aaaaaa"]
+	node [fontname=Arial fixedsize=false shape=polygon sides=4]
+	edge [arrowhead=normal dir=both color="#aaaaaa"]
 
-  ws 					[ label="Web \nServer" ]
-	db_adapter 	[ label="DB Adapter \nService"]
-  exif 				[ label="Exif \nService"]
-	img_resize 	[ label="Image \nService"]
-	face_api 		[ label="Face Api \nService"]
-	fs_manager 	[ label="FS Manager \nService"]
-	fs 					[ label="File \nSystem"
-								shape="square"]
-  db 					[ label="PGSQL"
-								shape="square"]
-	frontend 		[ shape="box"]
+  ws[ label="Web \nServer" ]
+	db_adapter[ label="DB Adapter \nService"]
+  exif[ label="Exif \nService"]
+	img_resize[ label="Image \nService"]
+	face_api[ label="Face Api \nService"]
+	fs_manager[ label="FS Manager \nService"]
+	fs[ label="File \nSystem" shape="square"]
+  db[ label="PGSQL" shape="square"]
+	frontend[ shape="box"]
 
 	/*****************************
 	 Do the image meta processing as
