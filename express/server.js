@@ -3,6 +3,7 @@ const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const pg = require('./postgres');
 const rabbit = require('./rabbitmq');
+const grpc = require('./grpc-client');
 
 
 const app = express();
@@ -36,7 +37,8 @@ app.post('/upload', function(req, res) {
     if (err) {
       return res.status(500).send(err);
     }
-    pg.insertPhoto(data).then(res=>rabbit.sendMessage(String(res)));
+    // pg.insertPhoto(data).then(res=>rabbit.sendMessage(String(res)));
+    grpc.insertPhoto(data);
     res.json({file: `public/${req.body.filename}.jpg`});
   });
 });
