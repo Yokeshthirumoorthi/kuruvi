@@ -54,10 +54,11 @@ const runLamda = (imagePath) => {
   return exifJson;
 };
 
-rabbit.receiveMessage((photo_id) => {
-  pg.getPhotoFullPath(photo_id).then((imagePath) => {
-    const exifJson= runLamda(imagePath);
-    pg.insertExif(photo_id, exifJson);
-  })
-});
+// rabbit.receiveMessage((photo_id) => {
+//   pg.getPhotoFullPath(photo_id).then((imagePath) => {
+//     const exifJson= runLamda(imagePath);
+//     pg.insertExif(photo_id, exifJson);
+//   })
+// });
 
+module.exports = {runLamda}

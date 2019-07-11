@@ -48,13 +48,13 @@ services:
     networks:
       - frontend
 
-  # pgadmin4:
-  #   container_name: pgadmin4
-  #   image: "thajeztah/pgadmin4"
-  #   ports:
-  #     - "5050:5050"
-  #   networks:
-  #     - frontend
+  pgadmin4:
+    container_name: pgadmin4
+    image: "thajeztah/pgadmin4"
+    ports:
+      - "5050:5050"
+    networks:
+      - frontend
 
   # rabbitmq:
   #   container_name: rabbit
@@ -70,16 +70,16 @@ services:
   #     - RABBITMQ_DEFAULT_USER=rabbitmquser
   #     - RABBITMQ_DEFAULT_PASS=some_password
 
-  # node-exif:
-  #   container_name: node-exif
-  #   build:
-  #     context: ./src/node-exif
-  #     dockerfile: Dockerfile
-  #   volumes:
-  #     - albums:/usr/src/app/uploads
-  #   networks:
-  #     - frontend
-  #   restart: on-failure
+  node-exif:
+    container_name: node-exif
+    build:
+      context: ./src/node-exif
+      dockerfile: Dockerfile
+    volumes:
+      - albums:/usr/src/app/uploads
+    networks:
+      - frontend
+    restart: on-failure
 
   node-database:
     container_name: node-database

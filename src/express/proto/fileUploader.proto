@@ -1,3 +1,13 @@
+/*
+ *
+ * Copyright © 2019 Yokesh Thirumoorthi.
+ *
+ * [This program is licensed under the "MIT License"]
+ * Please see the file LICENSE in the source
+ * distribution of this software for license terms.
+ *
+ */
+
 syntax = "proto3";
 
 package kuruvi;
@@ -6,6 +16,8 @@ package kuruvi;
 
 service PhotoUploadService {
     rpc AddPhoto(AddPhotoRequest) returns (AddPhotoResponse) {}
+    rpc GetPhotoFullPath(ExifRequest) returns (PathResponse) {}
+    rpc InsertExif(InsertExifRequest) returns (Empty) {}
 }
 
 message AddPhotoRequest {
@@ -15,5 +27,34 @@ message AddPhotoRequest {
 }
 
 message AddPhotoResponse {
-    string album_id= 1;
+    int32 photo_id= 1;
+}
+
+message Exif {
+    string make= 1;
+    string model= 2;
+    int32 create_on= 3;
+    int32 img_width= 4;
+    int32 img_height= 5;
+}
+
+message ExifRequest {
+    int32 photo_id= 1;
+}
+
+message InsertExifRequest {
+    int32 photo_id= 1;
+    Exif exif=2;
+}
+
+message PathResponse {
+    string imagePath= 1;
+}
+
+message Empty {}
+
+// -----------------Exif service-----------------
+
+service ExifService {
+    rpc ExtractExif(ExifRequest) returns (Empty) {}
 }

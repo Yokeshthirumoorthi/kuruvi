@@ -9,6 +9,9 @@
   "dependencies": {
     "exif-parser": "^0.1.12",
     "pg": "^7.11.0",
+    "@grpc/proto-loader": "^0.1.0",
+    "google-protobuf": "^3.0.0",
+    "grpc": "^1.11.0",
     "amqplib": "latest",
     "lodash": "^4.17.11"
   },
