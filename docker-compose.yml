@@ -25,15 +25,15 @@ services:
     networks:
       - frontend
 
-  database-api:
-    container_name: rust-postgres
-    build:
-      context: ./src/rust-postgres
-      dockerfile: Dockerfile
-    ports:
-      - "3001:3001"
-    networks:
-      - frontend
+  # database-api:
+  #   container_name: rust-postgres
+  #   build:
+  #     context: ./src/rust-postgres
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3001:3001"
+  #   networks:
+  #     - frontend
 
   postgresql:
     container_name: postgres-db
@@ -48,38 +48,38 @@ services:
     networks:
       - frontend
 
-  pgadmin4:
-    container_name: pgadmin4
-    image: "thajeztah/pgadmin4"
-    ports:
-      - "5050:5050"
-    networks:
-      - frontend
+  # pgadmin4:
+  #   container_name: pgadmin4
+  #   image: "thajeztah/pgadmin4"
+  #   ports:
+  #     - "5050:5050"
+  #   networks:
+  #     - frontend
 
-  rabbitmq:
-    container_name: rabbit
-    image: "rabbitmq:3.7-management"
-    networks:
-      - frontend
-    ports:
-      - '5672:5672'
-      - '15672:15672'
-    volumes:
-      - 'rabbitmq_data:/var/lib/rabbitmq'
-    environment:
-      - RABBITMQ_DEFAULT_USER=rabbitmquser
-      - RABBITMQ_DEFAULT_PASS=some_password
+  # rabbitmq:
+  #   container_name: rabbit
+  #   image: "rabbitmq:3.7-management"
+  #   networks:
+  #     - frontend
+  #   ports:
+  #     - '5672:5672'
+  #     - '15672:15672'
+  #   volumes:
+  #     - 'rabbitmq_data:/var/lib/rabbitmq'
+  #   environment:
+  #     - RABBITMQ_DEFAULT_USER=rabbitmquser
+  #     - RABBITMQ_DEFAULT_PASS=some_password
 
-  node-exif:
-    container_name: node-exif
-    build:
-      context: ./src/node-exif
-      dockerfile: Dockerfile
-    volumes:
-      - albums:/usr/src/app/uploads
-    networks:
-      - frontend
-    restart: on-failure
+  # node-exif:
+  #   container_name: node-exif
+  #   build:
+  #     context: ./src/node-exif
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - albums:/usr/src/app/uploads
+  #   networks:
+  #     - frontend
+  #   restart: on-failure
 
   node-database:
     container_name: node-database
@@ -92,40 +92,40 @@ services:
       - ./pb:/usr/src/pb
     restart: on-failure
 
-  node-imgproxy:
-    container_name: node-imgproxy
-    build:
-      context: ./src/node-imgproxy
-      dockerfile: Dockerfile
-    volumes:
-      - albums:/usr/src/app/uploads
-      - resized_albums:/usr/src/app/resized
-    networks:
-      - frontend
-    restart: on-failure
+  # node-imgproxy:
+  #   container_name: node-imgproxy
+  #   build:
+  #     context: ./src/node-imgproxy
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - albums:/usr/src/app/uploads
+  #     - resized_albums:/usr/src/app/resized
+  #   networks:
+  #     - frontend
+  #   restart: on-failure
 
-  imgproxy:
-    container_name: imgproxy
-    image: "darthsim/imgproxy:latest"
-    volumes:
-      - albums:/usr/src/app/uploads
-    ports:
-      - '8080:8080'
-    networks:
-      - frontend
-    restart: on-failure
+  # imgproxy:
+  #   container_name: imgproxy
+  #   image: "darthsim/imgproxy:latest"
+  #   volumes:
+  #     - albums:/usr/src/app/uploads
+  #   ports:
+  #     - '8080:8080'
+  #   networks:
+  #     - frontend
+  #   restart: on-failure
 
-  caddy-fs:
-    container_name: caddy-fs
-    image: "abiosoft/caddy"
-    volumes:
-      - albums:/srv
-      - resized_albums:/srv/resized
-    ports:
-      - '2015:2015'
-    networks:
-      - frontend
-    restart: on-failure
+  # caddy-fs:
+  #   container_name: caddy-fs
+  #   image: "abiosoft/caddy"
+  #   volumes:
+  #     - albums:/srv
+  #     - resized_albums:/srv/resized
+  #   ports:
+  #     - '2015:2015'
+  #   networks:
+  #     - frontend
+  #   restart: on-failure
 
 volumes:
   albums:

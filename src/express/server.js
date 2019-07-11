@@ -1,7 +1,17 @@
+/*
+ *
+ * Copyright © 2019 Yokesh Thirumoorthi.
+ *
+ * [This program is licensed under the "MIT License"]
+ * Please see the file LICENSE in the source
+ * distribution of this software for license terms.
+ *
+ */
+
+
 const express = require('express');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
-const pg = require('./postgres');
 const rabbit = require('./rabbitmq');
 const grpc = require('./grpc-client');
 
@@ -37,7 +47,7 @@ app.post('/upload', function(req, res) {
     if (err) {
       return res.status(500).send(err);
     }
-    // pg.insertPhoto(data).then(res=>rabbit.sendMessage(String(res)));
+    // grpc.insertPhoto(data).then(res=>rabbit.sendMessage(res.album_id));
     grpc.insertPhoto(data);
     res.json({file: `public/${req.body.filename}.jpg`});
   });

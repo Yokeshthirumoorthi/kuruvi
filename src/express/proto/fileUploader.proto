@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package kuruvi;
+
+// -----------------Photo Upload service-----------------
+
+service PhotoUploadService {
+    rpc AddPhoto(AddPhotoRequest) returns (AddPhotoResponse) {}
+}
+
+message AddPhotoRequest {
+    string album= 1;
+    string path= 2;
+    string filename= 3;
+}
+
+message AddPhotoResponse {
+    string album_id= 1;
+}

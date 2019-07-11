@@ -9,11 +9,12 @@
  */
 
 
-var PROTO_PATH = __dirname + '/../pb/fileUploader.proto';
+const PROTO_PATH = __dirname + '/proto/fileUploader.proto';
+const NODE_DATABASE = 'node-database:50051';
 
-var grpc = require('grpc');
-var protoLoader = require('@grpc/proto-loader');
-var packageDefinition = protoLoader.loadSync(
+const grpc = require('grpc');
+const protoLoader = require('@grpc/proto-loader');
+const packageDefinition = protoLoader.loadSync(
     PROTO_PATH,
     {keepCase: true,
      longs: String,
@@ -21,14 +22,20 @@ var packageDefinition = protoLoader.loadSync(
      defaults: true,
      oneofs: true
     });
-var kuruvi_proto = grpc.loadPackageDefinition(packageDefinition).kuruvi;
+const kuruvi_proto = grpc.loadPackageDefinition(packageDefinition).kuruvi;
+const credentials = grpc.credentials.createInsecure();
+
+const addPhotoCallback = (err, response) => {
+  console.log('New photo added: ', response);
+  if (err !== null) {
+    console.log(err);
+    return;
+  }
+  return response.album_id;
+};
 
 function insertPhoto(AddPhotoRequest) {
-  var client = new kuruvi_proto.PhotoUploadService('node-database:50051',
-                                       grpc.credentials.createInsecure());
-  const addPhotoCallback = (err, response) => {
-    console.log('New photo added: ', response);
-  };
+  const client = new kuruvi_proto.PhotoUploadService(NODE_DATABASE, credentials);
   client.AddPhoto(AddPhotoRequest,addPhotoCallback);
 }
 
