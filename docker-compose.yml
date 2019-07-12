@@ -9,7 +9,6 @@ services:
       dockerfile: Dockerfile
     volumes:
       - albums:/usr/src/app/uploads
-      - ./pb:/usr/src/pb
     ports:
       - '8000:8000'
     networks:
@@ -77,6 +76,8 @@ services:
       dockerfile: Dockerfile
     volumes:
       - albums:/usr/src/app/uploads
+    ports:
+      - "50052:50052"
     networks:
       - frontend
     restart: on-failure
@@ -88,8 +89,6 @@ services:
       dockerfile: Dockerfile
     networks:
       - frontend
-    volumes:
-      - ./pb:/usr/src/pb
     restart: on-failure
 
   # node-imgproxy:

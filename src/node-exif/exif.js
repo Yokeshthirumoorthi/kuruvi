@@ -5,9 +5,15 @@
 
 const _ = require('lodash');
 const exif = require('exif-parser');
-const fs = require('./imagereader');
-const rabbit = require('./rabbitmq');
-const pg = require('./postgres');
+const fs = require('fs');
+const pino = require('pino');
+
+const logger = pino({
+  name: 'currencyservice-client',
+  messageKey: 'message',
+  changeLevelName: 'severity',
+  useLevelLabels: true
+});
 
 // Given an imagebuffer, extract exif out of it
 const getEXIF = (imageBuffer) => {
@@ -32,7 +38,7 @@ const generateEXIFJson = (imageBufferWithPath) => {
   try {
      rawEXIF = getEXIF(buffer);
   } catch (error) {
-    showError(error, path)
+    logger.error(`Error in Exif: ${error} | @ path: ${path}`);
   }
 
   const parsedEXIF = parseEXIF(rawEXIF);
@@ -40,25 +46,16 @@ const generateEXIFJson = (imageBufferWithPath) => {
   return result;
 };
 
-const showError = (error, path) => {
-  console.log("************************");
-  console.log("ERROR MESSAGE: ", error);
-  console.log("ERROR PATH: ", path);
-  console.log("************************");
-};
+const getImageBuffer = (path) => {
+  const buffer = fs.readFileSync(path);
+  const result = {buffer, path};
+  return result;
+}
 
 const runLamda = (imagePath) => {
-  const imageBuffersWithPath = fs.getImageBuffer(imagePath);
+  const imageBuffersWithPath = getImageBuffer(imagePath);
   const exifJson = generateEXIFJson(imageBuffersWithPath);
-  console.log(exifJson);
   return exifJson;
 };
-
-// rabbit.receiveMessage((photo_id) => {
-//   pg.getPhotoFullPath(photo_id).then((imagePath) => {
-//     const exifJson= runLamda(imagePath);
-//     pg.insertExif(photo_id, exifJson);
-//   })
-// });
 
 module.exports = {runLamda}
