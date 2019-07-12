@@ -82,10 +82,10 @@ services:
       - frontend
     restart: on-failure
 
-  node-database:
-    container_name: node-database
+  pgsqlservice:
+    container_name: pgsqlservice
     build:
-      context: ./src/node-database
+      context: ./src/pgsqlservice
       dockerfile: Dockerfile
     networks:
       - frontend

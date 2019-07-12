@@ -15,7 +15,7 @@ const exif = require('./exif');
 
 const MAIN_PROTO_PATH = path.join(__dirname, './proto/fileUploader.proto');
 const DATABASE_PORT = 50051;
-const NODE_DATABASE = `node-database:${DATABASE_PORT}`;
+const NODE_DATABASE = `pgsqlservice:${DATABASE_PORT}`;
 const EXIF_PORT = 50052;
 const NODE_EXIF = `0.0.0.0:${EXIF_PORT}`;
 

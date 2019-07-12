@@ -10,7 +10,7 @@
 
 
 const PROTO_PATH = __dirname + '/proto/fileUploader.proto';
-const NODE_DATABASE = 'node-database:50051';
+const NODE_DATABASE = 'pgsqlservice:50051';
 const NODE_EXIF = 'exifservice:50052';
 
 const grpc = require('grpc');
