@@ -87,6 +87,8 @@ services:
     build:
       context: ./src/pgsqlservice
       dockerfile: Dockerfile
+    ports:
+      - "50051:50051"
     networks:
       - frontend
     restart: on-failure
