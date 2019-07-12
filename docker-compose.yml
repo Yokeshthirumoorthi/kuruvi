@@ -24,10 +24,10 @@ services:
     networks:
       - frontend
 
-  # database-api:
-  #   container_name: rust-postgres
+  # dbmigrateservice:
+  #   container_name: dbmigrateservice
   #   build:
-  #     context: ./src/rust-postgres
+  #     context: ./src/dbmigrateservice
   #     dockerfile: Dockerfile
   #   ports:
   #     - "3001:3001"
