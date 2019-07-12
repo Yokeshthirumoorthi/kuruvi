@@ -14,10 +14,10 @@ services:
     networks:
       - frontend
 
-  react-web:
-    container_name: react-web
+  frontend:
+    container_name: frontend
     build:
-      context: ./src/react-web
+      context: ./src/frontend
       dockerfile: Dockerfile
     ports:
       - '3000:3000'
