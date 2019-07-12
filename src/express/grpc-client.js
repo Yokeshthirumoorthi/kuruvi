@@ -11,7 +11,7 @@
 
 const PROTO_PATH = __dirname + '/proto/fileUploader.proto';
 const NODE_DATABASE = 'node-database:50051';
-const NODE_EXIF = 'node-exif:50052';
+const NODE_EXIF = 'exifservice:50052';
 
 const grpc = require('grpc');
 const protoLoader = require('@grpc/proto-loader');

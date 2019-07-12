@@ -69,10 +69,10 @@ services:
   #     - RABBITMQ_DEFAULT_USER=rabbitmquser
   #     - RABBITMQ_DEFAULT_PASS=some_password
 
-  node-exif:
-    container_name: node-exif
+  exifservice:
+    container_name: exifservice
     build:
-      context: ./src/node-exif
+      context: ./src/exifservice
       dockerfile: Dockerfile
     volumes:
       - albums:/usr/src/app/uploads
