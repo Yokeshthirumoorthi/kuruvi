@@ -65,19 +65,28 @@ function _getInsertExifRequestObj (ExifRequest, exif) {
 }
 
 /**
- * Implements the exif extraction RPC method.
+ *  Implements the exif extraction RPC method.
+ *
+ *  Get the Path of the given photo id by querying the database,
+ *  then use the path to run exif lamda.
+ *  Finally insert the result into data base.
  */
 async function extractExif(call, callback) {
-  // get the Path of the given photo id
-  // then given the path run lamda.
-  // Finally insert the result to data base
   const ExifRequest = call.request;
   logger.info(`Received Exif Extraction Request... ${ExifRequest}`);
-  const getPhotoPathCallback = (err, response) => {
-    const exifJson = _getExif(response);
-    const InsertExifRequest = _getInsertExifRequestObj(ExifRequest, exifJson);
+
+  const insertExif = (InsertExifRequest) => {
     const EmptyCallback = () => {};
     client.insertExif(InsertExifRequest, EmptyCallback);
+  }
+
+  const getPhotoPathCallback = (err, response) => {
+    // get the exif data extracted out of the image
+    const exifJson = _getExif(response);
+    // generate a grpc request message
+    const InsertExifRequest = _getInsertExifRequestObj(ExifRequest, exifJson);
+    // insert exif into db using gRPC call
+    insertExif(InsertExifRequest);
   };
 
   try {
