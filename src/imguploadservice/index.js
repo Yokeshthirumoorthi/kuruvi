@@ -26,7 +26,7 @@ const EXPRESS_PORT = 8000;
 
 const NODE_DATABASE = `pgsqlservice:${DATABASE_PORT}`;
 const NODE_EXIF = `exifservice:${EXIF_PORT}`;
-const IMGPROXY_SERVICE = `node-imgproxy:${IMGPROXY_PORT}`;
+const IMGPROXY_SERVICE = `imgproxyservice:${IMGPROXY_PORT}`;
 
 const kuruviProto = _loadProto(MAIN_PROTO_PATH).kuruvi;
 // const healthProto = _loadProto(HEALTH_PROTO_PATH).grpc.health.v1;
@@ -37,7 +37,7 @@ const exifService = new kuruviProto.ExifService(NODE_EXIF, credentials);
 const imgProxyService = new kuruviProto.ImgProxyService(IMGPROXY_SERVICE, credentials);
 
 const logger = pino({
-  name: 'currencyservice-server',
+  name: 'imguploadservice-server',
   messageKey: 'message',
   changeLevelName: 'severity',
   useLevelLabels: true

@@ -26,7 +26,7 @@ const credentials = grpc.credentials.createInsecure();
 const client = new kuruviProto.PhotoUploadService(NODE_DATABASE, credentials);
 
 const logger = pino({
-  name: 'currencyservice-server',
+  name: 'exifservice-server',
   messageKey: 'message',
   changeLevelName: 'severity',
   useLevelLabels: true

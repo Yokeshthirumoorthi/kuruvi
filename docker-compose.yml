@@ -93,10 +93,10 @@ services:
       - nest
     restart: on-failure
 
-  node-imgproxy:
-    container_name: node-imgproxy
+  imgproxyservice:
+    container_name: imgproxyservice
     build:
-      context: ./src/node-imgproxy
+      context: ./src/imgproxyservice
       dockerfile: Dockerfile
     volumes:
       - albums:/usr/src/app/uploads
