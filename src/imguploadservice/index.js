@@ -18,11 +18,15 @@ const fileUpload = require('express-fileupload');
 const cors = require('cors');
 
 const MAIN_PROTO_PATH = path.join(__dirname, './proto/fileUploader.proto');
+
 const DATABASE_PORT = 50051;
 const EXIF_PORT = 50052;
+const IMGPROXY_PORT = 50053;
+const EXPRESS_PORT = 8000;
+
 const NODE_DATABASE = `pgsqlservice:${DATABASE_PORT}`;
 const NODE_EXIF = `exifservice:${EXIF_PORT}`;
-const EXPRESS_PORT = 8000;
+const IMGPROXY_SERVICE = `node-imgproxy:${IMGPROXY_PORT}`;
 
 const kuruviProto = _loadProto(MAIN_PROTO_PATH).kuruvi;
 // const healthProto = _loadProto(HEALTH_PROTO_PATH).grpc.health.v1;
@@ -30,6 +34,7 @@ const kuruviProto = _loadProto(MAIN_PROTO_PATH).kuruvi;
 const credentials = grpc.credentials.createInsecure();
 const client = new kuruviProto.PhotoUploadService(NODE_DATABASE, credentials);
 const exifService = new kuruviProto.ExifService(NODE_EXIF, credentials);
+const imgProxyService = new kuruviProto.ImgProxyService(IMGPROXY_SERVICE, credentials);
 
 const logger = pino({
   name: 'currencyservice-server',
@@ -70,11 +75,17 @@ const addPhotoCallback = (err, response) => {
     return;
   }
   const photo_id = response.photo_id;
-  console.log('Calling Exif', photo_id);
-  const ExifRequest = {
+  // console.log('Calling Exif', photo_id);
+  // const ExifRequest = {
+  //   photo_id: photo_id
+  // };
+  // exifService.ExtractExif(ExifRequest, () => {});
+
+  console.log('Calling ImgProxy', photo_id);
+  const ImgProxyRequest = {
     photo_id: photo_id
   };
-  exifService.ExtractExif(ExifRequest, () => {});
+  imgProxyService.ResizeImage(ImgProxyRequest, () => {});
 };
 
 function _getAddPhotoRequest(req) {
@@ -92,7 +103,8 @@ function _getAddPhotoRequest(req) {
 };
 
 function _saveImage(imageFile, AddPhotoRequest) {
-  const filePath = `${AddPhotoRequest.folderName}/${AddPhotoRequest.fileName}`;
+  const filePath = `${AddPhotoRequest.path}/${AddPhotoRequest.filename}`;
+
   imageFile.mv(filePath, function(err) {
     if (err) {
       logger.error(`Image upload request failed: ${err}`);

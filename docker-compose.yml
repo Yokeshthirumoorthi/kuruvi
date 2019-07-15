@@ -93,40 +93,42 @@ services:
       - nest
     restart: on-failure
 
-  # node-imgproxy:
-  #   container_name: node-imgproxy
-  #   build:
-  #     context: ./src/node-imgproxy
-  #     dockerfile: Dockerfile
-  #   volumes:
-  #     - albums:/usr/src/app/uploads
-  #     - resized_albums:/usr/src/app/resized
-  #   networks:
-  #     - nest
-  #   restart: on-failure
+  node-imgproxy:
+    container_name: node-imgproxy
+    build:
+      context: ./src/node-imgproxy
+      dockerfile: Dockerfile
+    volumes:
+      - albums:/usr/src/app/uploads
+      - resized_albums:/usr/src/app/resized
+    ports:
+      - "50053:50053"
+    networks:
+      - nest
+    restart: on-failure
 
-  # imgproxy:
-  #   container_name: imgproxy
-  #   image: "darthsim/imgproxy:latest"
-  #   volumes:
-  #     - albums:/usr/src/app/uploads
-  #   ports:
-  #     - '8080:8080'
-  #   networks:
-  #     - nest
-  #   restart: on-failure
+  imgproxy:
+    container_name: imgproxy
+    image: "darthsim/imgproxy:latest"
+    volumes:
+      - albums:/usr/src/app/uploads
+    ports:
+      - '8080:8080'
+    networks:
+      - nest
+    restart: on-failure
 
-  # caddy-fs:
-  #   container_name: caddy-fs
-  #   image: "abiosoft/caddy"
-  #   volumes:
-  #     - albums:/srv
-  #     - resized_albums:/srv/resized
-  #   ports:
-  #     - '2015:2015'
-  #   networks:
-  #     - nest
-  #   restart: on-failure
+  caddy-fs:
+    container_name: caddy-fs
+    image: "abiosoft/caddy"
+    volumes:
+      - albums:/srv
+      - resized_albums:/srv/resized
+    ports:
+      - '2015:2015'
+    networks:
+      - nest
+    restart: on-failure
 
 volumes:
   albums:

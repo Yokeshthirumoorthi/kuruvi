@@ -94,7 +94,6 @@ async function extractExif(call, callback) {
   } catch (err) {
     logger.error(`Exif extraction request failed: ${err}`);
   }
-
 }
 
 /**

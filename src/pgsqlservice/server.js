@@ -70,6 +70,16 @@ async function getPhotoFullPath(call, callback) {
 }
 
 /**
+  * Implements the GetAlbumPhotoPath RPC method.
+ */
+async function getAlbumPhotoPath(call, callback) {
+  logger.info(`Calling Album Photo path ${call.request}`);
+  const AlbumPhotoPathResponse = await pg.getAlbumPhotoPath(call.request.photo_id);
+  console.log("AlbumPhotoPathREsponse", AlbumPhotoPathResponse)
+  callback(null, AlbumPhotoPathResponse);
+}
+
+/**
   * Implements the insertExif RPC method.
  */
 async function insertExif(call, callback) {
@@ -87,7 +97,8 @@ function main() {
   server.addService(kuruviProto.PhotoUploadService.service, {
     addPhoto: addPhoto,
     getPhotoFullPath: getPhotoFullPath,
-    insertExif: insertExif
+    insertExif: insertExif,
+    getAlbumPhotoPath: getAlbumPhotoPath,
   });
   server.bind(PGSQLSERVICE_IP, credentials);
   logger.info(`Starting PgSQL Service on port ${PGSQLSERVICE_PORT}`);

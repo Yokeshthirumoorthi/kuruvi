@@ -18,6 +18,7 @@ service PhotoUploadService {
     rpc AddPhoto(AddPhotoRequest) returns (AddPhotoResponse) {}
     rpc GetPhotoFullPath(ExifRequest) returns (PathResponse) {}
     rpc InsertExif(InsertExifRequest) returns (Empty) {}
+    rpc GetAlbumPhotoPath(AlbumPhotoPathRequest) returns (AlbumPhotoPathResponse) {}
 }
 
 message AddPhotoRequest {
@@ -42,6 +43,19 @@ message ExifRequest {
     int32 photo_id= 1;
 }
 
+message AlbumPhotoPathRequest {
+    int32 photo_id= 1;
+}
+
+message AlbumPhotoPathResponse {
+    string album= 1;
+    string photo= 2;
+}
+
+message ImgProxyRequest {
+    int32 photo_id= 1;
+}
+
 message InsertExifRequest {
     int32 photo_id= 1;
     Exif exif=2;
@@ -57,4 +71,10 @@ message Empty {}
 
 service ExifService {
     rpc ExtractExif(ExifRequest) returns (Empty) {}
+}
+
+// -----------------Imgproxy service-----------------
+
+service ImgProxyService {
+    rpc ResizeImage(ImgProxyRequest) returns (Empty) {}
 }
