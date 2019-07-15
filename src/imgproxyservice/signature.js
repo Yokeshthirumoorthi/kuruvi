@@ -1,3 +1,13 @@
+/*
+ *
+ * Copyright © 2019 Yokesh Thirumoorthi.
+ *
+ * [This program is licensed under the "MIT License"]
+ * Please see the file LICENSE in the source
+ * distribution of this software for license terms.
+ *
+ */
+
 const crypto = require('crypto')
 
 const KEY = '943b421c9eb07c830af81030552c86009268de4e532ba2ee2eab8247c6da0881'

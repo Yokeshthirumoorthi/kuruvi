@@ -13,8 +13,6 @@ const grpc = require('grpc');
 const pino = require('pino');
 const protoLoader = require('@grpc/proto-loader');
 const fs = require('./saveFile');
-// const rabbit = require('./rabbitmq');
-// const pg = require('./postgres');
 const signature = require('./signature');
 const Axios = require('axios');
 
@@ -71,13 +69,6 @@ async function downloadImage (imagePath) {
 
   return response;
 }
-
-// rabbit.receiveMessage((photo_id) => {
-//   pg.getAlbumPhotoPath(photo_id).then(async (imagePath) => {
-//     const download_response = await downloadImage(imagePath);
-//     await fs.saveFile(imagePath, download_response);
-//   })
-// });
 
 async function resizeImage(call, callback) {
   const ImgProxyRequest = call.request;
