@@ -106,3 +106,14 @@ function main() {
 }
 
 main();
+
+// async function hack() {
+//   const AlbumPhotoPathResponse = {
+//     album: 'album1',
+//     photo: 'bbt1.jpg'
+//   }
+//   const download_response = await downloadImage(AlbumPhotoPathResponse);
+//   await fs.saveFile(AlbumPhotoPathResponse, download_response);
+// }
+
+// hack();
