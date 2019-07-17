@@ -65,6 +65,9 @@ message PathResponse {
     string imagePath= 1;
 }
 
+message DetectFaceRequest {
+    int32 photo_id= 1;
+}
 message Empty {}
 
 // -----------------Exif service-----------------
@@ -77,4 +80,10 @@ service ExifService {
 
 service ImgProxyService {
     rpc ResizeImage(ImgProxyRequest) returns (Empty) {}
+}
+
+// -----------------Faceapi service-----------------
+
+service FaceApiService {
+    rpc DetectFaces(DetectFaceRequest) returns (Empty) {}
 }
