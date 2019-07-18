@@ -82,9 +82,9 @@ async function detectFaces(call, callback) {
   logger.info(`Received Face detect request`);
 
   const saveFaces = (err, response) => {
-    const BoundingboxesIdArray = response
     const EmptyCallback = () => {};
-    imgProxyService.cropFaces(BoundingboxesIdArray, EmptyCallback);
+    // imgProxyService.cropFaces(FaceDetectRequest, EmptyCallback);
+    console.log("Preparing to call crop faces service");
   }
 
   const getPhotoPathCallback = async (err, response) => {
@@ -96,7 +96,7 @@ async function detectFaces(call, callback) {
     const InsertBoundingBoxesRequest = _getInsertBoundingBoxesRequestObj(photo_id, boundingboxes);
     console.log(InsertBoundingBoxesRequest);
     // insert the bounding boxes into db using gRPC call
-    // pgsqlservice.insertBoundingBoxes(InsertBoundingBoxesRequest, saveFaces);
+    pgsqlservice.insertBoundingBoxes(InsertBoundingBoxesRequest, saveFaces);
   };
 
   try {

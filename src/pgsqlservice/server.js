@@ -89,6 +89,16 @@ async function insertExif(call, callback) {
 }
 
 /**
+  * Implements the insertBoundingBoxes RPC method.
+ */
+async function insertBoundingBoxes(call, callback) {
+  logger.info(`Calling insert bounding box function`);
+  await pg.insertBoundingBoxes(call.request.photo_id, call.request.bounding_boxes);
+  const EmptyResponse = {};
+  callback(null, EmptyResponse);
+}
+
+/**
  * Starts an RPC server that receives requests for the Greeter service at the
  * sample server port
  */
@@ -99,6 +109,7 @@ function main() {
     getPhotoFullPath: getPhotoFullPath,
     insertExif: insertExif,
     getAlbumPhotoPath: getAlbumPhotoPath,
+    insertBoundingBoxes: insertBoundingBoxes,
   });
   server.bind(PGSQLSERVICE_IP, credentials);
   logger.info(`Starting PgSQL Service on port ${PGSQLSERVICE_PORT}`);

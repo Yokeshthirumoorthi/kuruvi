@@ -96,6 +96,26 @@ const insertExif = async (photo_id, data) => {
   }
 }
 
+const insertBoundingBoxes = async (photo_id, data) => {
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN')
+
+    data.map(row => {
+      const values = [photo_id, row.x, row.y, row.width, row.height];
+      await client.query(`INSERT INTO bounding_boxes (photo_id, x, y, width, height)
+                                      VALUES ($1, $2, $3, $4, $5) RETURNING id`, values);
+    });
+
+    await client.query('COMMIT')
+  } catch (e) {
+    await client.query('ROLLBACK')
+    throw e
+  } finally {
+    client.release()
+  }
+}
+
 const insertFaceDescriptors = async (photo_id, data) => {
   const client = await pool.connect();
 
@@ -109,4 +129,10 @@ const insertFaceDescriptors = async (photo_id, data) => {
   return rows[0].id;
 }
 
-module.exports = {createAlbum, insertPhoto, getPhotoFullPath, insertExif, insertFaceDescriptors, getAlbumPhotoPath}
+module.exports = {createAlbum,
+   insertPhoto,
+   getPhotoFullPath,
+   insertExif,
+   insertFaceDescriptors,
+   getAlbumPhotoPath,
+   insertBoundingBoxes}
