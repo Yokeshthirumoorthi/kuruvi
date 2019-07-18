@@ -2,27 +2,27 @@ version: '3.5'
 
 services:
 
-  # imguploadservice:
-  #   container_name: imguploadservice
-  #   build:
-  #     context: ./src/imguploadservice
-  #     dockerfile: Dockerfile
-  #   volumes:
-  #     - albums:/usr/src/app/uploads
-  #   ports:
-  #     - '8000:8000'
-  #   networks:
-  #     - nest
+  imguploadservice:
+    container_name: imguploadservice
+    build:
+      context: ./src/imguploadservice
+      dockerfile: Dockerfile
+    volumes:
+      - albums:/usr/src/app/uploads
+    ports:
+      - '8000:8000'
+    networks:
+      - nest
 
-  # frontend:
-  #   container_name: frontend
-  #   build:
-  #     context: ./src/frontend
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - '3000:3000'
-  #   networks:
-  #     - nest
+  frontend:
+    container_name: frontend
+    build:
+      context: ./src/frontend
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    networks:
+      - nest
 
   # dbmigrateservice:
   #   container_name: dbmigrateservice
@@ -34,64 +34,51 @@ services:
   #   networks:
   #     - nest
 
-  # postgresql:
-  #   container_name: postgresserver
-  #   image: "postgres:9"
-  #   ports:
-  #     - "5432:5432"
-  #   volumes:
-  #     - pgdata:/var/lib/postgresql/data/pgdata
-  #   environment:
-  #     POSTGRES_PASSWORD: postgres
-  #     PGDATA: /var/lib/postgresql/data/pgdata
-  #   networks:
-  #     - nest
+  postgresql:
+    container_name: postgresserver
+    image: "postgres:9"
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data/pgdata
+    environment:
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /var/lib/postgresql/data/pgdata
+    networks:
+      - nest
 
-  # pgadmin4:
-  #   container_name: pgadmin4
-  #   image: "thajeztah/pgadmin4"
-  #   ports:
-  #     - "5050:5050"
-  #   networks:
-  #     - nest
+  pgadmin4:
+    container_name: pgadmin4
+    image: "thajeztah/pgadmin4"
+    ports:
+      - "5050:5050"
+    networks:
+      - nest
 
-  # rabbitmq:
-  #   container_name: rabbit
-  #   image: "rabbitmq:3.7-management"
-  #   networks:
-  #     - nest
-  #   ports:
-  #     - '5672:5672'
-  #     - '15672:15672'
-  #   volumes:
-  #     - 'rabbitmq_data:/var/lib/rabbitmq'
-  #   environment:
-  #     - RABBITMQ_DEFAULT_USER=rabbitmquser
-  #     - RABBITMQ_DEFAULT_PASS=some_password
+  exifservice:
+    container_name: exifservice
+    build:
+      context: ./src/exifservice
+      dockerfile: Dockerfile
+    volumes:
+      - albums:/usr/src/app/uploads
+    ports:
+      - "50052:50052"
+    networks:
+      - nest
+    restart: on-failure
 
-  # exifservice:
-  #   container_name: exifservice
-  #   build:
-  #     context: ./src/exifservice
-  #     dockerfile: Dockerfile
-  #   volumes:
-  #     - albums:/usr/src/app/uploads
-  #   ports:
-  #     - "50052:50052"
-  #   networks:
-  #     - nest
-  #   restart: on-failure
+  pgsqlservice:
+    container_name: pgsqlservice
+    build:
+      context: ./src/pgsqlservice
+      dockerfile: Dockerfile
+    ports:
+      - "50051:50051"
+    networks:
+      - nest
+    restart: on-failure
 
-  # pgsqlservice:
-  #   container_name: pgsqlservice
-  #   build:
-  #     context: ./src/pgsqlservice
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "50051:50051"
-  #   networks:
-  #     - nest
-  #   restart: on-failure
   faceapi:
     container_name: faceapi
     build:
@@ -105,42 +92,42 @@ services:
       - nest
     restart: on-failure
 
-  # imgproxyservice:
-  #   container_name: imgproxyservice
-  #   build:
-  #     context: ./src/imgproxyservice
-  #     dockerfile: Dockerfile
-  #   volumes:
-  #     - albums:/usr/src/app/uploads
-  #     - resized_albums:/usr/src/app/resized
-  #   ports:
-  #     - "50053:50053"
-  #   networks:
-  #     - nest
-  #   restart: on-failure
+  imgproxyservice:
+    container_name: imgproxyservice
+    build:
+      context: ./src/imgproxyservice
+      dockerfile: Dockerfile
+    volumes:
+      - albums:/usr/src/app/uploads
+      - resized_albums:/usr/src/app/resized
+    ports:
+      - "50053:50053"
+    networks:
+      - nest
+    restart: on-failure
 
-  # imgproxy:
-  #   container_name: imgproxy
-  #   image: "darthsim/imgproxy:latest"
-  #   volumes:
-  #     - albums:/usr/src/app/uploads
-  #   ports:
-  #     - '8080:8080'
-  #   networks:
-  #     - nest
-  #   restart: on-failure
+  imgproxy:
+    container_name: imgproxy
+    image: "darthsim/imgproxy:latest"
+    volumes:
+      - albums:/usr/src/app/uploads
+    ports:
+      - '8080:8080'
+    networks:
+      - nest
+    restart: on-failure
 
-  # caddy-fs:
-  #   container_name: caddy-fs
-  #   image: "abiosoft/caddy"
-  #   volumes:
-  #     - albums:/srv
-  #     - resized_albums:/srv/resized
-  #   ports:
-  #     - '2015:2015'
-  #   networks:
-  #     - nest
-  #   restart: on-failure
+  caddy-fs:
+    container_name: caddy-fs
+    image: "abiosoft/caddy"
+    volumes:
+      - albums:/srv
+      - resized_albums:/srv/resized
+    ports:
+      - '2015:2015'
+    networks:
+      - nest
+    restart: on-failure
 
 volumes:
   albums:
@@ -151,3 +138,7 @@ volumes:
 
 networks:
   nest:
+
+
+
+
