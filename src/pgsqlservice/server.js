@@ -58,6 +58,22 @@ async function addPhoto(call, callback) {
 }
 
 /**
+  * Implements the getBoundingBox RPC method.
+ */
+async function getBoundingBoxes(call, callback) {
+  logger.info(`Calling get Bounding box ${call.request}`);
+  const photo_id = call.request.photo_id;
+  const bounding_boxes = await pg.getBoundingBoxes(photo_id);
+  const path = await pg.getPhotoFullPath(photo_id);
+  const GetBoundingBoxesResponse = {
+    photo_id: photo_id,
+    path: path,
+    bounding_boxes: bounding_boxes,
+  }; 
+  callback(null, GetBoundingBoxesResponse);
+}
+
+/**
   * Implements the GetPhotoFullPath RPC method.
  */
 async function getPhotoFullPath(call, callback) {
@@ -109,6 +125,7 @@ function main() {
     getPhotoFullPath: getPhotoFullPath,
     insertExif: insertExif,
     getAlbumPhotoPath: getAlbumPhotoPath,
+    getBoundingBoxes: getBoundingBoxes,
     insertBoundingBoxes: insertBoundingBoxes,
   });
   server.bind(PGSQLSERVICE_IP, credentials);

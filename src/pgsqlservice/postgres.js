@@ -74,6 +74,26 @@ const getAlbumPhotoPath = async (photo_id) => {
   return pathDetails;
 }
 
+const getBoundingBoxes = async (photo_id) => {
+
+  const client = await pool.connect();
+
+  const { rows } = await client.query('SELECT * FROM bounding_boxes WHERE photo_id = $1',[photo_id]);
+  
+  const _getBoundingBoxes = (row) => {
+    return {
+      x: row.x,
+      y: row.y,
+      width: row.width,
+      height: row.height
+    }
+  };
+
+  const bounding_boxes = _getBoundingBoxes(rows);
+
+  return bounding_boxes;
+}
+
 const insertExif = async (photo_id, data) => {
   const client = await pool.connect();
   try {
@@ -135,4 +155,5 @@ module.exports = {createAlbum,
    insertExif,
    insertFaceDescriptors,
    getAlbumPhotoPath,
+   getBoundingBoxes,
    insertBoundingBoxes}

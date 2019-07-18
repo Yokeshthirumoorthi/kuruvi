@@ -93,13 +93,29 @@ async function resizeImage(call, callback) {
   }
 }
 
+function cropFaces(call, callback) {
+  const GetBoundingBoxesRequest = callback.request;
+  const photo_id = GetBoundingBoxesRequest.photo_id;
+  logger.info(`Received crop faces request for photo`);
+  
+  const getFacesCallback = async (err, response) => {
+    // TODO
+  }; 
+
+  try {
+    client.getBoundingBoxes(GetBoundingBoxesRequest, getFacesCallback)
+  } catch (err) {
+    logger.error(`Error while executing crop faces`);
+  }
+} 
+
 /**
  * Starts an RPC server that receives requests for the exif service at the
  * server port
  */
 function main() {
   const server = new grpc.Server();
-  server.addService(kuruviProto.ImgProxyService.service, {resizeImage: resizeImage});
+  server.addService(kuruviProto.ImgProxyService.service, {resizeImage: resizeImage, cropFaces: cropFaces});
   server.bind(IMGPROXY_IP, grpc.ServerCredentials.createInsecure());
   logger.info(`Starting Imgproxy service on port ${IMGPROXY_PORT}`);
   server.start();
