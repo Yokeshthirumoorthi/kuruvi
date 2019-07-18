@@ -19,7 +19,7 @@ const NODE_DATABASE = `pgsqlservice:${DATABASE_PORT}`;
 const IMGPROXY_PORT = 50053;
 const IMGPROXY_SERVICE = `imgproxyservice:${IMGPROXY_PORT}`;
 const FACEAPI_PORT = 50054;
-const FACEAPI_SERVICE = `imgproxyservice:${FACEAPI_PORT}`;
+const FACEAPI_SERVICE = `0.0.0.0:${FACEAPI_PORT}`;
 
 const kuruviProto = _loadProto(MAIN_PROTO_PATH).kuruvi;
 // const healthProto = _loadProto(HEALTH_PROTO_PATH).grpc.health.v1;
@@ -52,12 +52,6 @@ function _loadProto (path) {
   return grpc.loadPackageDefinition(packageDefinition);
 }
 
-function _getBoundingBoxes (pathResponse) {
-  const imagePath = pathResponse.imagePath;
-  const boundingboxes = faceDetection.run(imagePath);
-  return boundingboxes;
-}
-
 function _getInsertBoundingBoxesRequestObj (ExifRequest, exif) {
   const photo_id = ExifRequest.photo_id;
   const InsertExifRequest = {
@@ -74,7 +68,7 @@ function _getInsertBoundingBoxesRequestObj (ExifRequest, exif) {
  *  then use the path to run exif lamda.
  *  Finally insert the result into data base.
  */
-async function detectfaces(call, callback) {
+async function detectFaces(call, callback) {
   const FaceDetectRequest = call.request;
   logger.info(`Received Face detect request`);
 
@@ -82,12 +76,12 @@ async function detectfaces(call, callback) {
     const BoundingboxesIdArray = response;
     const EmptyCallback = () => {};
     imgProxyService.cropFaces(BoundingboxesIdArray, EmptyCallback);
-
   }
 
-  const getPhotoPathCallback = (err, response) => {
+  const getPhotoPathCallback = async (err, response) => {
+    const imagePath = response.imagePath;
     // get the exif data extracted out of the image
-    const boundingboxes = _getBoundingBoxes(response);
+    const boundingboxes = await faceDetection.run(imagePath);;
     // generate a grpc request message
     const InsertBoundingBoxesRequest = _getInsertBoundingBoxesRequestObj(FaceDetectRequest, boundingboxes);
     console.log(InsertBoundingBoxesRequest);
@@ -109,7 +103,7 @@ async function detectfaces(call, callback) {
  */
 function main() {
   const server = new grpc.Server();
-  server.addService(kuruviProto.FaceApiService.service, {detectfaces: detectfaces});
+  server.addService(kuruviProto.FaceApiService.service, {detectFaces: detectFaces});
   server.bind(FACEAPI_SERVICE, grpc.ServerCredentials.createInsecure());
   logger.info(`Starting faceapi Server on port ${FACEAPI_PORT}`);
   server.start();
