@@ -43,7 +43,7 @@ async function saveFaces(photoFSDetails, faces) {
  */
 async function getFaces(photoFSDetails, photoFaceDetails) {
   const caddyURL = URL.getCaddyURL(photoFSDetails);
-  const boundingBoxes = photoFaceDetails.boundingBoxes;
+  const boundingBoxes = photoFaceDetails.bounding_boxes;
   const faceDetails = URL.getImgProxyCropFaceURLList(caddyURL, boundingBoxes);
   const faceDetailsWithFaces = faceDetails.map((x) => addFaceImage(x));
   return faceDetailsWithFaces;
