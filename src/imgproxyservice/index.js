@@ -12,9 +12,9 @@ const path = require('path');
 const grpc = require('grpc');
 const pino = require('pino');
 const protoLoader = require('@grpc/proto-loader');
-const fs = require('./saveFile');
-const signature = require('./signature');
-const Axios = require('axios');
+const {cropFacesAndSave} = require('./cropfaces');
+const {resizeImageAndSave} = require('./resize');
+
 require('dotenv').config();
 
 const MAIN_PROTO_PATH = path.join(__dirname, './proto/fileUploader.proto');
@@ -22,10 +22,6 @@ const DATABASE_PORT = process.env.DATABASE_PORT;
 const NODE_DATABASE = `${process.env.PGSQL_SERVICE}:${DATABASE_PORT}`;
 const IMGPROXY_PORT= process.env.IMGPROXY_PORT;
 const IMGPROXY_IP= `0.0.0.0:${IMGPROXY_PORT}`;
-const CADDY_PORT = process.env.CADDY_PORT;
-const CADDY_SERVICE = process.env.CADDY_SERVICE;
-const IMGPROXY_PORT = process.env.IMGPROXY_PORT; 
-const IMGPROXY_SERVICE = process.env.IMGPROXY_SERVICE;
 const kuruviProto = _loadProto(MAIN_PROTO_PATH).kuruvi;
 // const healthProto = _loadProto(HEALTH_PROTO_PATH).grpc.health.v1;
 
@@ -57,127 +53,6 @@ function _loadProto (path) {
 }
 
 /**
- * Generates a proper caddy url using the album name
- * and photo path.
- */
-function getCaddyURL(photoFSDetails) {
-  const album = photoFSDetails.album;
-  const photoPath = photoFSDetails.photo;
-  const URL =  `http://${CADDY_SERVICE}:${CADDY_PORT}/${album}/${photoPath}`;
-  return URL; 
-}
-
-/**
- * Generate a signed imgproxy URL for resizing images.
- * The source image URL is a caddy URL.
- */
-function getImgProxyPhotoResizeURL(caddyURL) {
-  const signedUrlSegment = signature.getSignedImgURL(caddyURL);
-  const URL = `http://${IMGPROXY_SERVICE}:${IMGPROXY_PORT}/${signedUrlSegment}`;
-  return URL;
-}
-
-/**
- * Generate a signed imgproxy URL for cropping faces in photo.
- * The source image URL is a caddy URL.
- */
-function getImgProxyCropFaceURL(caddyURL, boundingBox) {
-  const signedUrlSegment = signature.getSignedImgCropURL(caddyURL, boundingBox);
-  const URL = `http://${IMGPROXY_SERVICE}:${IMGPROXY_PORT}/${signedUrlSegment}`;
-  return URL;
-}
-
-/**
- * Generate a json for that contains all
- * the faces named along with the imgproxy url
- * used to crop that face out of the photo 
- */
-function getImgProxyCropFaceURLList(caddyURL, boundingBoxes) {
-   const getFaceURLs = (boundingBox, index) => {
-      return {
-        faceNumber: index,
-        label: `face_${index}`,
-        url: getImgProxyCropFaceURL(caddyURL, boundingBox) 
-      }
-   };
-   const faceDetails= boundingBoxes.map(getFaceURLs);
-   return faceDetails;
-}
-
-/**
- * Append face image to face details 
- */
-function addFaceImage(faceDetail) {
-  const url = faceDetail.url;
-  const faceImage = getImage(url);
-  return {...faceDetail, image: faceImage};
-}
-
-/**
- * Crop the faces from photo 
- */
-async function getFaces(photoFSDetails, photoFaceDetails) {
-  const caddyURL = getCaddyURL(photoFSDetails);
-  const boundingBoxes = photoFaceDetails.boundingBoxes;
-  const faceDetails = getImgProxyCropFaceURLList(caddyURL, boundingBoxes);
-  const faceDetailsWithFaces = faceDetails.map((x) => addFaceImage(x));
-  return faceDetailsWithFaces;
-}
-
-/**
- * Save faces to disk
- */
-async function saveFaces(photoFSDetails, faces) {
-  faces.map(face => {
-    const faceLabel = face.label;
-    const image = face.image;
-    fs.saveFile(photoFSDetails, image);  // TODO: fix the file path for saving faces
-  })
-}
-
-/**
- * Get image from imgProxy
- */
-async function getImage(imgProxyURL) {
-  const image = await Axios({
-    url: imgProxyURL,
-    method: 'GET',
-    responseType: 'stream'
-  });
-
-  return image; 
-}
-
-/**
- * Save the image downloaded from imgproxy  
- */
-async function saveImage(photoFSDetails, image) {
-  return fs.saveFile(photoFSDetails, image);
-}
-
-/**
- * Given photo file system details,
- * fetch the photo from caddy server 
- * and resize it using imgproxy
- */
-async function getResizedImage(photoFSDetails) {
-   const caddyURL = getCaddyURL(photoFSDetails);
-   const imgProxyURL = getImgProxyPhotoResizeURL(caddyURL);
-   const resizedImage = getImage(imgProxyURL);
-   return resizedImage;
-}
-
-/**
- * Callback to be executed after getting photoFSDetails
- * from postgresql grpc call
- */
-async function resizeImageAndSave(photoFSDetails) {
-  const resizedPhoto = await getResizedImage(photoFSDetails);
-  await saveImage(photoFSDetails, resizedPhoto);
-  logger.info(`Successfully resized and saved photo @ ${photoFSDetails.photo}`);
-}
-
-/**
  * gRPC function implementation 
  * get the photo_id from the Imgproxy request.
  * Retrieve the album path from the database. 
@@ -196,17 +71,6 @@ function resizeImage(call, callback) { // TODO: Implement callback functionality
     const photoFSDetails = response;
     resizeImageAndSave(photoFSDetails);
   });
-}
-
-/**
- * Callback to be executed after getting photoFSDetails
- * from postgresql grpc call
- */
-async function cropFacesAndSave(photoFSDetails, photoFaceDetails) {
-  const faces = await getFaces(photoFSDetails, photoFaceDetails);
-  await saveFaces(photoFSDetails, faces);
-  logger.info(`Successfully cropped and saved faces @ ${photoFSDetails.photo}`);
-  // TODO: update db with face details
 }
 
 /**
