@@ -29,7 +29,7 @@ const kuruviProto = _loadProto(MAIN_PROTO_PATH).kuruvi;
 // const healthProto = _loadProto(HEALTH_PROTO_PATH).grpc.health.v1;
 
 const credentials = grpc.credentials.createInsecure();
-const client = new kuruviProto.PhotoUploadService(NODE_DATABASE, credentials);
+const pgsql= new kuruviProto.PhotoUploadService(NODE_DATABASE, credentials);
 
 const logger = pino({
   name: 'imgproxyservice-server',
@@ -119,7 +119,7 @@ async function getFaces(photoFSDetails, photoFaceDetails) {
   const caddyURL = getCaddyURL(photoFSDetails);
   const boundingBoxes = photoFaceDetails.boundingBoxes;
   const faceDetails = getImgProxyCropFaceURLList(caddyURL, boundingBoxes);
-  const faceDetailsWithFaces = faceDetails.map(addFaceImage);
+  const faceDetailsWithFaces = faceDetails.map((x) => addFaceImage(x));
   return faceDetailsWithFaces;
 }
 
@@ -170,12 +170,7 @@ async function getResizedImage(photoFSDetails) {
  * Callback to be executed after getting photoFSDetails
  * from postgresql grpc call
  */
-async function resizeImageAndSave(err, response) {
-  if (err != null) {
-    logger.error("Error in PhotoFSDetails call");
-  }
-
-  const photoFSDetails = response;
+async function resizeImageAndSave(photoFSDetails) {
   const resizedPhoto = await getResizedImage(photoFSDetails);
   await saveImage(photoFSDetails, resizedPhoto);
   logger.info(`Successfully resized and saved photo @ ${photoFSDetails.photo}`);
@@ -193,7 +188,13 @@ function resizeImage(call, callback) { // TODO: Implement callback functionality
   const photoFSDetailsRequest = {
     photo_id: photoId,
   };
-  pgsql.getAlbumPhotoPath(photoFSDetailsRequest,resizeImageAndSave);
+  pgsql.getAlbumPhotoPath(photoFSDetailsRequest, (err, response) => {
+    if (err != null) {
+      logger.error("Error in PhotoFSDetails call");
+    }
+    const photoFSDetails = response;
+    resizeImageAndSave(photoFSDetails);
+  });
 }
 
 /**
