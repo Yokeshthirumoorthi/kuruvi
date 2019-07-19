@@ -19,14 +19,14 @@ require('dotenv').config();
 
 const MAIN_PROTO_PATH = path.join(__dirname, './proto/fileUploader.proto');
 const DATABASE_PORT = process.env.DATABASE_PORT;
-const NODE_DATABASE = `${process.env.PGSQL_SERVICE}:${DATABASE_PORT}`;
+const PGSQL_SERVICE_API_ENDPOINT = `${process.env.PGSQL_SERVICE}:${DATABASE_PORT}`;
 const IMGPROXY_PORT= process.env.IMGPROXY_PORT;
-const IMGPROXY_IP= `0.0.0.0:${IMGPROXY_PORT}`;
+const IMGPROXY_SERVICE_API_ENDPOINT= `0.0.0.0:${IMGPROXY_PORT}`;
 const kuruviProto = _loadProto(MAIN_PROTO_PATH).kuruvi;
 // const healthProto = _loadProto(HEALTH_PROTO_PATH).grpc.health.v1;
 
 const credentials = grpc.credentials.createInsecure();
-const pgsql= new kuruviProto.PhotoUploadService(NODE_DATABASE, credentials);
+const pgsql= new kuruviProto.PhotoUploadService(PGSQL_SERVICE_API_ENDPOINT, credentials);
 
 const logger = pino({
   name: 'imgproxyservice-server',
@@ -95,7 +95,7 @@ function cropFaces(call, callback) { // TODO: Implement callback functionality
 function main() {
   const server = new grpc.Server();
   server.addService(kuruviProto.ImgProxyService.service, {resizeImage: resizeImage, cropFaces: cropFaces});
-  server.bind(IMGPROXY_IP, grpc.ServerCredentials.createInsecure());
+  server.bind(IMGPROXY_SERVICE_API_ENDPOINT, grpc.ServerCredentials.createInsecure());
   logger.info(`Starting Imgproxy service on port ${IMGPROXY_PORT}`);
   server.start();
 }

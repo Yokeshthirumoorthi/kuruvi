@@ -10,6 +10,7 @@
 
 const fs = require('fs');
 const path = require('path');
+const Axios = require('axios');
 
 function createFolderIfNotExits(path) {
   if (!fs.existsSync(path, { recursive: true })) {
@@ -40,4 +41,17 @@ async function saveFile (photoFSDetails, response, folderName) {
   })
 }
 
-module.exports = {saveFile}
+/**
+ * Get image from imgProxy
+ */
+async function getImage(imgProxyURL) {
+  const image = await Axios({
+    url: imgProxyURL,
+    method: 'GET',
+    responseType: 'stream'
+  });
+
+  return image; 
+}
+
+module.exports = {saveFile, getImage}
