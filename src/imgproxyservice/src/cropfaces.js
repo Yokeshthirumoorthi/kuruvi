@@ -73,14 +73,16 @@ function addFaceImage(faceDetail) {
 }
 
 /**
- * Crop the faces from photo 
+ * Get image from imgProxy
  */
-async function getFaces(photoFSDetails, photoFaceDetails) {
-  const caddyURL = getCaddyURL(photoFSDetails);
-  const boundingBoxes = photoFaceDetails.boundingBoxes;
-  const faceDetails = getImgProxyCropFaceURLList(caddyURL, boundingBoxes);
-  const faceDetailsWithFaces = faceDetails.map((x) => addFaceImage(x));
-  return faceDetailsWithFaces;
+async function getImage(imgProxyURL) {
+  const image = await Axios({
+    url: imgProxyURL,
+    method: 'GET',
+    responseType: 'stream'
+  });
+
+  return image; 
 }
 
 /**
@@ -95,16 +97,14 @@ async function saveFaces(photoFSDetails, faces) {
 }
 
 /**
- * Get image from imgProxy
+ * Crop the faces from photo 
  */
-async function getImage(imgProxyURL) {
-  const image = await Axios({
-    url: imgProxyURL,
-    method: 'GET',
-    responseType: 'stream'
-  });
-
-  return image; 
+async function getFaces(photoFSDetails, photoFaceDetails) {
+  const caddyURL = getCaddyURL(photoFSDetails);
+  const boundingBoxes = photoFaceDetails.boundingBoxes;
+  const faceDetails = getImgProxyCropFaceURLList(caddyURL, boundingBoxes);
+  const faceDetailsWithFaces = faceDetails.map((x) => addFaceImage(x));
+  return faceDetailsWithFaces;
 }
 
 /**

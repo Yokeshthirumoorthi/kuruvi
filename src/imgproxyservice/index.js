@@ -12,8 +12,8 @@ const path = require('path');
 const grpc = require('grpc');
 const pino = require('pino');
 const protoLoader = require('@grpc/proto-loader');
-const {cropFacesAndSave} = require('./cropfaces');
-const {resizeImageAndSave} = require('./resize');
+const {cropFacesAndSave} = require('./src/cropfaces');
+const {resizeImageAndSave} = require('./src/resize');
 
 require('dotenv').config();
 
@@ -61,9 +61,7 @@ function _loadProto (path) {
 function resizeImage(call, callback) { // TODO: Implement callback functionality
   const photoId = call.request.photo_id; // TODO: change photo_id as photoId
   logger.info(`Received img resize request for photo: ${photo_id}`);
-  const photoFSDetailsRequest = {
-    photo_id: photoId,
-  };
+  const photoFSDetailsRequest = { photo_id: photoId };
   pgsql.getAlbumPhotoPath(photoFSDetailsRequest, (err, response) => {
     if (err != null) {
       logger.error("Error in PhotoFSDetails call");
