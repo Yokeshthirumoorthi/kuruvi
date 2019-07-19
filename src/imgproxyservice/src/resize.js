@@ -37,7 +37,7 @@ async function getResizedImage(photoFSDetails) {
  */
 async function resizeImageAndSave(photoFSDetails) {
   const resizedPhoto = await getResizedImage(photoFSDetails);
-  await fs.saveImage(photoFSDetails, resizedPhoto);
+  await fs.saveFile(photoFSDetails, resizedPhoto, "resized");
   logger.info(`Successfully resized and saved photo @ ${photoFSDetails.photo}`);
 }
 

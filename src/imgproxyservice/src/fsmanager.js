@@ -20,6 +20,7 @@ function createFolderIfNotExits(path) {
 
 function getImagePath(photoFSDetails, folderName) {
   const album = photoFSDetails.album;
+  const fileName = photoFSDetails.photo;
   // const folderName = 'resized';
   const albumPath = path.join(__dirname, folderName, album);
 

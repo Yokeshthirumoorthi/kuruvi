@@ -1,4 +1,4 @@
-
+const signature = require('./signature');
 require('dotenv').config();
 
 const IMGPROXY_PORT= process.env.IMGPROXY_PORT;
@@ -23,7 +23,7 @@ function getCaddyURL(photoFSDetails) {
  */
 function getImgProxyPhotoResizeURL(caddyURL) {
   const signedUrlSegment = signature.getSignedImgURL(caddyURL);
-  const URL = `http://${IMGPROXY_SERVICE}:${IMGPROXY_PORT}/${signedUrlSegment}`;
+  const URL = `http://${IMGPROXY_SERVICE}:${IMGPROXY_PORT}${signedUrlSegment}`;
   return URL;
 }
 

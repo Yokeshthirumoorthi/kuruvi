@@ -17,7 +17,9 @@ package kuruvi;
 service PhotoUploadService {
     rpc AddPhoto(AddPhotoRequest) returns (AddPhotoResponse) {}
     rpc GetPhotoFullPath(ExifRequest) returns (PathResponse) {}
+    rpc GetBoundingBoxes(BoundingBoxesRequest) returns (BoundingBoxesResponse) {}
     rpc InsertExif(InsertExifRequest) returns (Empty) {}
+    rpc InsertBoundingBoxes(InsertBoundingBoxesRequest) returns (Empty) {}
     rpc GetAlbumPhotoPath(AlbumPhotoPathRequest) returns (AlbumPhotoPathResponse) {}
 }
 
@@ -39,8 +41,30 @@ message Exif {
     int32 img_height= 5;
 }
 
+message BoundingBoxes {
+    int32 x= 1;
+    int32 y= 2;
+    int32 width= 3;
+    int32 height= 4;
+}
+
 message ExifRequest {
     int32 photo_id= 1;
+}
+
+message BoundingBoxesRequest {
+    int32 photo_id= 1;
+}
+
+message BoundingBoxesResponse {
+    int32 photo_id= 1; 
+    string path= 2;
+    repeated BoundingBoxes bounding_boxes= 3;
+}
+
+message InsertBoundingBoxesRequest {
+    int32 photo_id= 1; 
+    repeated BoundingBoxes bounding_boxes= 2;
 }
 
 message AlbumPhotoPathRequest {
@@ -80,6 +104,7 @@ service ExifService {
 
 service ImgProxyService {
     rpc ResizeImage(ImgProxyRequest) returns (Empty) {}
+    rpc CropFaces(ImgProxyRequest) returns (Empty) {}
 }
 
 // -----------------Faceapi service-----------------
