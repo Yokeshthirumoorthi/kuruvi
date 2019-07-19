@@ -18,23 +18,36 @@ function createFolderIfNotExits(path) {
   }
 }
 
-function getImagePath(photoFSDetails, folderName) {
+function getAlbumPath(photoFSDetails, folderName) {
   const album = photoFSDetails.album;
-  const fileName = photoFSDetails.photo;
-  // const folderName = 'resized';
   const albumPath = path.join(__dirname, folderName, album);
 
   createFolderIfNotExits(albumPath);
-  const imagePath = path.resolve(albumPath, fileName);
 
-  return imagePath;
+  return albumPath;
 }
 
-async function saveFile (photoFSDetails, response, folderName) {
-  const imagePath = getImagePath(photoFSDetails, folderName)
+async function saveResizedPhoto (photoFSDetails, response, folderName) {
+  const albumPath = getAlbumPath(photoFSDetails, folderName);
+  const imagePath = path.resolve(albumPath, fileName);
+
   const writer = fs.createWriteStream(imagePath)
 
   response.data.pipe(writer)
+
+  return new Promise((resolve, reject) => {
+    writer.on('finish', resolve)
+    writer.on('error', reject)
+  })
+}
+
+async function saveFace (photoFSDetails, face, folderName) {
+  const albumPath = getAlbumPath(photoFSDetails, folderName);
+  const fileName = face.label + photoFSDetails.photo;
+  const imagePath = path.resolve(albumPath, fileName);
+  const writer = fs.createWriteStream(imagePath)
+
+  face.image.data.pipe(writer)
 
   return new Promise((resolve, reject) => {
     writer.on('finish', resolve)
@@ -55,4 +68,4 @@ async function getImage(imgProxyURL) {
   return image; 
 }
 
-module.exports = {saveFile, getImage}
+module.exports = {saveResizedPhoto, saveFace, getImage}

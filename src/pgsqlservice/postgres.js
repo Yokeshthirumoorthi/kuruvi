@@ -121,7 +121,7 @@ const insertBoundingBoxes = async (photo_id, data) => {
   try {
     await client.query('BEGIN')
 
-    data.map(row => {
+    data.map(async row => {
       const values = [photo_id, row.x, row.y, row.width, row.height];
       await client.query(`INSERT INTO bounding_boxes (photo_id, x, y, width, height)
                                       VALUES ($1, $2, $3, $4, $5) RETURNING id`, values);

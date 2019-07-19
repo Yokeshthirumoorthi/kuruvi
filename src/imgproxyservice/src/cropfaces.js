@@ -21,10 +21,11 @@ const logger = pino({
 /**
  * Append face image to face details 
  */
-function addFaceImage(faceDetail) {
+async function addFaceImage(faceDetail) {
   const url = faceDetail.url;
-  const faceImage = fs.getImage(url);
-  return {...faceDetail, image: faceImage};
+  const faceImage = await fs.getImage(url);
+  const updatedFaceDetail = {...faceDetail, image: faceImage};
+  return updatedFaceDetail;
 }
 
 /**
@@ -32,9 +33,7 @@ function addFaceImage(faceDetail) {
  */
 async function saveFaces(photoFSDetails, faces) {
   faces.map(face => {
-    const faceLabel = face.label;
-    const image = face.image;
-    fs.saveFile(photoFSDetails, image);  // TODO: fix the file path for saving faces
+    fs.saveFace(photoFSDetails, face, 'faces');  // TODO: fix the file path for saving faces
   })
 }
 
@@ -45,7 +44,7 @@ async function getFaces(photoFSDetails, photoFaceDetails) {
   const caddyURL = URL.getCaddyURL(photoFSDetails);
   const boundingBoxes = photoFaceDetails.bounding_boxes;
   const faceDetails = URL.getImgProxyCropFaceURLList(caddyURL, boundingBoxes);
-  const faceDetailsWithFaces = faceDetails.map((x) => addFaceImage(x));
+  const faceDetailsWithFaces = await Promise.all(faceDetails.map(addFaceImage));
   return faceDetailsWithFaces;
 }
 

@@ -32,7 +32,7 @@ function getImgProxyPhotoResizeURL(caddyURL) {
  */
 function getImgProxyCropFaceURL(caddyURL, boundingBox) {
   const signedUrlSegment = signature.getSignedImgCropURL(caddyURL, boundingBox);
-  const URL = `http://${IMGPROXY_SERVICE}:${IMGPROXY_PORT}/${signedUrlSegment}`;
+  const URL = `http://${IMGPROXY_SERVICE}:${IMGPROXY_PORT}${signedUrlSegment}`;
   return URL;
 }
 
