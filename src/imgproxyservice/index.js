@@ -15,16 +15,17 @@ const protoLoader = require('@grpc/proto-loader');
 const fs = require('./saveFile');
 const signature = require('./signature');
 const Axios = require('axios');
+require('dotenv').config();
 
 const MAIN_PROTO_PATH = path.join(__dirname, './proto/fileUploader.proto');
-const DATABASE_PORT = 50051;
-const NODE_DATABASE = `pgsqlservice:${DATABASE_PORT}`;
-const IMGPROXY_PORT= 50053;
+const DATABASE_PORT = process.env.DATABASE_PORT;
+const NODE_DATABASE = `${process.env.PGSQL_SERVICE}:${DATABASE_PORT}`;
+const IMGPROXY_PORT= process.env.IMGPROXY_PORT;
 const IMGPROXY_IP= `0.0.0.0:${IMGPROXY_PORT}`;
-const CADDY_PORT = 2015; //TODO: Use environmental variable
-const CADDY_SERVICE = `caddy-fs`; //TODO: Use environmental variable
-const IMGPROXY_PORT = 8080; // TODO: Use environmental variable
-const IMGPROXY_SERVICE = `imgproxy`; //TODO: Use environmental variable
+const CADDY_PORT = process.env.CADDY_PORT;
+const CADDY_SERVICE = process.env.CADDY_SERVICE;
+const IMGPROXY_PORT = process.env.IMGPROXY_PORT; 
+const IMGPROXY_SERVICE = process.env.IMGPROXY_SERVICE;
 const kuruviProto = _loadProto(MAIN_PROTO_PATH).kuruvi;
 // const healthProto = _loadProto(HEALTH_PROTO_PATH).grpc.health.v1;
 
