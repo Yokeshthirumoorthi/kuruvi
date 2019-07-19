@@ -4,7 +4,8 @@
   "description": "Image resizer",
   "main": "imgproxy.js",
   "scripts": {
-    "start": "node imgproxy.js"
+    "start": "node index.js",
+    "test": "mocha"
   },
   "dependencies": {
     "@grpc/proto-loader": "^0.1.0",
@@ -17,5 +18,8 @@
     "pino": "^5.6.2"
   },
   "author": "yokesh thirumoorthi",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "^6.2.0"
+  }
 }
