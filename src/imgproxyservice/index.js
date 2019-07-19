@@ -14,14 +14,14 @@ const pino = require('pino');
 const protoLoader = require('@grpc/proto-loader');
 const {cropFacesAndSave} = require('./src/cropfaces');
 const {resizeImageAndSave} = require('./src/resize');
+const {
+  PGSQL_SERVICE_API_ENDPOINT,
+  IMGPROXY_PORT,
+  IMGPROXY_SERVICE_API_ENDPOINT
+} = require('./config');
 
-require('dotenv').config();
 
 const MAIN_PROTO_PATH = path.join(__dirname, './proto/fileUploader.proto');
-const DATABASE_PORT = process.env.DATABASE_PORT;
-const PGSQL_SERVICE_API_ENDPOINT = `${process.env.PGSQL_SERVICE}:${DATABASE_PORT}`;
-const IMGPROXY_PORT= process.env.IMGPROXY_PORT;
-const IMGPROXY_SERVICE_API_ENDPOINT= `0.0.0.0:${IMGPROXY_PORT}`;
 const kuruviProto = _loadProto(MAIN_PROTO_PATH).kuruvi;
 // const healthProto = _loadProto(HEALTH_PROTO_PATH).grpc.health.v1;
 

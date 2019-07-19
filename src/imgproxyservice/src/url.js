@@ -1,11 +1,10 @@
 const signature = require('./signature');
-require('dotenv').config();
-
-const IMGPROXY_PORT= process.env.IMGPROXY_PORT;
-const CADDY_PORT = process.env.CADDY_PORT;
-const CADDY_SERVICE = process.env.CADDY_SERVICE;
-const IMGPROXY_SERVICE = process.env.IMGPROXY_SERVICE;
-
+const {
+  IMGPROXY_PORT,
+  IMGPROXY_SERVICE,
+  CADDY_PORT,
+  CADDY_SERVICE
+} = require('../config');
 /**
  * Generates a proper caddy url using the album name
  * and photo path.
