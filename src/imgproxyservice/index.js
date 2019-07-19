@@ -21,7 +21,10 @@ const DATABASE_PORT = 50051;
 const NODE_DATABASE = `pgsqlservice:${DATABASE_PORT}`;
 const IMGPROXY_PORT= 50053;
 const IMGPROXY_IP= `0.0.0.0:${IMGPROXY_PORT}`;
-
+const CADDY_PORT = 2015; //TODO: Use environmental variable
+const CADDY_SERVICE = `caddy-fs`; //TODO: Use environmental variable
+const IMGPROXY_PORT = 8080; // TODO: Use environmental variable
+const IMGPROXY_SERVICE = `imgproxy`; //TODO: Use environmental variable
 const kuruviProto = _loadProto(MAIN_PROTO_PATH).kuruvi;
 // const healthProto = _loadProto(HEALTH_PROTO_PATH).grpc.health.v1;
 
@@ -57,8 +60,6 @@ function _loadProto (path) {
  * and photo path.
  */
 function getCaddyURL(photoFSDetails) {
-  const CADDY_PORT = 2015; //TODO: Use environmental variable
-  const CADDY_SERVICE = `caddy-fs`; //TODO: Use environmental variable
   const album = photoFSDetails.album;
   const photoPath = photoFSDetails.photo;
   const URL =  `http://${CADDY_SERVICE}:${CADDY_PORT}/${album}/${photoPath}`;
@@ -70,11 +71,67 @@ function getCaddyURL(photoFSDetails) {
  * The source image URL is a caddy URL.
  */
 function getImgProxyPhotoResizeURL(caddyURL) {
-  const IMGPROXY_PORT = 8080; // TODO: Use environmental variable
-  const IMGPROXY_SERVICE = `imgproxy`; //TODO: Use environmental variable
   const signedUrlSegment = signature.getSignedImgURL(caddyURL);
   const URL = `http://${IMGPROXY_SERVICE}:${IMGPROXY_PORT}/${signedUrlSegment}`;
   return URL;
+}
+
+/**
+ * Generate a signed imgproxy URL for cropping faces in photo.
+ * The source image URL is a caddy URL.
+ */
+function getImgProxyCropFaceURL(caddyURL, boundingBox) {
+  const signedUrlSegment = signature.getSignedImgCropURL(caddyURL, boundingBox);
+  const URL = `http://${IMGPROXY_SERVICE}:${IMGPROXY_PORT}/${signedUrlSegment}`;
+  return URL;
+}
+
+/**
+ * Generate a json for that contains all
+ * the faces named along with the imgproxy url
+ * used to crop that face out of the photo 
+ */
+function getImgProxyCropFaceURLList(caddyURL, boundingBoxes) {
+   const getFaceURLs = (boundingBox, index) => {
+      return {
+        faceNumber: index,
+        label: `face_${index}`,
+        url: getImgProxyCropFaceURL(caddyURL, boundingBox) 
+      }
+   };
+   const faceDetails= boundingBoxes.map(getFaceURLs);
+   return faceDetails;
+}
+
+/**
+ * Append face image to face details 
+ */
+function addFaceImage(faceDetail) {
+  const url = faceDetail.url;
+  const faceImage = getImage(url);
+  return {...faceDetail, image: faceImage};
+}
+
+/**
+ * Crop the faces from photo 
+ */
+async function getFaces(photoFSDetails, photoFaceDetails) {
+  const caddyURL = getCaddyURL(photoFSDetails);
+  const boundingBoxes = photoFaceDetails.boundingBoxes;
+  const faceDetails = getImgProxyCropFaceURLList(caddyURL, boundingBoxes);
+  const faceDetailsWithFaces = faceDetails.map(addFaceImage);
+  return faceDetailsWithFaces;
+}
+
+/**
+ * Save faces to disk
+ */
+async function saveFaces(photoFSDetails, faces) {
+  faces.map(face => {
+    const faceLabel = face.label;
+    const image = face.image;
+    fs.saveFile(photoFSDetails, image);  // TODO: fix the file path for saving faces
+  })
 }
 
 /**
@@ -120,7 +177,7 @@ async function resizeImageAndSave(err, response) {
 
   const photoFSDetails = response;
   const resizedPhoto = await getResizedImage(photoFSDetails);
-  await saveImage(resizedPhoto);
+  await saveImage(photoFSDetails, resizedPhoto);
   logger.info(`Successfully resized and saved photo @ ${photoFSDetails.photo}`);
 }
 
@@ -139,21 +196,33 @@ function resizeImage(call, callback) { // TODO: Implement callback functionality
   pgsql.getAlbumPhotoPath(photoFSDetailsRequest,resizeImageAndSave);
 }
 
-function cropFaces(call, callback) {
-  const GetBoundingBoxesRequest = callback.request;
-  const photo_id = GetBoundingBoxesRequest.photo_id;
-  logger.info(`Received crop faces request for photo`);
-  
-  const getFacesCallback = async (err, response) => {
-    // TODO
-  }; 
+/**
+ * Callback to be executed after getting photoFSDetails
+ * from postgresql grpc call
+ */
+async function cropFacesAndSave(photoFSDetails, photoFaceDetails) {
+  const faces = await getFaces(photoFSDetails, photoFaceDetails);
+  await saveFaces(photoFSDetails, faces);
+  logger.info(`Successfully cropped and saved faces @ ${photoFSDetails.photo}`);
+  // TODO: update db with face details
+}
 
-  try {
-    client.getBoundingBoxes(GetBoundingBoxesRequest, getFacesCallback)
-  } catch (err) {
-    logger.error(`Error while executing crop faces`);
-  }
-} 
+/**
+ * gRPC function implementation 
+ * get the photo_id from the Imgproxy request.
+ * Retrieve the album path from the database. 
+ * Download the photo in the path from fs, crop it and save it.
+ */
+function cropFaces(call, callback) { // TODO: Implement callback functionality
+  const photoId = call.request.photo_id; // TODO: change photo_id as photoId
+  logger.info(`Received img face crop request for photo: ${photo_id}`);
+  const photoFSDetailsRequest = { photo_id: photoId };
+  pgsql.getAlbumPhotoPath(photoFSDetailsRequest, (err, response) => {
+      const photoFSDetails = response;
+      const photoFaceDetails = call.request;
+      cropFacesAndSave(photoFSDetails, photoFaceDetails);
+  });
+}
 
 /**
  * Starts an RPC server that receives requests for the exif service at the
