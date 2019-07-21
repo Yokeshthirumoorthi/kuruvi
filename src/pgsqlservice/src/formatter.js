@@ -39,9 +39,9 @@ function getExifRowValues(data) {
     const make = data.make;
     const model = data.model;
     const createOn= data.createOn;
-    const imageWidth= data.imageWidth;
-    const imageHeight= data.imageHeight;
-    const values = [photoId, make, model, createOn, imageWidth, imageHeight];
+    const width= data.width;
+    const height= data.height;
+    const values = [photoId, make, model, createOn, width, height];
     return values;
 }
 

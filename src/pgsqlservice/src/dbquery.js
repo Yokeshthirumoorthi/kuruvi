@@ -168,15 +168,37 @@ async function getFacesDetails(photoId) {
     return faces;
 }
 
+/**
+ * Get comprehensive details about a photo
+ */
+async function getCompletePhotoDetails (photoId) {
+    const photoDetails = await getPhotoDetails(photoId);
+    const albumId = photoDetails.album_id;
+    const albumDetails = await getAlbumDetails(albumId);
+    const exifDetails = await getExifDetails(photoId);
+    const boundingBoxesDetails = await getBoundingBoxesDetails(photoId);
+    const facesDetails = await getFacesDetails(photoId);
+    const photo = {
+      id: photoId,
+      album: albumDetails.name,
+      albumPath: albumDetails.path,
+      name: photoDetails.name,
+      make: exifDetails.make,
+      model: exifDetails.model,
+      createOn: exifDetails.createOn,
+      width: exifDetails.width,
+      height: exifDetails.height,
+      boundingBoxes: boundingBoxesDetails,
+      faces: facesDetails
+    }
+    return photo;
+}
+
 module.exports = {
     albumInsertRow,
     photoInsertRow,
     exifInsertRow,
     boundingBoxInsertRow,
     faceInsertRow,
-    getPhotoDetails,
-    getAlbumDetails,
-    getExifDetails,
-    getBoundingBoxesDetails,
-    getFacesDetails
+    getCompletePhotoDetails
 }

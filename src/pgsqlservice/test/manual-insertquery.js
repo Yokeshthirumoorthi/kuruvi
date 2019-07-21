@@ -15,8 +15,8 @@ const exifRow = {
     make: 'test_make',
     model: 'test_model',
     createOn: 12345,
-    imageWidth: 12345,
-    imageHeight: 12345
+    width: 12345,
+    height: 12345
 };
 
 const boundingBoxRow = {
