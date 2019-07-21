@@ -12,17 +12,17 @@ const grpc = require('grpc');
 const pino = require('pino');
 const protoLoader = require('@grpc/proto-loader');
 const pg = require('./postgres');
+const {
+  PGSQL_SERVICE_PORT,
+  PGSQL_SERVICE_API_ENDPOINT} = require('./config');
 
 const MAIN_PROTO_PATH = path.join(__dirname, './proto/fileUploader.proto');
-
-const PGSQLSERVICE_PORT= 50051;
-const PGSQLSERVICE_IP= `0.0.0.0:${PGSQLSERVICE_PORT}`;
 const kuruviProto = _loadProto(MAIN_PROTO_PATH).kuruvi;
 const credentials = grpc.ServerCredentials.createInsecure();
 // const healthProto = _loadProto(HEALTH_PROTO_PATH).grpc.health.v1;
 
 const logger = pino({
-  name: 'currencyservice-server',
+  name: 'pgsql-service-server',
   messageKey: 'message',
   changeLevelName: 'severity',
   useLevelLabels: true
@@ -128,8 +128,8 @@ function main() {
     getBoundingBoxes: getBoundingBoxes,
     insertBoundingBoxes: insertBoundingBoxes,
   });
-  server.bind(PGSQLSERVICE_IP, credentials);
-  logger.info(`Starting PgSQL Service on port ${PGSQLSERVICE_PORT}`);
+  server.bind(PGSQL_SERVICE_API_ENDPOINT, credentials);
+  logger.info(`Starting PgSQL Service on port ${PGSQL_SERVICE_PORT}`);
   server.start();
 }
 
