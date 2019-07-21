@@ -40,6 +40,45 @@ async function albumInsertRow(data) {
     return albumId;
 }
 
+/**
+ * Inserts data into Photo table
+ */
+async function photoInsertRow(data) {
+    await client.connect();
+    // const photoId = TODO: Implement uuid for id generation
+    const albumId = data.albumId;
+    const photoName = data.name;
+    const values = [albumId, photoName];
+    const query = `INSERT INTO photos (album_id, name) VALUES ($1, $2) RETURNING id`; 
+    const res = await client.query(query, values);
+    await client.end();
+    const photoId = res.rows[0].id;
+    logger.info(`Successfully inserted row# ${photoId} in photo table`);
+    return photoId;
+}
+
+/**
+ * Inserts data into exif table
+ */
+async function exifInsertRow(data) {
+    await client.connect();
+    // const exifId = TODO: Implement uuid for id generation
+    const make = data.make;
+    const model = data.model;
+    const createOn= data.createOn;
+    const imageWidth= data.imageWidth;
+    const imageHeight= data.imageHeight;
+    const values = [make, model, createOn, imageWidth, imageHeight];
+    const query = `INSERT INTO exif (make, model, create_on, img_width, img_height) VALUES ($1, $2, $3, $4, $5) RETURNING id`; 
+    const res = await client.query(query, values);
+    await client.end();
+    const exifId= res.rows[0].id;
+    logger.info(`Successfully inserted row# ${exifId} in exif table`);
+    return exifId;
+}
+
 module.exports = {
-    albumInsertRow
+    albumInsertRow,
+    photoInsertRow,
+    exifInsertRow
 }
