@@ -44,6 +44,16 @@ async function insertRow(insertQuery, values) {
 }
 
 /**
+ * Execute select query 
+ */
+async function select(selectQuery, values) {
+    await client.connect();
+    const res = await client.query(selectQuery, values);
+    await client.end();
+    return res;
+}
+
+/**
  * Inserts data into Album table
  */
 async function albumInsertRow(data) {
@@ -98,10 +108,75 @@ async function faceInsertRow(data) {
     return faceId;
 }
 
+/**
+ * Fetch and return details of photo 
+ */
+async function getPhotoDetails(photoId) {
+    const values = [photoId];
+    const query = 'SELECT * FROM photos WHERE id = $1';
+    const res = await select(query, values);
+    logger.info(`Success reading row# ${photoId} from photo table`)
+    const photoRow = res.rows[0];
+    return photoRow;
+}
+
+/**
+ * Fetch and return details of an album
+ */
+async function getAlbumDetails(albumId) {
+    const query = 'SELECT * FROM albums WHERE id = $1';
+    const values = [albumId];
+    const res = await select(query, values);
+    logger.info(`Success reading row# ${albumId} from album table`);
+    const albumRow= res.rows[0];
+    return albumRow;
+}
+
+/**
+ * Fetch and return exif details of a photo
+ */
+async function getExifDetails(photoId){
+    const query = 'SELECT * FROM exif WHERE photo_id = $1';
+    const values = [photoId];
+    const res = await select(query, values);
+    logger.info(`Success reading row# ${photoId} from exif table`);
+    const exifRow = res.rows[0];
+    return exifRow;
+}
+
+/**
+ * Fetch and return bounding boxes in a photo
+ */
+async function getBoundingBoxesDetails(photoId) {
+    const query = 'SELECT * FROM bounding_boxes WHERE photo_id = $1';
+    const values = [photoId];
+    const res = await select(query, values);
+    logger.info(`Success reading row# ${photoId} from bounding boxes table`);
+    const boundingBoxes = res.rows;
+    return boundingBoxes;
+}
+
+/**
+ * Fetch and return the details about faces in a photo
+ */
+async function getFacesDetails(photoId) {
+    const query = 'SELECT * FROM faces WHERE photo_id = $1';
+    const values = [photoId];
+    const res = await select(query, values);
+    logger.info(`Success reading row# ${photoId} from faces table`);
+    const faces = res.rows;
+    return faces;
+}
+
 module.exports = {
     albumInsertRow,
     photoInsertRow,
     exifInsertRow,
     boundingBoxInsertRow,
-    faceInsertRow
+    faceInsertRow,
+    getPhotoDetails,
+    getAlbumDetails,
+    getExifDetails,
+    getBoundingBoxesDetails,
+    getFacesDetails
 }
