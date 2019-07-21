@@ -1,3 +1,12 @@
+/*
+ *
+ * Copyright © 2019 Yokesh Thirumoorthi.
+ *
+ * [This program is licensed under the "MIT License"]
+ * Please see the file LICENSE in the source
+ * distribution of this software for license terms.
+ *
+ */
 const pino = require('pino');
 const { Client } = require('pg');
 const {
@@ -5,7 +14,8 @@ const {
     PGSQL_HOST,
     PGSQL_DATABASE_NAME,
     PGSQL_PASSWORD
-} = require('../config')
+} = require('../config');
+const formatter = require('./formatter');
 
 const logger = pino({
   name: 'pgsql-service-server',
@@ -37,10 +47,7 @@ async function insertRow(insertQuery, values) {
  * Inserts data into Album table
  */
 async function albumInsertRow(data) {
-//   const albumId = TODO: Implement uuid for id generation
-    const albumName = data.name;
-    const albumPath = data.path;
-    const values = [albumName, albumPath];
+    const values = formatter.getAlbumRowValues(data);
     const query = `INSERT INTO Albums (name, path) VALUES ($1, $2) RETURNING id`; 
     const albumId = await insertRow(query, values);
     logger.info(`Successfully inserted row# ${albumId} in album table`);
@@ -51,10 +58,7 @@ async function albumInsertRow(data) {
  * Inserts data into Photo table
  */
 async function photoInsertRow(data) {
-    // const photoId = TODO: Implement uuid for id generation
-    const albumId = data.albumId;
-    const photoName = data.name;
-    const values = [albumId, photoName];
+    const values = formatter.getPhotoRowValues(data);
     const query = `INSERT INTO photos (album_id, name) VALUES ($1, $2) RETURNING id`; 
     const photoId = await insertRow(query, values);
     logger.info(`Successully inserted row# ${photoId} in photo table`);
@@ -65,14 +69,7 @@ async function photoInsertRow(data) {
  * Inserts data into exif table
  */
 async function exifInsertRow(data) {
-    // const exifId = TODO: Implement uuid for id generation
-    const photoId = data.photoId;
-    const make = data.make;
-    const model = data.model;
-    const createOn= data.createOn;
-    const imageWidth= data.imageWidth;
-    const imageHeight= data.imageHeight;
-    const values = [photoId, make, model, createOn, imageWidth, imageHeight];
+    const values = formatter.getExifRowValues(data);
     const query = `INSERT INTO exif (photo_id, make, model, create_on, img_width, img_height) VALUES ($1, $2, $3, $4, $5) RETURNING id`; 
     const exifId = await insertRow(query, values);
     logger.info(`Successfully inserted row# ${exifId} in exif table`);
@@ -83,13 +80,7 @@ async function exifInsertRow(data) {
  * Inserts data into bounding_boxes table 
  */
 async function boundingBoxInsertRow(data) {
-    // const boundingBoxId = TODO: Implement uuid for id generation 
-    const photoId = data.photoId;
-    const x = data.x;
-    const y = data.y;
-    const width = data.width;
-    const height = data.height;
-    const values = [photoId, x, y, width, height];
+    const values = formatter.getBoundingBoxRowValues(data);
     const query = `INSERT INTO bounding_boxes (photo_id, x, y, width, height) VALUES ($1, $2, $3, $4, $5) RETURNING id`;
     const boundingBoxId = await insertRow(query, values);
     logger.info(`Successfully inserted row# ${boundingBoxId} into bounding_boxes table`);
@@ -100,12 +91,7 @@ async function boundingBoxInsertRow(data) {
  * Inserts data into face table
  */
 async function faceInsertRow(data) {
-    // const faceId = TODO: Implement uuid for id generation
-    const photoId = data.photoId;
-    const boundingBoxId = data.boundingBoxId;
-    const fileName = data.fileName;
-    const filePath = data.filePath;
-    const values = [photoId, boundingBoxId, fileName, filePath];
+    const values = formatter.getFaceRowValues(data);
     const query = `INSERT INTO photos (photo_id, boundingBox_id, file_name, file_path) VALUES ($1, $2, $3, $4) RETURNING id`; 
     const faceId = await insertRow(query, values);
     logger.info(`Successully inserted row# ${faceId} in face table`);

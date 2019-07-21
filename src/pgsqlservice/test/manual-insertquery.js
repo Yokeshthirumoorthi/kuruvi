@@ -39,7 +39,7 @@ async function run() {
     // await dbquery.photoInsertRow(photoRow);
     // await dbquery.exifInsertRow(exifRow);
     // await dbquery.boundingBoxInsertRow(boundingBoxRow);
-    await dbquery.faceInsertRow(faceRow);
+    // await dbquery.faceInsertRow(faceRow);
 }
 
 run();
