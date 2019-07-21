@@ -47,9 +47,7 @@ async function insertRow(insertQuery, values) {
  * Execute select query 
  */
 async function select(selectQuery, values) {
-    await client.connect();
     const res = await client.query(selectQuery, values);
-    await client.end();
     return res;
 }
 
@@ -61,7 +59,7 @@ async function albumInsertRow(data) {
     const query = `INSERT INTO Albums (name, path) VALUES ($1, $2) RETURNING id`; 
     const albumId = await insertRow(query, values);
     logger.info(`Successfully inserted row# ${albumId} in album table`);
-    return albumId;
+    return alumId;
 }
 
 /**
@@ -170,27 +168,30 @@ async function getFacesDetails(photoId) {
 
 /**
  * Get comprehensive details about a photo
+ * TODO: Use appropriate join query
  */
 async function getCompletePhotoDetails (photoId) {
+    await client.connect();
     const photoDetails = await getPhotoDetails(photoId);
     const albumId = photoDetails.album_id;
     const albumDetails = await getAlbumDetails(albumId);
-    const exifDetails = await getExifDetails(photoId);
+    // const exifDetails = await getExifDetails(photoId);
     const boundingBoxesDetails = await getBoundingBoxesDetails(photoId);
-    const facesDetails = await getFacesDetails(photoId);
+    // const facesDetails = await getFacesDetails(photoId);
     const photo = {
       id: photoId,
       album: albumDetails.name,
       albumPath: albumDetails.path,
       name: photoDetails.name,
-      make: exifDetails.make,
-      model: exifDetails.model,
-      createOn: exifDetails.createOn,
-      width: exifDetails.width,
-      height: exifDetails.height,
+    //   make: exifDetails.make,
+    //   model: exifDetails.model,
+    //   createOn: exifDetails.createOn,
+    //   width: exifDetails.width,
+    //   height: exifDetails.height,
       boundingBoxes: boundingBoxesDetails,
-      faces: facesDetails
+    //   faces: facesDetails
     }
+    await client.end();
     return photo;
 }
 
