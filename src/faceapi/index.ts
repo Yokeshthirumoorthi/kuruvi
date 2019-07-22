@@ -11,25 +11,21 @@ const path = require('path');
 const grpc = require('grpc');
 const pino = require('pino');
 const protoLoader = require('@grpc/proto-loader');
-import * as faceDetection from './faceDetection';
+import * as faceDetection from './src/faceDetection';
+import {
+    PGSQL_SERVICE_API_ENDPOINT,
+    IMGPROXY_SERVICE_API_ENDPOINT,
+    FACEAPI_SERVICE_API_ENDPOINT,
+    FACEAPI_SERVICE_PORT
+} from './config';
 
 const MAIN_PROTO_PATH = path.join(__dirname, './proto/fileUploader.proto');
- 
-const DATABASE_PORT = 50051;
-const PGSQL_SERVICE = `pgsqlservice:${DATABASE_PORT}`;
-
-const IMGPROXY_PORT = 50053;
-const IMGPROXY_SERVICE = `imgproxyservice:${IMGPROXY_PORT}`;
-
-const FACEAPI_PORT = 50054;
-const FACEAPI_SERVICE = `0.0.0.0:${FACEAPI_PORT}`;
-
 const kuruviProto = _loadProto(MAIN_PROTO_PATH).kuruvi;
 // const healthProto = _loadProto(HEALTH_PROTO_PATH).grpc.health.v1;
 
 const credentials = grpc.credentials.createInsecure();
-const pgsqlservice = new kuruviProto.PhotoUploadService(PGSQL_SERVICE, credentials);
-const imgProxyService = new kuruviProto.ImgProxyService(IMGPROXY_SERVICE, credentials);
+const pgsqlservice = new kuruviProto.PhotoUploadService(PGSQL_SERVICE_API_ENDPOINT, credentials);
+const imgProxyService = new kuruviProto.ImgProxyService(IMGPROXY_SERVICE_API_ENDPOINT, credentials);
 
 const logger = pino({
   name: 'faceapiservice-server',
@@ -114,8 +110,8 @@ async function detectFaces(call, callback) {
 function main() {
   const server = new grpc.Server();
   server.addService(kuruviProto.FaceApiService.service, {detectFaces: detectFaces});
-  server.bind(FACEAPI_SERVICE, grpc.ServerCredentials.createInsecure());
-  logger.info(`Starting faceapi Server on port ${FACEAPI_PORT}`);
+  server.bind(FACEAPI_SERVICE_API_ENDPOINT, grpc.ServerCredentials.createInsecure());
+  logger.info(`Starting faceapi Server on port ${FACEAPI_SERVICE_PORT}`);
   server.start();
 }
 
