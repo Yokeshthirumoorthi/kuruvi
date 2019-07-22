@@ -14,9 +14,9 @@ const protoLoader = require('@grpc/proto-loader');
 // import * as faceDetection from './faceDetection';
 // import { faceDetectionOptions } from './commons';
 
-const MAIN_PROTO_PATH = path.join(__dirname, './proto/fileUploader.proto');
-// const DATABASE_PORT = 50051;
-// const NODE_DATABASE = `pgsqlservice:${DATABASE_PORT}`;
+const MAIN_PROTO_PATH = path.join(__dirname, '../proto/fileUploader.proto');
+const DATABASE_PORT = 50051;
+const NODE_DATABASE = `192.168.160.4:${DATABASE_PORT}`;
 // const IMGPROXY_PORT = 50053;
 // const IMGPROXY_SERVICE = `imgproxyservice:${IMGPROXY_PORT}`;
 const FACEAPI_PORT = 50054;
@@ -26,9 +26,9 @@ const kuruviProto = _loadProto(MAIN_PROTO_PATH).kuruvi;
 // const healthProto = _loadProto(HEALTH_PROTO_PATH).grpc.health.v1;
 
 const credentials = grpc.credentials.createInsecure();
-// const pgsqlservice = new kuruviProto.PhotoUploadService(NODE_DATABASE, credentials);
+const pgsqlservice = new kuruviProto.PhotoUploadService(NODE_DATABASE, credentials);
 // const imgProxyService = new kuruviProto.ImgProxyService(IMGPROXY_SERVICE, credentials);
-const faceapiService = new kuruviProto.FaceApiService(FACEAPI_SERVICE, credentials);
+// const faceapiService = new kuruviProto.FaceApiService(FACEAPI_SERVICE, credentials);
 
 const logger = pino({
   name: 'faceapiservice-client',
@@ -59,12 +59,24 @@ function _loadProto (path) {
  * Starts an RPC server that receives requests for the exif service at the
  * server port
  */
-function main() {
-  const DetectFaceRequest = {
-    photo_id: 1,
-  };  
-  logger.info(`Starting faceapi client`);
-  faceapiService.detectFaces(DetectFaceRequest, () => {});
+// function main() {
+//   const DetectFaceRequest = {
+//     photo_id: 1,
+//   };  
+//   logger.info(`Starting faceapi client`);
+//   faceapiService.detectFaces(DetectFaceRequest, () => {});
+// }
+
+// main();
+
+function getPhotoDetails() {
+    const photoDetailsRequest = {
+      photoId: 1
+    };
+    logger.info('Getting photo details');
+    pgsqlservice.getPhotoDetails(photoDetailsRequest, (err, res) => {
+      console.log(res)
+    });
 }
 
-main();
+getPhotoDetails();
