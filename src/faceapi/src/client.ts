@@ -28,7 +28,7 @@ const kuruviProto = _loadProto(MAIN_PROTO_PATH).kuruvi;
 const credentials = grpc.credentials.createInsecure();
 const pgsqlservice = new kuruviProto.PhotoUploadService(NODE_DATABASE, credentials);
 // const imgProxyService = new kuruviProto.ImgProxyService(IMGPROXY_SERVICE, credentials);
-// const faceapiService = new kuruviProto.FaceApiService(FACEAPI_SERVICE, credentials);
+const faceapiService = new kuruviProto.FaceApiService(FACEAPI_SERVICE, credentials);
 
 const logger = pino({
   name: 'faceapiservice-client',
@@ -59,24 +59,24 @@ function _loadProto (path) {
  * Starts an RPC server that receives requests for the exif service at the
  * server port
  */
-// function main() {
-//   const DetectFaceRequest = {
-//     photo_id: 1,
-//   };  
-//   logger.info(`Starting faceapi client`);
-//   faceapiService.detectFaces(DetectFaceRequest, () => {});
-// }
-
-// main();
-
-function getPhotoDetails() {
-    const photoDetailsRequest = {
-      photoId: 1
-    };
-    logger.info('Getting photo details');
-    pgsqlservice.getPhotoDetails(photoDetailsRequest, (err, res) => {
-      console.log(res)
-    });
+function main() {
+  const photoDetailsRequest = {
+    photoId: 1,
+  };  
+  logger.info(`Starting faceapi client`);
+  faceapiService.detectFaces(photoDetailsRequest, () => {});
 }
 
-getPhotoDetails();
+main();
+
+// function getPhotoDetails() {
+//     const photoDetailsRequest = {
+//       photoId: 1
+//     };
+//     logger.info('Getting photo details');
+//     pgsqlservice.getPhotoDetails(photoDetailsRequest, (err, res) => {
+//       console.log(res)
+//     });
+// }
+
+// getPhotoDetails();

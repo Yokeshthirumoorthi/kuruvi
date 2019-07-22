@@ -18,6 +18,7 @@ import {
     FACEAPI_SERVICE_API_ENDPOINT,
     FACEAPI_SERVICE_PORT
 } from './config';
+import * as RPC from './src/rpc';
 
 const MAIN_PROTO_PATH = path.join(__dirname, './proto/fileUploader.proto');
 const kuruviProto = _loadProto(MAIN_PROTO_PATH).kuruvi;
@@ -51,56 +52,27 @@ function _loadProto (path) {
   return grpc.loadPackageDefinition(packageDefinition);
 }
 
-const getBoundingBox = (detection) => {
-  const box = detection._box;
-  return {
-    x: box._x,
-    y: box._y,
-    width: box._width,
-    height: box._height
-  };
+async function saveBoundingBoxes(boundingBoxes) {
+  pgsqlservice.saveBoundingBoxes(boundingBoxes, (err, res) => {
+    logger.info(`Saved bounding boxes #'s ${res}`);
+  })
 }
 
-function _getInsertBoundingBoxesRequestObj(photo_id, detections) {
-  const bounding_boxes = detections.map(getBoundingBox);
-  const InsertBoundingBoxesRequest  = {
-    photo_id: photo_id,
-    bounding_boxes: bounding_boxes,
-  };
-  return InsertBoundingBoxesRequest;
+async function getPhotoDetails(photoDetailsRequest, callback) {
+  pgsqlservice.getPhotoDetails(photoDetailsRequest, (err, res) => {
+     callback(res);
+  })
 }
 
-/**
- *  Implements the face detection RPC method.
- */
 async function detectFaces(call, callback) {
-  const FaceDetectRequest = call.request;
-  logger.info(`Received Face detect request`);
+  const photoDetailsRequest = call.request;
+  const photoId = photoDetailsRequest.photoId;
+  logger.info(`Received face detection request for photo# ${photoId}`);
 
-  const saveFaces = (err, response) => {
-    const EmptyCallback = () => {};
-    // imgProxyService.cropFaces(FaceDetectRequest, EmptyCallback);
-    console.log("Preparing to call crop faces service");
-  }
-
-  const getPhotoPathCallback = async (err, response) => {
-    const imagePath = response.imagePath;
-    const photo_id = FaceDetectRequest.photo_id;
-    // get list of bounding boxes detected in the image
-    const boundingboxes = await faceDetection.run(imagePath);
-    // generate a grpc request message
-    const InsertBoundingBoxesRequest = _getInsertBoundingBoxesRequestObj(photo_id, boundingboxes);
-    console.log(InsertBoundingBoxesRequest);
-    // insert the bounding boxes into db using gRPC call
-    pgsqlservice.insertBoundingBoxes(InsertBoundingBoxesRequest, saveFaces);
-  };
-
-  try {
-    pgsqlservice.getPhotoFullPath(FaceDetectRequest,getPhotoPathCallback);
-  } catch (err) {
-    logger.error(`Face detection request failed: ${err}`);
-  }
-
+  getPhotoDetails(photoDetailsRequest, async (photoDetails) => {
+    const boundnigBoxes = await RPC.getBoundingBoxes(photoDetails);
+    saveBoundingBoxes(boundnigBoxes);
+  });
 }
 
 /**

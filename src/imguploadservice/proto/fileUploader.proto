@@ -30,8 +30,9 @@ message PhotoDetailsRequest {
 }
 
 message Photo {
-    string albumId= 1;
-    string name= 2;
+    int32 id= 1;
+    string albumId= 2;
+    string name= 3;
 }
 
 message Album {
@@ -123,7 +124,7 @@ message PathResponse {
 }
 
 message DetectFaceRequest {
-    int32 photo_id= 1;
+    int32 photoId= 1;
 }
 message Empty {}
 

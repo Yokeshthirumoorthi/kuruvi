@@ -8,7 +8,7 @@
  *
  */
 const pino = require('pino');
-const { Client } = require('pg');
+const { Pool } = require('pg');
 const {
     PGSQL_USERNAME,
     PGSQL_HOST,
@@ -24,7 +24,7 @@ const logger = pino({
   useLevelLabels: true
 });
 
-const client = new Client({
+const client = new Pool({
   user: PGSQL_USERNAME,
   host: PGSQL_HOST,
   database: PGSQL_DATABASE_NAME,
@@ -191,7 +191,7 @@ async function getCompletePhotoDetails (photoId) {
         boundingBoxes: boundingBoxesDetails,
         // faces: facesDetails
     }
-    await client.end();
+    // await client.end(); // FIXME: Unable to end the connection as it throws at runtime
     return photo;
 }
 
