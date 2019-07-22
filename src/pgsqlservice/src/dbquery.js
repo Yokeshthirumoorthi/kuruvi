@@ -32,13 +32,19 @@ const client = new Client({
   port: 5432,
 });
 
+async function establishDBConnection() {
+    await client.connect();
+}
+
+async function closeDBConnection() {
+    await client.end();
+}
+
 /**
  * Execute the insert query for the given row values
  */
 async function insertRow(insertQuery, values) {
-    await client.connect();
     const res = await client.query(insertQuery, values);
-    await client.end();
     const id = res.rows[0].id;
     return id;
 }
@@ -196,6 +202,8 @@ async function getCompletePhotoDetails (photoId) {
 }
 
 module.exports = {
+    establishDBConnection,
+    closeDBConnection,
     albumInsertRow,
     photoInsertRow,
     exifInsertRow,

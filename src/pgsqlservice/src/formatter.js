@@ -7,7 +7,6 @@
  * distribution of this software for license terms.
  *
  */
-
 /**
  * Provide the photo row values as an array to use in insert query
  */
@@ -60,6 +59,22 @@ function getBoundingBoxRowValues(data) {
 }
 
 /**
+ * Iterate boundingBoxes array in photodetail object 
+ * and format it to bounding box row arrays 
+ */
+function generateBoundingBoxesRows(photoDetail) {
+    const photoId = photoDetail.photo.id;
+    const boundingBoxes = photoDetail.boundingBoxes;
+    const rows = boundingBoxes.map(item => {
+        return {
+            photoId: photoId,
+            ...item
+        }
+    });
+    return rows;
+}
+
+/**
  * Provide the face row values as an array to use in insert query
  */
 function getFaceRowValues(data) {
@@ -77,5 +92,6 @@ module.exports = {
     getPhotoRowValues,
     getExifRowValues,
     getBoundingBoxRowValues,
-    getFaceRowValues
+    getFaceRowValues,
+    generateBoundingBoxesRows
 }
