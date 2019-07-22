@@ -13,6 +13,11 @@ const pino = require('pino');
 const protoLoader = require('@grpc/proto-loader');
 const pg = require('./postgres');
 const {
+  saveBoundingBoxes,
+  getPhotoDetails
+} = require('./src/rpc');
+
+const {
   PGSQL_SERVICE_PORT,
   PGSQL_SERVICE_API_ENDPOINT} = require('./config');
 
@@ -127,6 +132,8 @@ function main() {
     getAlbumPhotoPath: getAlbumPhotoPath,
     getBoundingBoxes: getBoundingBoxes,
     insertBoundingBoxes: insertBoundingBoxes,
+    saveBoundingBoxes: saveBoundingBoxes,
+    getPhotoDetails: getPhotoDetails
   });
   server.bind(PGSQL_SERVICE_API_ENDPOINT, credentials);
   logger.info(`Starting PgSQL Service on port ${PGSQL_SERVICE_PORT}`);

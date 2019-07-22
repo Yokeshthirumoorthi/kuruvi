@@ -39,6 +39,22 @@ async function saveBoundingBoxes(call, callback) {
   }
 }
 
+/**
+ * Implements the getPhotoDetails RPC method
+ */
+async function getPhotoDetails(call, callback) {
+    const photoId = call.request.photoId;
+    try {
+        const photoDetails = await dbquery.getCompletePhotoDetails(photoId);
+        callback(null, photoDetails);
+    } catch (err) {
+        logger.error(`Error fetching photo details for photoId ${photoId} - ${err}`);
+        console.log(err);
+        callback(err, {});
+    }
+}
+
 module.exports = {
     saveBoundingBoxes,
+    getPhotoDetails,
 }

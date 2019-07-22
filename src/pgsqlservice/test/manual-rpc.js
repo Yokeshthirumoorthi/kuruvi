@@ -28,7 +28,7 @@ const photoDetail = {
                     { x: 717, y: 134, width: 111, height: 111 } ] 
 }
 
-function run() {
+function saveBoundingBoxes() {
     const call = {
         request: photoDetail
     };
@@ -36,4 +36,13 @@ function run() {
     rpc.saveBoundingBoxes(call, callback);
 }
 
-run();
+function getPhotoDetails() {
+    const call = {
+        request: {photoId: 1}
+    }
+    const callback = (err, res) => console.log(res);
+    rpc.getPhotoDetails(call, callback);
+}
+
+// saveBoundingBoxes();
+getPhotoDetails();

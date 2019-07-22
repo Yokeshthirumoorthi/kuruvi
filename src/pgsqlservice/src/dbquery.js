@@ -185,17 +185,11 @@ async function getCompletePhotoDetails (photoId) {
     const boundingBoxesDetails = await getBoundingBoxesDetails(photoId);
     // const facesDetails = await getFacesDetails(photoId);
     const photo = {
-      id: photoId,
-      album: albumDetails.name,
-      albumPath: albumDetails.path,
-      name: photoDetails.name,
-    //   make: exifDetails.make,
-    //   model: exifDetails.model,
-    //   createOn: exifDetails.createOn,
-    //   width: exifDetails.width,
-    //   height: exifDetails.height,
-      boundingBoxes: boundingBoxesDetails,
-    //   faces: facesDetails
+        photo: photoDetails,
+        album: albumDetails,
+        // exif: exifDetails,
+        boundingBoxes: boundingBoxesDetails,
+        // faces: facesDetails
     }
     await client.end();
     return photo;

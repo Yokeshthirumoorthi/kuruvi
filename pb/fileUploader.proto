@@ -21,16 +21,22 @@ service PhotoUploadService {
     rpc InsertExif(InsertExifRequest) returns (Empty) {}
     rpc InsertBoundingBoxes(InsertBoundingBoxesRequest) returns (Empty) {}
     rpc GetAlbumPhotoPath(AlbumPhotoPathRequest) returns (AlbumPhotoPathResponse) {}
+    rpc SaveBoundingBoxes(PhotoDetails) returns (BoundingBoxesId) {}
+    rpc GetPhotoDetails(PhotoDetailsRequest) returns (PhotoDetails) {}
 }
 
-message AddPhotoRequest {
-    string album= 1;
+message PhotoDetailsRequest {
+    int32 photoId= 1;
+}
+
+message Photo {
+    string albumId= 1;
+    string name= 2;
+}
+
+message Album {
+    string name= 1;
     string path= 2;
-    string filename= 3;
-}
-
-message AddPhotoResponse {
-    int32 photo_id= 1;
 }
 
 message Exif {
@@ -46,6 +52,33 @@ message BoundingBoxes {
     int32 y= 2;
     int32 width= 3;
     int32 height= 4;
+}
+
+message BoundingBoxesId {
+    repeated int32 id= 1;
+}
+
+message Faces {
+    string name= 1;
+    string path= 2;
+}
+
+message PhotoDetails {
+    Album album= 1;
+    Photo photo= 2;
+    Exif exif= 3;
+    repeated BoundingBoxes boundingBoxes= 4;
+    repeated Faces faces= 5;
+}
+
+message AddPhotoRequest {
+    string album= 1;
+    string path= 2;
+    string filename= 3;
+}
+
+message AddPhotoResponse {
+    int32 photo_id= 1;
 }
 
 message ExifRequest {
