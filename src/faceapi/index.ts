@@ -52,18 +52,27 @@ function _loadProto (path) {
   return grpc.loadPackageDefinition(packageDefinition);
 }
 
+/**
+ * gRPC client for saving bounding box values in database 
+ */
 async function saveBoundingBoxes(boundingBoxes) {
   pgsqlservice.saveBoundingBoxes(boundingBoxes, (err, res) => {
     logger.info(`Saved bounding boxes #'s ${res}`);
   })
 }
 
+/**
+ * gRPC client for pgsqlservice to get photodetails using photoId 
+ */
 async function getPhotoDetails(photoDetailsRequest, callback) {
   pgsqlservice.getPhotoDetails(photoDetailsRequest, (err, res) => {
      callback(res);
   })
 }
 
+/**
+ * gRPC server method implementaion for detecting faces in a photo 
+ */
 async function detectFaces(call, callback) {
   const photoDetailsRequest = call.request;
   const photoId = photoDetailsRequest.photoId;
