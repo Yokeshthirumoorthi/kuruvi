@@ -79,11 +79,9 @@ function generateBoundingBoxesRows(photoDetail) {
  */
 function getFaceRowValues(data) {
     // const faceId = TODO: Implement uuid for id generation
-    const photoId = data.photoId;
     const boundingBoxId = data.boundingBoxId;
-    const fileName = data.fileName;
-    const filePath = data.filePath;
-    const values = [photoId, boundingBoxId, fileName, filePath];
+    const fileName = data.name;
+    const values = [boundingBoxId, fileName];
     return values;
 }
 

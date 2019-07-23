@@ -20,7 +20,7 @@ function createFolderIfNotExits(path) {
 
 function getAlbumPath(photoFSDetails, folderName) {
   const album = photoFSDetails.album;
-  const albumPath = path.join(__dirname, folderName, album);
+  const albumPath = path.join(__dirname, '../', folderName, album);
 
   createFolderIfNotExits(albumPath);
 
@@ -43,7 +43,7 @@ async function saveResizedPhoto (photoFSDetails, response, folderName) {
 
 async function saveFace (photoFSDetails, face, folderName) {
   const albumPath = getAlbumPath(photoFSDetails, folderName);
-  const fileName = face.label + photoFSDetails.photo;
+  const fileName = face.name;
   const imagePath = path.resolve(albumPath, fileName);
   const writer = fs.createWriteStream(imagePath)
 

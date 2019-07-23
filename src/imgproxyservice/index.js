@@ -7,16 +7,15 @@
  * distribution of this software for license terms.
  *
  */
-
 const path = require('path');
 const grpc = require('grpc');
 const pino = require('pino');
 const protoLoader = require('@grpc/proto-loader');
-const {cropFacesAndSave} = require('./src/cropfaces');
+const RPC = require('./src/rpc');
 const {resizeImageAndSave} = require('./src/resize');
 const {
   PGSQL_SERVICE_API_ENDPOINT,
-  IMGPROXY_PORT,
+  IMGPROXY_SERVICE_PORT,
   IMGPROXY_SERVICE_API_ENDPOINT
 } = require('./config');
 
@@ -26,7 +25,7 @@ const kuruviProto = _loadProto(MAIN_PROTO_PATH).kuruvi;
 // const healthProto = _loadProto(HEALTH_PROTO_PATH).grpc.health.v1;
 
 const credentials = grpc.credentials.createInsecure();
-const pgsql= new kuruviProto.PhotoUploadService(PGSQL_SERVICE_API_ENDPOINT, credentials);
+const pgsqlservice= new kuruviProto.PhotoUploadService(PGSQL_SERVICE_API_ENDPOINT, credentials);
 
 const logger = pino({
   name: 'imgproxyservice-server',
@@ -72,19 +71,34 @@ function resizeImage(call, callback) { // TODO: Implement callback functionality
 }
 
 /**
- * gRPC function implementation 
- * get the photo_id from the Imgproxy request.
- * Retrieve the album path from the database. 
- * Download the photo in the path from fs, crop it and save it.
+ * gRPC client for saving face details in database 
  */
-function cropFaces(call, callback) { // TODO: Implement callback functionality
-  const photoId = call.request.photo_id; // TODO: change photo_id as photoId
-  logger.info(`Received img face crop request for photo: ${photo_id}`);
-  const photoFSDetailsRequest = { photo_id: photoId };
-  pgsql.getAlbumPhotoPath(photoFSDetailsRequest, (err, response) => {
-      const photoFSDetails = response;
-      const photoFaceDetails = call.request;
-      cropFacesAndSave(photoFSDetails, photoFaceDetails);
+async function saveFaces(photoDetails) {
+  pgsqlservice.saveFaces(photoDetails, (err, res) => {
+    logger.info(`Saved faces #'s ${res}`);
+  })
+}
+
+/**
+ * gRPC client for pgsqlService to getPhotoDetails using a photoId 
+ */
+async function getPhotoDetails(photoDetailsRequest, callback) {
+  pgsqlservice.getPhotoDetails(photoDetailsRequest, (err, res) => {
+     callback(res);
+  })
+}
+
+/**
+ * gRPC server method implementation for cropping faces in photo 
+ */
+async function cropFaces(call, callback) {
+  const photoDetailsRequest = call.request;
+  const photoId = photoDetailsRequest.photoId;
+  logger.info(`Received crop face request for photo# ${photoId}`);
+
+  getPhotoDetails(photoDetailsRequest, async (photoDetails) => {
+      const photoDetailsWithFaceInfo = await RPC.cropAndSaveFaces(photoDetails);
+      saveFaces(photoDetailsWithFaceInfo);
   });
 }
 
@@ -96,19 +110,8 @@ function main() {
   const server = new grpc.Server();
   server.addService(kuruviProto.ImgProxyService.service, {resizeImage: resizeImage, cropFaces: cropFaces});
   server.bind(IMGPROXY_SERVICE_API_ENDPOINT, grpc.ServerCredentials.createInsecure());
-  logger.info(`Starting Imgproxy service on port ${IMGPROXY_PORT}`);
+  logger.info(`Starting Imgproxy service on port ${IMGPROXY_SERVICE_PORT}`);
   server.start();
 }
 
 main();
-
-// async function hack() {
-//   const AlbumPhotoPathResponse = {
-//     album: 'album1',
-//     photo: 'bbt1.jpg'
-//   }
-//   const download_response = await downloadImage(AlbumPhotoPathResponse);
-//   await fs.saveFile(AlbumPhotoPathResponse, download_response);
-// }
-
-// hack();

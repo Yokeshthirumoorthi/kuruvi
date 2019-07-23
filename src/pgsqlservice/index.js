@@ -14,7 +14,8 @@ const protoLoader = require('@grpc/proto-loader');
 const pg = require('./postgres');
 const {
   saveBoundingBoxes,
-  getPhotoDetails
+  getPhotoDetails,
+  saveFaces
 } = require('./src/rpc');
 
 const {
@@ -133,7 +134,8 @@ function main() {
     getBoundingBoxes: getBoundingBoxes,
     insertBoundingBoxes: insertBoundingBoxes,
     saveBoundingBoxes: saveBoundingBoxes,
-    getPhotoDetails: getPhotoDetails
+    getPhotoDetails: getPhotoDetails,
+    saveFaces: saveFaces
   });
   server.bind(PGSQL_SERVICE_API_ENDPOINT, credentials);
   logger.info(`Starting PgSQL Service on port ${PGSQL_SERVICE_PORT}`);

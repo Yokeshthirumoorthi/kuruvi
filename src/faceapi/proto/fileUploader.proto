@@ -22,6 +22,7 @@ service PhotoUploadService {
     rpc InsertBoundingBoxes(InsertBoundingBoxesRequest) returns (Empty) {}
     rpc GetAlbumPhotoPath(AlbumPhotoPathRequest) returns (AlbumPhotoPathResponse) {}
     rpc SaveBoundingBoxes(PhotoDetails) returns (BoundingBoxesId) {}
+    rpc SaveFaces(PhotoDetails) returns (FacesId) {}
     rpc GetPhotoDetails(PhotoDetailsRequest) returns (PhotoDetails) {}
 }
 
@@ -49,19 +50,24 @@ message Exif {
 }
 
 message BoundingBoxes {
-    int32 x= 1;
-    int32 y= 2;
-    int32 width= 3;
-    int32 height= 4;
+    int32 id= 1;
+    int32 x= 2;
+    int32 y= 3;
+    int32 width= 4;
+    int32 height= 5;
 }
 
 message BoundingBoxesId {
     repeated int32 id= 1;
 }
 
+message FacesId {
+    repeated int32 id= 1;
+}
+
 message Faces {
     string name= 1;
-    string path= 2;
+    string boundingBoxId= 2;
 }
 
 message PhotoDetails {
@@ -138,7 +144,7 @@ service ExifService {
 
 service ImgProxyService {
     rpc ResizeImage(ImgProxyRequest) returns (Empty) {}
-    rpc CropFaces(ImgProxyRequest) returns (Empty) {}
+    rpc CropFaces(PhotoDetailsRequest) returns (Empty) {}
 }
 
 // -----------------Faceapi service-----------------

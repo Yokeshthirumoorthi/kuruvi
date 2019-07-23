@@ -42,10 +42,10 @@ function getImgProxyCropFaceURL(caddyURL, boundingBox) {
  * used to crop that face out of the photo 
  */
 function getImgProxyCropFaceURLList(caddyURL, boundingBoxes) {
-   const getFaceURLs = (boundingBox, index) => {
+   const getFaceURLs = (boundingBox) => {
       return {
-        faceNumber: index,
-        label: `face_${index}`,
+        boundingBoxId: boundingBox.id,
+        name: `face_${boundingBox.id}.png`,
         url: getImgProxyCropFaceURL(caddyURL, boundingBox) 
       }
    };

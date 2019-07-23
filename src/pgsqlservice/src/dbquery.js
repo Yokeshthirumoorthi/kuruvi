@@ -106,7 +106,7 @@ async function boundingBoxInsertRow(data) {
  */
 async function faceInsertRow(data) {
     const values = formatter.getFaceRowValues(data);
-    const query = `INSERT INTO photos (photo_id, boundingBox_id, file_name, file_path) VALUES ($1, $2, $3, $4) RETURNING id`; 
+    const query = `INSERT INTO faces (bounding_box_id, path) VALUES ($1, $2) RETURNING id`; 
     const faceId = await insertRow(query, values);
     logger.info(`Successully inserted row# ${faceId} in face table`);
     return faceId;

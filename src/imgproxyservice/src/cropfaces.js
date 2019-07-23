@@ -56,7 +56,7 @@ async function cropFacesAndSave(photoFSDetails, photoFaceDetails) {
   const faces = await getFaces(photoFSDetails, photoFaceDetails);
   await saveFaces(photoFSDetails, faces);
   logger.info(`Successfully cropped and saved faces @ ${photoFSDetails.photo}`);
-  // TODO: update db with face details
+  return faces;
 }
 
 module.exports = {cropFacesAndSave}
