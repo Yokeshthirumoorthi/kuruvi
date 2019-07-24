@@ -14,6 +14,7 @@ services:
     networks:
       - nest
 
+# TODO: merge this service with photoviewer service
   frontend:
     container_name: frontend
     build:
@@ -24,15 +25,16 @@ services:
     networks:
       - nest
 
-  # dbmigrateservice:
-  #   container_name: dbmigrateservice
-  #   build:
-  #     context: ./src/dbmigrateservice
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "3001:3001"
-  #   networks:
-  #     - nest
+# TODO: Get rid of this after implementing pgsqlservice in swift language
+  dbmigrateservice:
+    container_name: dbmigrateservice
+    build:
+      context: ./src/dbmigrateservice
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    networks:
+      - nest
 
   postgresql:
     container_name: postgresserver
@@ -100,6 +102,7 @@ services:
     volumes:
       - albums:/usr/src/app/uploads
       - resized_albums:/usr/src/app/resized
+      - faces:/usr/src/app/faces
     ports:
       - "50053:50053"
     networks:
@@ -117,24 +120,42 @@ services:
       - nest
     restart: on-failure
 
+# TODO: Delete this service. and use only photoviewer service  
   caddy-fs:
     container_name: caddy-fs
     image: "abiosoft/caddy"
     volumes:
       - albums:/srv
       - resized_albums:/srv/resized
+      - faces:/usr/src/app/faces
     ports:
       - '2015:2015'
     networks:
       - nest
     restart: on-failure
 
+  photoviewer:
+    container_name: photoviewer
+    build:
+      context: ./src/photoviewer
+      dockerfile: Dockerfile
+    volumes:
+      - albums:/usr/src/app/PhotoFloat/web/albums
+      - cache:/usr/src/app/PhotoFloat/web/cache
+    ports:
+      - '2020:2020'
+    networks:
+      - nest
+    restart: on-failure
+
+# TODO: have only albums and make 
+# resized and faces folders as its children    
 volumes:
   albums:
   resized_albums:
+  faces:
+  cache:
   pgdata:
-  rabbitmq_data:
-    driver: local
 
 networks:
   nest:
