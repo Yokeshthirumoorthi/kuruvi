@@ -14,25 +14,19 @@ CREATE TABLE photos (
 CREATE TABLE exif (
   id SERIAL PRIMARY KEY NOT NULL,
   make VARCHAR,
+  photo_id INTEGER NOT NULL,
   model VARCHAR,
   create_on INTEGER,
-  img_width INTEGER,
-  img_height INTEGER
-);
-
-CREATE TABLE photos_exif (
-  id SERIAL PRIMARY KEY NOT NULL,
-  photo_id INTEGER NOT NULL,
-  exif_id INTEGER NOT NULL,
-  foreign key (photo_id) references photos(id),
-  foreign key (exif_id) references exif(id)
+  width INTEGER,
+  height INTEGER,
+  foreign key (photo_id) references photos(id)
 );
 
 CREATE TABLE bounding_boxes (
   id SERIAL PRIMARY KEY NOT NULL,
   photo_id INTEGER NOT NULL,
-  x INTEGER NOT NULL,
-  y INTEGER NOT NULL,
+  x NUMERIC NOT NULL,
+  y NUMERIC NOT NULL,
   width INTEGER NOT NULL,
   height INTEGER NOT NULL,
   foreign key (photo_id) references photos(id)
@@ -41,7 +35,7 @@ CREATE TABLE bounding_boxes (
 CREATE TABLE faces (
   id SERIAL PRIMARY KEY NOT NULL,
   bounding_box_id INTEGER NOT NULL,
-  path VARCHAR NOT NULL,
+  name VARCHAR NOT NULL,
   foreign key (bounding_box_id) references bounding_boxes(id)
 );
 

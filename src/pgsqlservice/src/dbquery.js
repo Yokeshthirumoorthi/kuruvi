@@ -84,7 +84,7 @@ async function photoInsertRow(data) {
  */
 async function exifInsertRow(data) {
     const values = formatter.getExifRowValues(data);
-    const query = `INSERT INTO exif (photo_id, make, model, create_on, img_width, img_height) VALUES ($1, $2, $3, $4, $5) RETURNING id`; 
+    const query = `INSERT INTO exif (photo_id, make, model, create_on, width, height) VALUES ($1, $2, $3, $4, $5) RETURNING id`; 
     const exifId = await insertRow(query, values);
     logger.info(`Successfully inserted row# ${exifId} in exif table`);
     return exifId;
@@ -106,7 +106,7 @@ async function boundingBoxInsertRow(data) {
  */
 async function faceInsertRow(data) {
     const values = formatter.getFaceRowValues(data);
-    const query = `INSERT INTO faces (bounding_box_id, path) VALUES ($1, $2) RETURNING id`; 
+    const query = `INSERT INTO faces (bounding_box_id, name) VALUES ($1, $2) RETURNING id`; 
     const faceId = await insertRow(query, values);
     logger.info(`Successully inserted row# ${faceId} in face table`);
     return faceId;
@@ -181,15 +181,15 @@ async function getCompletePhotoDetails (photoId) {
     const photoDetails = await getPhotoDetails(photoId);
     const albumId = photoDetails.album_id;
     const albumDetails = await getAlbumDetails(albumId);
-    // const exifDetails = await getExifDetails(photoId);
+    const exifDetails = await getExifDetails(photoId);
     const boundingBoxesDetails = await getBoundingBoxesDetails(photoId);
-    // const facesDetails = await getFacesDetails(photoId);
+    const facesDetails = await getFacesDetails(photoId);
     const photo = {
         photo: photoDetails,
         album: albumDetails,
-        // exif: exifDetails,
+        exif: exifDetails,
         boundingBoxes: boundingBoxesDetails,
-        // faces: facesDetails
+        faces: facesDetails
     }
     // await client.end(); // FIXME: Unable to end the connection as it throws at runtime
     return photo;

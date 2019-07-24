@@ -30,31 +30,38 @@ message PhotoDetailsRequest {
     int32 photoId= 1;
 }
 
+message Album {
+    string name= 1;
+    string path= 2;
+}
+
 message Photo {
     int32 id= 1;
     string albumId= 2;
     string name= 3;
 }
 
-message Album {
-    string name= 1;
-    string path= 2;
-}
-
 message Exif {
-    string make= 1;
-    string model= 2;
-    int32 create_on= 3;
-    int32 img_width= 4;
-    int32 img_height= 5;
+    int32 id= 1;
+    string make= 2;
+    string model= 3;
+    int32 create_on= 4;
+    int32 width= 5;
+    int32 height= 6;
 }
 
 message BoundingBoxes {
     int32 id= 1;
-    int32 x= 2;
-    int32 y= 3;
+    float x= 2;
+    float y= 3;
     int32 width= 4;
     int32 height= 5;
+}
+
+message Faces {
+    int32 id= 1;
+    string name= 2;
+    string boundingBoxId= 3;
 }
 
 message BoundingBoxesId {
@@ -63,11 +70,6 @@ message BoundingBoxesId {
 
 message FacesId {
     repeated int32 id= 1;
-}
-
-message Faces {
-    string name= 1;
-    string boundingBoxId= 2;
 }
 
 message PhotoDetails {
