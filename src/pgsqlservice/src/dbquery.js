@@ -163,11 +163,11 @@ async function getBoundingBoxesDetails(photoId) {
 /**
  * Fetch and return the details about faces in a photo
  */
-async function getFacesDetails(photoId) {
-    const query = 'SELECT * FROM faces WHERE photo_id = $1';
-    const values = [photoId];
+async function getFacesDetails(bounding_box_id) {
+    const query = 'SELECT * FROM faces WHERE bounding_box_id = $1';
+    const values = [bounding_box_id];
     const res = await select(query, values);
-    logger.info(`Success reading row# ${photoId} from faces table`);
+    logger.info(`Success reading row# ${bounding_box_id} from faces table`);
     const faces = res.rows;
     return faces;
 }
@@ -183,7 +183,7 @@ async function getCompletePhotoDetails (photoId) {
     const albumDetails = await getAlbumDetails(albumId);
     const exifDetails = await getExifDetails(photoId);
     const boundingBoxesDetails = await getBoundingBoxesDetails(photoId);
-    const facesDetails = await getFacesDetails(photoId);
+    const facesDetails = await Promise.all(boundingBoxesDetails.map((boundingBox)=> getFacesDetails(boundingBox.id)));
     const photo = {
         photo: photoDetails,
         album: albumDetails,

@@ -73,10 +73,15 @@ const addPhotoCallback = (err, response) => {
   }
   const photo_id = response.photo_id;
 
-  const ImgProxyRequest = {
-    photo_id: photo_id
+  // const ImgProxyRequest = {
+  //   photo_id: photo_id
+  // };
+  // imgProxyService.ResizeImage(ImgProxyRequest, () => {});
+  const request = {
+    photoId: photo_id
   };
-  imgProxyService.ResizeImage(ImgProxyRequest, () => {});
+
+  imgProxyService.cropFaces(request, () => {});
 };
 
 function _getAddPhotoRequest(req) {
