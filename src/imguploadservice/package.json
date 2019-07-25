@@ -4,16 +4,18 @@
   "description": "server for photos uploader",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node index.js"
   },
   "dependencies": {
+    "@grpc/proto-loader": "^0.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.0.0",
     "express": "^4.17.1",
     "express-fileupload": "^1.1.5",
-    "@grpc/proto-loader": "^0.1.0",
     "google-protobuf": "^3.0.0",
     "grpc": "^1.11.0",
-    "pino": "^5.6.2",
-    "cors": "^2.8.5"
+    "make-dir": "^3.0.0",
+    "pino": "^5.6.2"
   },
   "author": "yokeshthirumoorthi@gmail.com",
   "license": "MIT"

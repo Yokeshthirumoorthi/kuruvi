@@ -7,8 +7,6 @@
  * distribution of this software for license terms.
  *
  */
-
-
 const path = require('path');
 const grpc = require('grpc');
 const pino = require('pino');
@@ -16,25 +14,24 @@ const protoLoader = require('@grpc/proto-loader');
 const express = require('express');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
+const makeDir = require('make-dir');
+const {
+    PGSQL_SERVICE_API_ENDPOINT,
+    IMGPROXY_SERVICE_API_ENDPOINT,
+    EXIF_SERVICE_API_ENDPOINT,
+    IMGUPLOAD_SERVICE_API_ENDPOINT,
+    IMGUPLOAD_SERVICE_PORT
+} = require('./config');
 
 const MAIN_PROTO_PATH = path.join(__dirname, './proto/fileUploader.proto');
-
-const DATABASE_PORT = 50051;
-const EXIF_PORT = 50052;
-const IMGPROXY_PORT = 50053;
-const EXPRESS_PORT = 8000;
-
-const NODE_DATABASE = `pgsqlservice:${DATABASE_PORT}`;
-const NODE_EXIF = `exifservice:${EXIF_PORT}`;
-const IMGPROXY_SERVICE = `imgproxyservice:${IMGPROXY_PORT}`;
 
 const kuruviProto = _loadProto(MAIN_PROTO_PATH).kuruvi;
 // const healthProto = _loadProto(HEALTH_PROTO_PATH).grpc.health.v1;
 
 const credentials = grpc.credentials.createInsecure();
-const client = new kuruviProto.PhotoUploadService(NODE_DATABASE, credentials);
-const exifService = new kuruviProto.ExifService(NODE_EXIF, credentials);
-const imgProxyService = new kuruviProto.ImgProxyService(IMGPROXY_SERVICE, credentials);
+const pgsqlService = new kuruviProto.PhotoUploadService(PGSQL_SERVICE_API_ENDPOINT, credentials);
+// const exifService = new kuruviProto.ExifService(EXIF_SERVICE_API_ENDPOINT, credentials);
+const imgProxyService = new kuruviProto.ImgProxyService(IMGPROXY_SERVICE_API_ENDPOINT, credentials);
 
 const logger = pino({
   name: 'imguploadservice-server',
@@ -69,19 +66,13 @@ app.use(cors());
 app.use(fileUpload());
 
 const addPhotoCallback = (err, response) => {
-  console.log('New photo added: ', response);
+  logger.info('New photo added: ', response);
   if (err !== null) {
     console.log(err);
     return;
   }
   const photo_id = response.photo_id;
-  // console.log('Calling Exif', photo_id);
-  // const ExifRequest = {
-  //   photo_id: photo_id
-  // };
-  // exifService.ExtractExif(ExifRequest, () => {});
 
-  console.log('Calling ImgProxy', photo_id);
   const ImgProxyRequest = {
     photo_id: photo_id
   };
@@ -102,14 +93,15 @@ function _getAddPhotoRequest(req) {
   return AddPhotoRequest
 };
 
-function _saveImage(imageFile, AddPhotoRequest) {
-  const filePath = `${AddPhotoRequest.path}/${AddPhotoRequest.filename}`;
+async function _saveImage(imageFile, AddPhotoRequest) {
+  const path = await makeDir(AddPhotoRequest.path);
+  const filePath = `${path}/${AddPhotoRequest.filename}`;
 
   imageFile.mv(filePath, function(err) {
     if (err) {
       logger.error(`Image upload request failed: ${err}`);
     }
-    client.AddPhoto(AddPhotoRequest,addPhotoCallback);
+    pgsqlService.AddPhoto(AddPhotoRequest,addPhotoCallback);
   });
   return;
 }
@@ -126,4 +118,4 @@ app.post('/upload', function(req, res) {
   res.json({file: `public/${AddPhotoRequest.filename}.jpg`});
 });
 
-app.listen(EXPRESS_PORT, () => logger.info(`Starting Image uploading service server on port ${EXPRESS_PORT}`));
+app.listen(IMGUPLOAD_SERVICE_PORT, () => logger.info(`Starting Image uploading service server on port ${IMGUPLOAD_SERVICE_PORT}`));
