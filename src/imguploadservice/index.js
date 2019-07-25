@@ -20,6 +20,7 @@ const {
     IMGPROXY_SERVICE_API_ENDPOINT,
     EXIF_SERVICE_API_ENDPOINT,
     IMGUPLOAD_SERVICE_API_ENDPOINT,
+    FACEAPI_SERVICE_API_ENDPOINT,
     IMGUPLOAD_SERVICE_PORT
 } = require('./config');
 
@@ -32,6 +33,7 @@ const credentials = grpc.credentials.createInsecure();
 const pgsqlService = new kuruviProto.PhotoUploadService(PGSQL_SERVICE_API_ENDPOINT, credentials);
 // const exifService = new kuruviProto.ExifService(EXIF_SERVICE_API_ENDPOINT, credentials);
 const imgProxyService = new kuruviProto.ImgProxyService(IMGPROXY_SERVICE_API_ENDPOINT, credentials);
+const faceapiService = new kuruviProto.FaceApiService(FACEAPI_SERVICE_API_ENDPOINT, credentials);
 
 const logger = pino({
   name: 'imguploadservice-server',
@@ -81,7 +83,8 @@ const addPhotoCallback = (err, response) => {
     photoId: photo_id
   };
 
-  imgProxyService.cropFaces(request, () => {});
+  
+  faceapiService.DetectFaces(request, () => {});
 };
 
 function _getAddPhotoRequest(req) {

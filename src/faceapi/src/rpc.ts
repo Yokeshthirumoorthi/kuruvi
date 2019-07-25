@@ -11,13 +11,30 @@
 import * as faceDetection from './faceDetection';
 
 /**
+ * Sanitize Face Detection object
+ */
+function sanitizeFaceDetectionObject(faceDetections) {
+    const boxes = faceDetections.map(detection => detection._box);
+    const boundingBoxes = boxes.map(box => {
+        return {
+            x: box._x,
+            y: box._y,
+            width: box._width,
+            height: box._height
+        }
+    });
+    return boundingBoxes;
+}
+
+/**
  * Implements the get bounding box rpc method 
  */ 
 async function getBoundingBoxes(photoDetails) {
     const albumPath = photoDetails.album.path;
     const photoName = photoDetails.photo.name;
     const photoPath = `${albumPath}/${photoName}`;
-    const boundingBoxes = await faceDetection.run(photoPath);
+    const faceDetections = await faceDetection.run(photoPath);
+    const boundingBoxes = sanitizeFaceDetectionObject(faceDetections);
     const photoDetailsWithBoundingBoxes = {...photoDetails, boundingBoxes};
     return photoDetailsWithBoundingBoxes;
 }

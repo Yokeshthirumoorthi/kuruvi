@@ -11,7 +11,6 @@ const path = require('path');
 const grpc = require('grpc');
 const pino = require('pino');
 const protoLoader = require('@grpc/proto-loader');
-import * as faceDetection from './src/faceDetection';
 import {
     PGSQL_SERVICE_API_ENDPOINT,
     IMGPROXY_SERVICE_API_ENDPOINT,
@@ -53,11 +52,20 @@ function _loadProto (path) {
 }
 
 /**
+ * gRPC client for initiating face crop
+ * @param photoDetailsRequest 
+ */
+async function cropFaces(photoDetailsRequest) {
+  imgProxyService.CropFaces(photoDetailsRequest, () => {});
+}
+
+/**
  * gRPC client for saving bounding box values in database 
  */
-async function saveBoundingBoxes(boundingBoxes) {
+async function saveBoundingBoxes(photoDetailsRequest, boundingBoxes) {
   pgsqlservice.saveBoundingBoxes(boundingBoxes, (err, res) => {
     logger.info(`Saved bounding boxes #'s ${res}`);
+    cropFaces(photoDetailsRequest);
   })
 }
 
@@ -79,8 +87,8 @@ async function detectFaces(call, callback) {
   logger.info(`Received face detection request for photo# ${photoId}`);
 
   getPhotoDetails(photoDetailsRequest, async (photoDetails) => {
-    const boundnigBoxes = await RPC.getBoundingBoxes(photoDetails);
-    saveBoundingBoxes(boundnigBoxes);
+    const boundingBoxes = await RPC.getBoundingBoxes(photoDetails);
+    saveBoundingBoxes(photoDetailsRequest, boundingBoxes);
   });
 }
 
