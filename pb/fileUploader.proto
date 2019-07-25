@@ -134,6 +134,11 @@ message PathResponse {
 message DetectFaceRequest {
     int32 photoId= 1;
 }
+
+message DescribeFaceRequest {
+    int32 photoId= 1;
+}
+
 message Empty {}
 
 // -----------------Exif service-----------------
@@ -153,4 +158,5 @@ service ImgProxyService {
 
 service FaceApiService {
     rpc DetectFaces(DetectFaceRequest) returns (Empty) {}
+    rpc DescribeFaces(DescribeFaceRequest) returns (Empty) {}
 }

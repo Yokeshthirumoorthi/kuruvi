@@ -9,6 +9,8 @@
  */
 
 import * as faceDetection from './faceDetection';
+import * as faceRecognition from './faceRecognition';
+import * as path from 'path';
 
 /**
  * Sanitize Face Detection object
@@ -39,6 +41,28 @@ async function getBoundingBoxes(photoDetails) {
     return photoDetailsWithBoundingBoxes;
 }
 
+function getFaceFilesPath(photoDetails) {
+    const baseDir = path.resolve(__dirname, '../faces');
+    const albumName = photoDetails.album.name;
+    const faces = photoDetails.faces;
+    const faceFilesPath = faces.map(face => {
+        const fileName = face.name;
+        return path.resolve(baseDir, albumName, fileName);
+    });
+    return faceFilesPath;
+}
+
+/**
+ * Implements the get face descriptions rpc method 
+ */ 
+async function getFaceDescriptions(photoDetails) {
+    const faceFilesPath = getFaceFilesPath(photoDetails);
+    const faceDescriptions = await Promise.all(faceFilesPath.map((faceFile) => faceRecognition.describe(faceFile)));
+    const faceDescriptors = faceDescriptions.map(item => item.descriptors);
+    return faceDescriptors;
+}
+
 export {
     getBoundingBoxes,
+    getFaceDescriptions
 }

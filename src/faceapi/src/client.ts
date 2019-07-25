@@ -11,23 +11,15 @@ const path = require('path');
 const grpc = require('grpc');
 const pino = require('pino');
 const protoLoader = require('@grpc/proto-loader');
-// import * as faceDetection from './faceDetection';
-// import { faceDetectionOptions } from './commons';
 
 const MAIN_PROTO_PATH = path.join(__dirname, '../proto/fileUploader.proto');
-const DATABASE_PORT = 50051;
-const NODE_DATABASE = `192.168.160.4:${DATABASE_PORT}`;
-// const IMGPROXY_PORT = 50053;
-// const IMGPROXY_SERVICE = `imgproxyservice:${IMGPROXY_PORT}`;
 const FACEAPI_PORT = 50054;
-const FACEAPI_SERVICE = `0.0.0.0:${FACEAPI_PORT}`;
+const FACEAPI_SERVICE = `172.20.0.4:${FACEAPI_PORT}`;
 
 const kuruviProto = _loadProto(MAIN_PROTO_PATH).kuruvi;
 // const healthProto = _loadProto(HEALTH_PROTO_PATH).grpc.health.v1;
 
 const credentials = grpc.credentials.createInsecure();
-const pgsqlservice = new kuruviProto.PhotoUploadService(NODE_DATABASE, credentials);
-// const imgProxyService = new kuruviProto.ImgProxyService(IMGPROXY_SERVICE, credentials);
 const faceapiService = new kuruviProto.FaceApiService(FACEAPI_SERVICE, credentials);
 
 const logger = pino({
@@ -61,22 +53,11 @@ function _loadProto (path) {
  */
 function main() {
   const photoDetailsRequest = {
-    photoId: 1,
+    photoId: 203,
   };  
   logger.info(`Starting faceapi client`);
-  faceapiService.detectFaces(photoDetailsRequest, () => {});
+  // faceapiService.detectFaces(photoDetailsRequest, () => {});
+  faceapiService.describeFaces(photoDetailsRequest, () => {});
 }
 
 main();
-
-// function getPhotoDetails() {
-//     const photoDetailsRequest = {
-//       photoId: 1
-//     };
-//     logger.info('Getting photo details');
-//     pgsqlservice.getPhotoDetails(photoDetailsRequest, (err, res) => {
-//       console.log(res)
-//     });
-// }
-
-// getPhotoDetails();

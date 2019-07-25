@@ -2,28 +2,29 @@ version: '3.5'
 
 services:
 
-  imguploadservice:
-    container_name: imguploadservice
-    build:
-      context: ./src/imguploadservice
-      dockerfile: Dockerfile
-    volumes:
-      - albums:/usr/src/app/uploads
-    ports:
-      - '8000:8000'
-    networks:
-      - nest
+#   imguploadservice:
+#     container_name: imguploadservice
+#     build:
+#       context: ./src/imguploadservice
+#       dockerfile: Dockerfile
+#     volumes:
+#       - albums:/usr/src/app/uploads
+#     ports:
+#       - '8000:8000'
+#     networks:
+#       - nest
 
-# TODO: merge this service with photoviewer service
-  frontend:
-    container_name: frontend
-    build:
-      context: ./src/frontend
-      dockerfile: Dockerfile
-    ports:
-      - '3000:3000'
-    networks:
-      - nest
+# # TODO: merge this service with photoviewer service
+#   frontend:
+#     container_name: frontend
+#     build:
+#       context: ./src/frontend
+#       dockerfile: Dockerfile
+#     ports:
+#       - '3000:3000'
+#     networks:
+#       - nest
+
   postgresql:
     container_name: postgresserver
     image: "postgres:9"
@@ -76,54 +77,55 @@ services:
       dockerfile: Dockerfile
     volumes:
       - albums:/usr/src/app/uploads
+      - faces:/usr/src/app/faces
     ports:
       - "50054:50054"
     networks:
       - nest
     restart: on-failure
 
-  imgproxyservice:
-    container_name: imgproxyservice
-    build:
-      context: ./src/imgproxyservice
-      dockerfile: Dockerfile
-    volumes:
-      - albums:/usr/src/app/uploads
-      - resized_albums:/usr/src/app/resized
-      - faces:/usr/src/app/faces
-    ports:
-      - "50053:50053"
-    networks:
-      - nest
-    restart: on-failure
+#   imgproxyservice:
+#     container_name: imgproxyservice
+#     build:
+#       context: ./src/imgproxyservice
+#       dockerfile: Dockerfile
+#     volumes:
+#       - albums:/usr/src/app/uploads
+#       - resized_albums:/usr/src/app/resized
+#       - faces:/usr/src/app/faces
+#     ports:
+#       - "50053:50053"
+#     networks:
+#       - nest
+#     restart: on-failure
 
-  imgproxy:
-    container_name: imgproxy
-    image: "darthsim/imgproxy:latest"
-    volumes:
-      - albums:/usr/src/app/uploads
-    ports:
-      - '8080:8080'
-    networks:
-      - nest
-    restart: on-failure
+#   imgproxy:
+#     container_name: imgproxy
+#     image: "darthsim/imgproxy:latest"
+#     volumes:
+#       - albums:/usr/src/app/uploads
+#     ports:
+#       - '8080:8080'
+#     networks:
+#       - nest
+#     restart: on-failure
 
-# # TODO: Delete this service. and use only photoviewer service  
-  caddy-fs:
-    container_name: caddy-fs
-    build:
-      context: ./src/volumeservice
-      dockerfile: Dockerfile
-    # image: "abiosoft/caddy"
-    volumes:
-      - albums:/srv
-      - resized_albums:/srv/resized
-      - faces:/srv/faces
-    ports:
-      - '2015:2015'
-    networks:
-      - nest
-    restart: on-failure
+# # # TODO: Delete this service. and use only photoviewer service  
+#   caddy-fs:
+#     container_name: caddy-fs
+#     build:
+#       context: ./src/volumeservice
+#       dockerfile: Dockerfile
+#     # image: "abiosoft/caddy"
+#     volumes:
+#       - albums:/srv
+#       - resized_albums:/srv/resized
+#       - faces:/srv/faces
+#     ports:
+#       - '2015:2015'
+#     networks:
+#       - nest
+#     restart: on-failure
 
 #   photoviewer:
 #     container_name: photoviewer

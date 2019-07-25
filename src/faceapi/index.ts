@@ -79,6 +79,21 @@ async function getPhotoDetails(photoDetailsRequest, callback) {
 }
 
 /**
+ * gRPC server method implementaion for describing faces in a photo 
+ */
+async function describeFaces(call, callback) {
+  const photoDetailsRequest = call.request;
+  const photoId = photoDetailsRequest.photoId;
+  logger.info(`Received face describtion request for photo# ${photoId}`);
+
+  getPhotoDetails(photoDetailsRequest, async (photoDetails) => {
+    const faceDescriptions = await RPC.getFaceDescriptions(photoDetails);
+    // console.log(faceDescriptions);
+    // saveBoundingBoxes(photoDetailsRequest, boundingBoxes);
+  });
+}
+
+/**
  * gRPC server method implementaion for detecting faces in a photo 
  */
 async function detectFaces(call, callback) {
@@ -98,7 +113,7 @@ async function detectFaces(call, callback) {
  */
 function main() {
   const server = new grpc.Server();
-  server.addService(kuruviProto.FaceApiService.service, {detectFaces: detectFaces});
+  server.addService(kuruviProto.FaceApiService.service, {detectFaces: detectFaces, describeFaces: describeFaces});
   server.bind(FACEAPI_SERVICE_API_ENDPOINT, grpc.ServerCredentials.createInsecure());
   logger.info(`Starting faceapi Server on port ${FACEAPI_SERVICE_PORT}`);
   server.start();
