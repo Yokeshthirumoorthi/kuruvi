@@ -15,7 +15,8 @@ const pg = require('./postgres');
 const {
   saveBoundingBoxes,
   getPhotoDetails,
-  saveFaces
+  saveFaces,
+  saveFaceDescriptors
 } = require('./src/rpc');
 
 const {
@@ -135,7 +136,8 @@ function main() {
     insertBoundingBoxes: insertBoundingBoxes,
     saveBoundingBoxes: saveBoundingBoxes,
     getPhotoDetails: getPhotoDetails,
-    saveFaces: saveFaces
+    saveFaces: saveFaces,
+    saveFaceDescriptors: saveFaceDescriptors
   });
   server.bind(PGSQL_SERVICE_API_ENDPOINT, credentials);
   logger.info(`Starting PgSQL Service on port ${PGSQL_SERVICE_PORT}`);

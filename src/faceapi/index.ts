@@ -70,6 +70,15 @@ async function saveBoundingBoxes(photoDetailsRequest, boundingBoxes) {
 }
 
 /**
+ * gRPC client for saving bounding box values in database 
+ */
+async function saveFaceDescriptors(photoDetails) {
+  pgsqlservice.saveFaceDescriptors(photoDetails, (err, res) => {
+    logger.info(`Saved face descriptors #'s ${res}`);
+  })
+}
+
+/**
  * gRPC client for pgsqlservice to get photodetails using photoId 
  */
 async function getPhotoDetails(photoDetailsRequest, callback) {
@@ -89,7 +98,7 @@ async function describeFaces(call, callback) {
   getPhotoDetails(photoDetailsRequest, async (photoDetails) => {
     const faceDescriptions = await RPC.getFaceDescriptions(photoDetails);
     // console.log(faceDescriptions);
-    // saveBoundingBoxes(photoDetailsRequest, boundingBoxes);
+    saveFaceDescriptors(faceDescriptions);
   });
 }
 

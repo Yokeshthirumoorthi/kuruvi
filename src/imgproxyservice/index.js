@@ -16,7 +16,8 @@ const {resizeImageAndSave} = require('./src/resize');
 const {
   PGSQL_SERVICE_API_ENDPOINT,
   IMGPROXY_SERVICE_PORT,
-  IMGPROXY_SERVICE_API_ENDPOINT
+  IMGPROXY_SERVICE_API_ENDPOINT,
+  FACEAPI_SERVICE_API_ENDPOINT
 } = require('./config');
 
 
@@ -26,6 +27,7 @@ const kuruviProto = _loadProto(MAIN_PROTO_PATH).kuruvi;
 
 const credentials = grpc.credentials.createInsecure();
 const pgsqlservice= new kuruviProto.PhotoUploadService(PGSQL_SERVICE_API_ENDPOINT, credentials);
+const faceApiService= new kuruviProto.FaceApiService(FACEAPI_SERVICE_API_ENDPOINT, credentials);
 
 const logger = pino({
   name: 'imgproxyservice-server',
@@ -71,11 +73,19 @@ function resizeImage(call, callback) { // TODO: Implement callback functionality
 }
 
 /**
+ * gRPC client for finding and saving face descriptions 
+ */
+async function describeFaces(photoDetailsRequest) {
+  faceApiService.describeFaces(photoDetailsRequest, () => {});
+}
+
+/**
  * gRPC client for saving face details in database 
  */
-async function saveFaces(photoDetails) {
+async function saveFaces(photoDetailsRequest, photoDetails) {
   pgsqlservice.saveFaces(photoDetails, (err, res) => {
     logger.info(`Saved faces #'s ${res}`);
+    describeFaces(photoDetailsRequest);
   })
 }
 
@@ -98,7 +108,7 @@ async function cropFaces(call, callback) {
 
   getPhotoDetails(photoDetailsRequest, async (photoDetails) => {
       const photoDetailsWithFaceInfo = await RPC.cropAndSaveFaces(photoDetails);
-      saveFaces(photoDetailsWithFaceInfo);
+      saveFaces(photoDetailsRequest, photoDetailsWithFaceInfo);
   });
 }
 

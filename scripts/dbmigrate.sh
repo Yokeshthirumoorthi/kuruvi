@@ -5,6 +5,9 @@
 
 # It is required that db docker container is already running 
 
+# stop container ig already created
+docker stop dbmigrateservice && docker rm dbmigrateservice
+
 # build image
 docker build -t dbmigrateservice ../src/dbmigrateservice
 

@@ -85,11 +85,23 @@ function getFaceRowValues(data) {
     return values;
 }
 
+/**
+ * Provide the face descriptor row values as an array to use in insert query
+ */
+function getFaceDescriptorRowValues(data) {
+    // const faceDescriptorId = TODO: Implement uuid for id generation
+    const faceId = data.faceId;
+    const descriptor = data.descriptor;
+    const values = [faceId, ...descriptor];
+    return values;
+}
+
 module.exports = {
     getAlbumRowValues,
     getPhotoRowValues,
     getExifRowValues,
     getBoundingBoxRowValues,
     getFaceRowValues,
-    generateBoundingBoxesRows
+    generateBoundingBoxesRows,
+    getFaceDescriptorRowValues
 }

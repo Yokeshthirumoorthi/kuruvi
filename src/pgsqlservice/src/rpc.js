@@ -34,8 +34,27 @@ async function saveBoundingBoxes(call, callback) {
         callback(null, response);
   } catch (err) {
         logger.error(`Error saving bounding boxes for photo #${photoId} - ${err}`);    
-        console.log(err);
         callback(err, []);
+  }
+}
+
+/**
+ * Implements the saveFaceDescriptors RPC method
+ */
+async function saveFaceDescriptors(call, callback) {
+  const photoDetails = call.request;
+  const photoId = photoDetails.photo.id;
+  const facesDescriptorsRows = photoDetails.faceDescriptors;
+  logger.info(`Saving faces for photo #${photoId}`);
+  try {
+      await dbquery.establishDBConnection();
+      const faceDescriptorsId = await Promise.all(facesDescriptorsRows.map((row) => dbquery.faceDescriptorInsertRow(row)));
+    //   await dbquery.closeDBConnection(); // FIXME: Unable to close the connection
+      const response = { id: faceDescriptorsId};
+      callback(null, response);
+  } catch (err) {
+      logger.error(`Error saving faceDescriptors for photo #${photoId} - ${err}`);
+      callback(err, []);
   }
 }
 
@@ -46,7 +65,6 @@ async function saveFaces(call, callback) {
   const photoDetails = call.request;
   const photoId = photoDetails.photo.id;
   const facesRows = photoDetails.faces;
-  console.log(call);
   logger.info(`Saving faces for photo #${photoId}`);
   try {
       await dbquery.establishDBConnection();
@@ -56,7 +74,6 @@ async function saveFaces(call, callback) {
       callback(null, response);
   } catch (err) {
       logger.error(`Error saving faces for photo #${photoId} - ${err}`);
-      console.log(err);
       callback(err, []);
   }
 }
@@ -71,7 +88,6 @@ async function getPhotoDetails(call, callback) {
         callback(null, photoDetails);
     } catch (err) {
         logger.error(`Error fetching photo details for photoId ${photoId} - ${err}`);
-        console.log(err);
         callback(err, {});
     }
 }
@@ -80,4 +96,5 @@ module.exports = {
     saveBoundingBoxes,
     getPhotoDetails,
     saveFaces,
+    saveFaceDescriptors
 }

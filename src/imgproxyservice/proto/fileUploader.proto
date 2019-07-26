@@ -23,6 +23,7 @@ service PhotoUploadService {
     rpc GetAlbumPhotoPath(AlbumPhotoPathRequest) returns (AlbumPhotoPathResponse) {}
     rpc SaveBoundingBoxes(PhotoDetails) returns (BoundingBoxesId) {}
     rpc SaveFaces(PhotoDetails) returns (FacesId) {}
+    rpc SaveFaceDescriptors(PhotoDetails) returns (FaceDescriptorsId) {}
     rpc GetPhotoDetails(PhotoDetailsRequest) returns (PhotoDetails) {}
 }
 
@@ -64,11 +65,21 @@ message Faces {
     string boundingBoxId= 3;
 }
 
+message FaceDescriptors {
+    int32 id= 1;
+    string faceId= 2;
+    repeated float descriptor= 3;
+}
+
 message BoundingBoxesId {
     repeated int32 id= 1;
 }
 
 message FacesId {
+    repeated int32 id= 1;
+}
+
+message FaceDescriptorsId {
     repeated int32 id= 1;
 }
 
@@ -78,6 +89,7 @@ message PhotoDetails {
     Exif exif= 3;
     repeated BoundingBoxes boundingBoxes= 4;
     repeated Faces faces= 5;
+    repeated FaceDescriptors faceDescriptors= 6;
 }
 
 message AddPhotoRequest {

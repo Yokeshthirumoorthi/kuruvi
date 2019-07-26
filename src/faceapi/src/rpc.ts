@@ -45,11 +45,12 @@ function getFaceFilesPath(photoDetails) {
     const baseDir = path.resolve(__dirname, '../faces');
     const albumName = photoDetails.album.name;
     const faces = photoDetails.faces;
-    const faceFilesPath = faces.map(face => {
+    const newFaceObjects = faces.map(face => {
         const fileName = face.name;
-        return path.resolve(baseDir, albumName, fileName);
+        const filePath = path.resolve(baseDir, albumName, fileName);
+        return {faceId: face.id, path: filePath};
     });
-    return faceFilesPath;
+    return newFaceObjects;
 }
 
 /**
@@ -57,9 +58,13 @@ function getFaceFilesPath(photoDetails) {
  */ 
 async function getFaceDescriptions(photoDetails) {
     const faceFilesPath = getFaceFilesPath(photoDetails);
-    const faceDescriptions = await Promise.all(faceFilesPath.map((faceFile) => faceRecognition.describe(faceFile)));
-    const faceDescriptors = faceDescriptions.map(item => item.descriptors);
-    return faceDescriptors;
+    const faceDescriptors = await Promise.all(faceFilesPath.map(async (faceFile) => {
+        const result = await faceRecognition.describe(faceFile.path);
+        const descriptor = Array.from(result[0].descriptor);
+        return {...faceFile, descriptor};
+    }));
+    const photoDetailsWithFaceDescriptions = {...photoDetails, faceDescriptors};
+    return photoDetailsWithFaceDescriptions;
 }
 
 export {
