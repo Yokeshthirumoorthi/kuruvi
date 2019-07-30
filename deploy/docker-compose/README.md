@@ -1,0 +1,1 @@
+Run gen-env.sh before doing docker-compose command

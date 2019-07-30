@@ -5,7 +5,7 @@ services:
   imguploadservice:
     container_name: imguploadservice
     build:
-      context: ./src/imguploadservice
+      context: ../../src/imguploadservice
       dockerfile: Dockerfile
     volumes:
       - albums:/usr/src/app/uploads
@@ -18,7 +18,7 @@ services:
   frontend:
     container_name: frontend
     build:
-      context: ./src/frontend
+      context: ../../src/frontend
       dockerfile: Dockerfile
     ports:
       - '3000:3000'
@@ -49,7 +49,7 @@ services:
   # exifservice:
   #   container_name: exifservice
   #   build:
-  #     context: ./src/exifservice
+  #     context: ../../src/exifservice
   #     dockerfile: Dockerfile
   #   volumes:
   #     - albums:/usr/src/app/uploads
@@ -62,7 +62,7 @@ services:
   pgsqlservice:
     container_name: pgsqlservice
     build:
-      context: ./src/pgsqlservice
+      context: ../../src/pgsqlservice
       dockerfile: Dockerfile
     ports:
       - "50051:50051"
@@ -73,7 +73,7 @@ services:
   faceapi:
     container_name: faceapi
     build:
-      context: ./src/faceapi
+      context: ../../src/faceapi
       dockerfile: Dockerfile
     volumes:
       - albums:/usr/src/app/uploads
@@ -87,7 +87,7 @@ services:
   imgproxyservice:
     container_name: imgproxyservice
     build:
-      context: ./src/imgproxyservice
+      context: ../../src/imgproxyservice
       dockerfile: Dockerfile
     volumes:
       - albums:/usr/src/app/uploads
@@ -114,7 +114,7 @@ services:
   caddy-fs:
     container_name: "${CADDY_SERVICE}"
     build:
-      context: ./src/volumeservice
+      context: ../../src/volumeservice
       dockerfile: Dockerfile
     # image: "abiosoft/caddy"
     volumes:
@@ -130,7 +130,7 @@ services:
   photoviewer:
     container_name: photoviewer
     build:
-      context: ./src/photoviewer
+      context: ../../src/photoviewer
       dockerfile: Dockerfile
     volumes:
       - albums:/usr/src/app/PhotoFloat/web/albums
