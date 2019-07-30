@@ -112,7 +112,7 @@ services:
 
 # # TODO: Delete this service. and use only photoviewer service  
   caddy-fs:
-    container_name: caddy-fs
+    container_name: "${CADDY_SERVICE}"
     build:
       context: ./src/volumeservice
       dockerfile: Dockerfile
@@ -122,7 +122,7 @@ services:
       - resized_albums:/srv/resized
       - faces:/srv/faces
     ports:
-      - '2015:2015'
+      - '${CADDY_SERVICE_PORT}:${CADDY_SERVICE_PORT}'
     networks:
       - nest
     restart: on-failure
