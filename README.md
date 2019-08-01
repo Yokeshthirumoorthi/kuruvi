@@ -32,6 +32,13 @@ sudo chmod a+x /usr/local/bin/scope
 scope launch
 ```
 
+### Prepare for deploy
+
+```
+chmod +x ./scripts/freshstart.sh
+./scripts/freshstart.sh
+```
+
 ### Provision infrastructure
 
 ```
@@ -46,6 +53,13 @@ docker-compose -f deploy/docker-compose/docker-compose.yml -f deploy/docker-comp
 ```
 
 Once deployed, you should be able to reach Kibana on http://localhost:5601.
+
+### Prepare Database
+
+```
+chmod +x ./scripts/dbmigrate.sh
+./scripts/dbmigrate.sh
+```
 
 ### Cleaning up
 
