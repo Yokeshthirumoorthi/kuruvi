@@ -113,10 +113,55 @@ The main principles of kuruvi are simplicity, scalability, speed, and security.
 
 ## Measurements And Beanchmarks
 
-* Profiling - Done using Prometheus and Graphana
+### Profiling & Metrics - Done using Prometheus and Graphana
+
+To deploy Prometheus & Grafana and to setup all the nice graphs that we got ready for you, simply:
+
+```
+docker-compose -f ./deploy/docker-compose/docker-compose.monitoring.yml up -d
+```
+Wait for the deployment to be ready. Check the status with
+
+```
+docker-compose -f ./deploy/docker-compose/docker-compose.monitoring.yml ps
+```
+
+Importing The Dashboards
+You only need to do this once:
+
+```
+  docker-compose \
+    -f ./deploy/docker-compose/docker-compose.monitoring.yml \
+    run \
+    --entrypoint /opt/grafana-import-dashboards/import.sh \
+    --rm \
+    importer
+```
+
+**Accessing The Services**
+
+Once the services are up & running you can access them with the following URLs:
+
+- Prometheus: http://localhost:9090
+- Grafana: http://localhost:3000
+
+**Grafana Credentials**
+
+   | Username |	Password |
+   | -------- | -------- |
+   | admin	| foobar |
+
 * Tracing - Done with zipkin
-* Logging - Done using Elasticsearch, Logstash and Kibana (ELK stack)
-* Metrics - Done using Prometheus and Graphana
+
+### Logging - Done using Elasticsearch, Logstash and Kibana (ELK stack)
+
+If you want to run the application using a more advanced logging setup based on Fluentd + ELK stack, you can add the logging compose file to override some settings and add some extra containers:
+
+```
+docker-compose -f deploy/docker-compose/docker-compose.yml -f deploy/docker-compose/docker-compose.logging.yml up -d
+```
+
+Once deployed, you should be able to reach Kibana on http://localhost:5601.
 
 ## Authur
 
