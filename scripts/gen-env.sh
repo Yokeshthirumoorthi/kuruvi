@@ -5,7 +5,7 @@
 # Please see the file LICENSE in the source
 # distribution of this software for license terms.
 
-cp ../.env.sample ../deploy/docker-compose/.env
+cp ../.env.sample ../.env
 cp ../.env.sample ../src/imgproxyservice/.env
 cp ../.env.sample ../src/imguploadservice/.env
 # TODO: complete for other services

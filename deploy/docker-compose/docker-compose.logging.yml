@@ -1,0 +1,87 @@
+version: '3.5'
+
+services:
+  elasticsearch:
+    image: elasticsearch:5
+    container_name: elasticsearch
+    networks:
+      - nest
+  kibana:
+    image: kibana:5
+    container_name: kibana
+    depends_on:
+      - elasticsearch
+    ports:
+      - '5601:5601'
+    networks:
+      - nest
+  log-server:
+    image: weaveworksdemos/log-server
+    container_name: log-server
+    depends_on:
+      - elasticsearch
+    ports:
+      - '24224:24224'
+    networks:
+      - nest
+  imguploadservice:
+    logging:
+      driver: fluentd
+    networks:
+      - nest
+  frontend:
+    logging:
+      driver: fluentd
+    depends_on:
+      - log-server
+    networks:
+      - nest
+  postgresql:
+    logging:
+      driver: fluentd
+    depends_on:
+      - log-server
+    networks:
+      - nest
+  # exifservice:
+  #   logging:
+  #     driver: fluentd
+  #   depends_on:
+  #     - log-server
+  #   networks:
+  #     - nest
+  pgsqlservice:
+    logging:
+      driver: fluentd
+    depends_on:
+      - log-server
+    networks:
+      - nest
+  faceapi:
+    logging:
+      driver: fluentd
+    depends_on:
+      - log-server
+    networks:
+      - nest
+  imgproxyservice:
+    logging:
+      driver: fluentd
+    depends_on:
+      - log-server
+    networks:
+      - nest
+  caddy-fs:
+    logging:
+      driver: fluentd
+    depends_on:
+      - log-server
+    networks:
+      - nest
+  photoviewer:
+    logging:
+      driver: fluentd
+    depends_on:
+      - log-server
+    networks:
+      - nest
