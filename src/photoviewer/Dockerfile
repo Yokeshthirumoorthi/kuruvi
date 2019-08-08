@@ -31,6 +31,9 @@ COPY . .
 RUN chmod +x installPhotoFloat.sh
 RUN ./installPhotoFloat.sh
 
+# copy upload file into root of caddy
+COPY upload.html /usr/src/app/PhotoFloat/web/
+
 EXPOSE 2020
 
 COPY Caddyfile /etc
