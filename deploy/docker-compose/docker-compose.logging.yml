@@ -78,10 +78,3 @@ services:
       - log-server
     networks:
       - nest
-  photoviewer:
-    logging:
-      driver: fluentd
-    depends_on:
-      - log-server
-    networks:
-      - nest
