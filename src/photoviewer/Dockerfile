@@ -4,7 +4,7 @@
 #  Please see the file LICENSE in the source
 #  distribution of this software for license terms.
 
-FROM ubuntu:18.04
+FROM node:8
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -15,10 +15,6 @@ RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive && \
     # Install Git
     apt-get install -y git && \
-    # Install pyton
-    apt-get install -y python && \
-    apt-get install -y python-pip && \
-    pip install Pillow && \
     # Install Java
     apt-get -y install default-jre-headless && \
     apt-get clean && \

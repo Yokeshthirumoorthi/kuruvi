@@ -15,8 +15,6 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-RUN git clone git://git.zx2c4.com/PhotoFloat
-
 RUN apt-get update && \
     apt-get install -y build-essential && \
     apt-get install -y curl && \
@@ -27,6 +25,8 @@ RUN apt-get update && \
     apt-get install -y python && \
     apt-get install -y python-pip && \
     pip install Pillow
+
+RUN git clone git://git.zx2c4.com/PhotoFloat
 
 EXPOSE 8000
 # CMD [ "node", "index.js" ]
