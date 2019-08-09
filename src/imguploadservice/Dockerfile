@@ -29,5 +29,4 @@ RUN apt-get update && \
 RUN git clone git://git.zx2c4.com/PhotoFloat
 
 EXPOSE 8000
-# CMD [ "node", "index.js" ]
-CMD [ "node", "server.js" ]
+CMD [ "node", "index.js" ]
