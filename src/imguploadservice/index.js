@@ -61,7 +61,7 @@ http.createServer(function (req, res) {
     return
   }
   if (req.url === '/static' && req.method.toLowerCase() == 'get') {
-    utils.runStaticGenerator(req)
+    utils.runStaticGenerator();
   }
   if (req.url === '/upload' && req.method.toLowerCase() === 'post') {
     // parse a file upload

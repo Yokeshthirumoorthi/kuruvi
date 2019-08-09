@@ -11,7 +11,7 @@ const pino = require('pino');
 
 const {
     IMGUPLOAD_SERVICE_PORT
-} = require('./config');
+} = require('../config');
 
 const logger = pino({
   name: IMGUPLOAD_SERVICE_PORT,

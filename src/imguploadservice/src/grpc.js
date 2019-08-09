@@ -17,9 +17,9 @@ const {
     IMGUPLOAD_SERVICE_API_ENDPOINT,
     FACEAPI_SERVICE_API_ENDPOINT,
     IMGUPLOAD_SERVICE_PORT
-} = require('./config');
+} = require('../config');
 
-const MAIN_PROTO_PATH = path.join(__dirname, './proto/fileUploader.proto');
+const MAIN_PROTO_PATH = path.join(__dirname, '../proto/fileUploader.proto');
 
 const kuruviProto = _loadProto(MAIN_PROTO_PATH).kuruvi;
 // const healthProto = _loadProto(HEALTH_PROTO_PATH).grpc.health.v1;

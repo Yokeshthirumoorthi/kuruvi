@@ -1,30 +1,34 @@
-FROM node:8
+FROM node:12-alpine
 
-# Create app directory
+RUN apk --no-cache add python \
+                       build-base \
+                       python-dev \
+                       py-pip \
+                       # Pillow depenencies
+                       jpeg-dev \
+                       zlib-dev \
+                       freetype-dev \
+                       lcms2-dev \
+                       openjpeg-dev \
+                       tiff-dev \
+                       tk-dev \
+                       tcl-dev
+
+# install from pip, without webp
+RUN LIBRARY_PATH=/lib:/usr/lib /bin/sh -c "pip install Pillow"
+
+RUN apk --no-cache add git
+# RUN git clone https://github.com/python-pillow/Pillow.git /Pillow
+# RUN pip install virtualenv && virtualenv /vpy && source /vpy/bin/activate && pip install nose
+
 WORKDIR /usr/src/app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
 COPY package*.json ./
 
-RUN npm install
-# If you are building your code for production
-# RUN npm ci --only=production
+RUN npm install --only=production
 
 # Bundle app source
 COPY . .
-
-RUN apt-get update && \
-    apt-get install -y build-essential && \
-    apt-get install -y curl && \
-    DEBIAN_FRONTEND=noninteractive && \
-    # Install Git
-    apt-get install -y git && \
-    # Install pyton
-    apt-get install -y python && \
-    apt-get install -y python-pip && \
-    pip install Pillow
 
 RUN git clone git://git.zx2c4.com/PhotoFloat
 
