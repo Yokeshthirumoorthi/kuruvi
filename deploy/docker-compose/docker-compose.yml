@@ -9,6 +9,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - albums:/usr/src/app/uploads
+      - cache:/usr/src/app/cache
     ports:
       - '8000:8000'
     networks:

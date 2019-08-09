@@ -1,5 +1,14 @@
 var formidable = require('formidable')
 var http = require('http')
+var shell = require('shelljs');
+
+function createStaticContent() {
+  // Running external tool synchronously
+  if (shell.exec('PhotoFloat/scanner/main.py uploads cache').code !== 0) {
+    shell.echo('Error: Photo scanner failed');
+    shell.exit(1);
+  }
+}
 
 http.createServer(function (req, res) {
   const headers = {
@@ -14,6 +23,9 @@ http.createServer(function (req, res) {
     res.writeHead(204, headers)
     res.end()
     return
+  }
+  if (req.url === '/static' && req.method.toLowerCase() == 'get') {
+    createStaticContent()
   }
   if (req.url === '/upload' && req.method.toLowerCase() === 'post') {
     // parse a file upload
