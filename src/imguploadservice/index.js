@@ -13,7 +13,6 @@ var formidable = require('formidable')
 const utils = require('./src/utils')
 const grpc = require('./src/grpc');
 
-const albumName = "album1";
 const headers = {
   'Content-Type': 'application/json',
   'Access-Control-Allow-Origin': '*',
@@ -22,14 +21,19 @@ const headers = {
   /** add other headers as per requirement */
 }
 
-async function saveFileToDisk(req, res) {
-  const albumPath = `./uploads/${albumName}`;
-  await utils.createAlbumDirectory(albumPath);
+function saveFileToDisk(req, res) {
 
   // parse a file upload
   var form = new formidable.IncomingForm();
-  form.uploadDir = albumPath;
   form.keepExtensions = true;
+
+  form.on('field', function(name, value){
+    if (name === 'albumname') {
+      const albumPath = `./uploads/${value}`;
+      utils.createAlbumDirectory(albumPath);
+      form.uploadDir = albumPath;
+    }
+  });
 
   form.parse(req, function (err, fields, files) {
     if (err) {
@@ -38,9 +42,8 @@ async function saveFileToDisk(req, res) {
         res.write(JSON.stringify(err))
         return res.end()
     }
-
+    
     var file = files['files[]']
-    console.log('saved file to', file.path)
     console.log('original name', file.name)
     console.log('type', file.type)
     console.log('size', file.size)
