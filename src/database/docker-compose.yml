@@ -22,3 +22,9 @@ services:
     image: "thajeztah/pgadmin4"
     ports:
       - "5050:5050"
+  
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080

@@ -172,3 +172,5 @@ CREATE TABLE face_descriptors (
   p128 NUMERIC NOT NULL,
   foreign key (face_id) references faces(id)
 );
+
+-- INSERT INTO albums (name, path) VALUES ('album1', '/var/app/uploads');
