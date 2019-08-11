@@ -11,7 +11,3 @@
 # Copy proto file into each service directories
 ./genproto.sh
 echo "copied genproto into all services"
-
-# Kick start the db
-echo "starting db migration"
-./dbmigrate.sh
