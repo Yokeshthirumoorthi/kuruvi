@@ -1,0 +1,30 @@
+version: '3.5'
+
+services:
+  photo-upload-server:
+    container_name: photo-upload-server
+    build:
+      context: ./photo-upload-server
+      dockerfile: Dockerfile
+    volumes:
+      - album-uploads:/usr/src/app/album-uploads
+    ports:
+      - 8000:8000
+
+  caddy-server:
+    container_name: caddy-server
+    build:
+      context: ./caddy-server
+      dockerfile: Dockerfile
+    restart: on-failure
+    volumes:
+      - album-uploads:/srv/album-uploads
+    ports:
+      - 2015:2015
+
+volumes:
+  # album-faces:
+  # album-resized:
+  # album-static-gen:
+  album-uploads:
+  # postgres-data:
