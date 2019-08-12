@@ -22,9 +22,21 @@ services:
     ports:
       - 2015:2015
 
+  static-generator:
+    container_name: static-generator
+    build:
+      context: ./static-generator
+      dockerfile: Dockerfile
+    restart: on-failure
+    volumes:
+      - album-uploads:/srv/album-uploads
+      - album-faces:/srv/album-faces
+      - album-resized:/srv/album-resized
+      - album-static-gen:/srv/album-static-gen
+
 volumes:
-  # album-faces:
-  # album-resized:
-  # album-static-gen:
+  album-faces:
+  album-resized:
+  album-static-gen:
   album-uploads:
   # postgres-data:

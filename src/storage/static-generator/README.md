@@ -1,0 +1,1 @@
+Copies the albums and directories into the cache folder for it could be by static pages.
