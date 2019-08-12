@@ -1,32 +1,13 @@
 version: '3.5'
 
 services:
-  photoviewer:
-    container_name: photoviewer
+  frontend:
+    container_name: ${FRONTEND_SERVICE}
     build:
       context: ./ 
+      args:
+        - PORT:${FRONTEND_PORT}
       dockerfile: Dockerfile
-    volumes:
-      - albums:/usr/src/app/PhotoFloat/web/albums
-      - cache:/usr/src/app/PhotoFloat/web/cache
     ports:
-      - '2020:2020'
-    networks:
-      - nest
+      - ${FRONTEND_PORT}:${FRONTEND_PORT}
     restart: on-failure
-
-# TODO: have only albums and make 
-# resized and faces folders as its children    
-volumes:
-  albums:
-  resized_albums:
-  faces:
-  cache:
-  pgdata:
-
-networks:
-  nest:
-
-
-
-

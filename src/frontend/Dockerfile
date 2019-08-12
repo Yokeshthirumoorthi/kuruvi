@@ -6,6 +6,8 @@
 
 FROM alpine
 
+ARG PORT
+
 # deps for post-install scripts
 RUN apk add --update --no-cache \
     openjdk8 \
@@ -30,7 +32,7 @@ COPY . .
 # copy upload file into root of caddy
 COPY upload.html /usr/src/app/PhotoFloat/web/
 
-EXPOSE 2020
+EXPOSE ${PORT}
 
 COPY Caddyfile /etc
 
