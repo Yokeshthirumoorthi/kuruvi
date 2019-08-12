@@ -4,19 +4,14 @@
 #  Please see the file LICENSE in the source
 #  distribution of this software for license terms.
 
-FROM alpine
-
-ARG PORT
-
-# deps for post-install scripts
-RUN apk add --update --no-cache \
-    openjdk8 \
-    make \
-    git \
-    caddy
+FROM openjdk:8-alpine AS builder
 
 # Create app directory
-WORKDIR /usr/src/app
+WORKDIR /srv
+
+RUN apk add --update --no-cache \
+        make \
+        git
 
 # Credits : https://git.zx2c4.com/PhotoFloat
 # More details about installation is found in here
@@ -27,13 +22,13 @@ RUN git clone git://git.zx2c4.com/PhotoFloat && \
     cd web && \
     make
 
-COPY . .
+FROM abiosoft/caddy as base
+
+# Create app directory
+WORKDIR /srv
+
+COPY --from=builder /srv/PhotoFloat/web .
 
 # copy upload file into root of caddy
-COPY upload.html /usr/src/app/PhotoFloat/web/
-
-EXPOSE ${PORT}
-
+COPY upload.html .
 COPY Caddyfile /etc
-
-CMD ["caddy"]

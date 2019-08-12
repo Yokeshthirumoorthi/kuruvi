@@ -5,9 +5,9 @@ services:
     container_name: ${FRONTEND_SERVICE}
     build:
       context: ./ 
-      args:
-        - PORT:${FRONTEND_PORT}
       dockerfile: Dockerfile
+    environment:
+     - FRONTEND_PORT=${FRONTEND_PORT}
     ports:
-      - ${FRONTEND_PORT}:${FRONTEND_PORT}
+     - ${FRONTEND_PORT}:${FRONTEND_PORT}
     restart: on-failure
