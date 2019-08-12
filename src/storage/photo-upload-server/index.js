@@ -29,7 +29,7 @@ function saveFileToDisk(req, res) {
 
   form.on('field', function(name, value){
     if (name === 'albumname') {
-      const albumPath = `./uploads/${value}`;
+      const albumPath = `./album-uploads/${value}`;
       utils.createAlbumDirectory(albumPath);
       form.uploadDir = albumPath;
     }
