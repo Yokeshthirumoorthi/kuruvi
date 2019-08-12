@@ -1,10 +1,31 @@
-FROM alpine
+#  Copyright © 2019 Yokesh Thirumoorthi.
+#
+#  [This program is licensed under the "MIT License"]
+#  Please see the file LICENSE in the source
+#  distribution of this software for license terms.
 
-RUN apk --no-cache add python \
-                       build-base \
-                       python-dev \
-                       py-pip \
-                       # Pillow depenencies
+FROM openjdk:8-alpine AS java-builder
+
+# Create app directory
+WORKDIR /srv
+
+RUN apk add --update --no-cache \
+        make \
+        git
+
+# Credits : https://git.zx2c4.com/PhotoFloat
+# More details about installation is found in here
+# https://git.zx2c4.com/PhotoFloat/about/
+RUN git clone git://git.zx2c4.com/PhotoFloat && \
+    cd PhotoFloat && \
+    rm web/js/999-googletracker.js && \
+    cd web && \
+    make
+
+FROM python:3.7-alpine
+
+# Pillow depenencies
+RUN apk --no-cache add build-base \
                        jpeg-dev \
                        zlib-dev \
                        freetype-dev \
@@ -14,16 +35,10 @@ RUN apk --no-cache add python \
                        tk-dev \
                        tcl-dev
 
-# install from pip, without webp
-RUN LIBRARY_PATH=/lib:/usr/lib /bin/sh -c "pip install Pillow"
+WORKDIR /srv
 
-RUN apk --no-cache add git
+RUN pip install Pillow
 
-# RUN git clone https://github.com/python-pillow/Pillow.git /Pillow
-# RUN pip install virtualenv && virtualenv /vpy && source /vpy/bin/activate && pip install nose
-
-WORKDIR /src
-
-RUN git clone git://git.zx2c4.com/PhotoFloat
+COPY --from=java-builder /srv/PhotoFloat .
 
 EXPOSE 5001
