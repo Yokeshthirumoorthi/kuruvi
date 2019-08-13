@@ -10,6 +10,8 @@ services:
      - FRONTEND_PORT=${FRONTEND_PORT}
     ports:
      - ${FRONTEND_PORT}:${FRONTEND_PORT}
+    volumes:
+     - album-static-gen:/srv
     restart: on-failure
 
   photo-upload-server:
@@ -18,10 +20,23 @@ services:
       context: ../../src/storage/photo-upload-server
       dockerfile: Dockerfile
     volumes:
-      - album-uploads:/usr/src/app/album-uploads
+      - album-uploads:/srv/album-uploads
     ports:
       - 8000:8000
     restart: on-failure
 
+  static-generator:
+    container_name: static-generator
+    build:
+      context: ../../src/storage/static-generator
+      dockerfile: Dockerfile
+    restart: on-failure
+    ports:
+      - 8001:8001
+    volumes:
+      - album-uploads:/srv/album-uploads
+      - album-static-gen:/srv/album-static-gen
+
 volumes:
   album-uploads:
+  album-static-gen:

@@ -24,9 +24,9 @@
       uppy.on('complete', (result) => {
         if (result.failed.length === 0) {
           console.log('Upload successful 😀')
-        // var xhr = new XMLHttpRequest();
-        // xhr.open('GET', 'http://192.168.1.100:8000/static', true);
-        // xhr.send(null);
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://192.168.1.100:8001/staticgen', true);
+        xhr.send(null);
         } else {
           console.warn('Upload failed 😞')
         }

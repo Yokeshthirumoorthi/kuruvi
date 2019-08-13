@@ -11,3 +11,7 @@ services:
     ports:
      - ${FRONTEND_PORT}:${FRONTEND_PORT}
     restart: on-failure
+    volumes:
+      - album-static-gen:/srv
+volumes:
+  album-static-gen:

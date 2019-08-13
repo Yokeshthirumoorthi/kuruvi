@@ -6,6 +6,7 @@
 
 0.0.0.0:{$FRONTEND_PORT}
 browse
+root {$CADDY_ROOT}
 ext .html   # Clean URLs
 log stdout
 errors stdout

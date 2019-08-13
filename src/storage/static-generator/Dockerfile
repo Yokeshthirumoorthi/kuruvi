@@ -4,6 +4,16 @@
 #  Please see the file LICENSE in the source
 #  distribution of this software for license terms.
 
+FROM node:12-alpine AS base
+
+FROM base AS node-builder
+
+WORKDIR /srv
+
+COPY package*.json ./
+
+RUN npm install --only=production
+
 FROM openjdk:8-alpine AS java-builder
 
 # Create app directory
@@ -22,10 +32,16 @@ RUN git clone git://git.zx2c4.com/PhotoFloat && \
     cd web && \
     make
 
-FROM python:3.7-alpine
+FROM base
 
-# Pillow depenencies
-RUN apk --no-cache add build-base \
+USER root
+
+# REF: https://github.com/python-pillow/Pillow/blob/c05099f45c0d94a2a98c3609a96bdb6cf7446627/depends/alpine_Dockerfile
+RUN apk --no-cache add python \
+                       build-base \
+                       python-dev \
+                       py-pip \
+                       # Pillow depenencies
                        jpeg-dev \
                        zlib-dev \
                        freetype-dev \
@@ -34,11 +50,15 @@ RUN apk --no-cache add build-base \
                        tiff-dev \
                        tk-dev \
                        tcl-dev
-
 WORKDIR /srv
 
-RUN pip install Pillow
+# install from pip, without webp
+RUN LIBRARY_PATH=/lib:/usr/lib /bin/sh -c "pip install Pillow"
 
+COPY --from=node-builder /srv/node_modules ./node_modules
+COPY . .
 COPY --from=java-builder /srv/PhotoFloat .
 
-EXPOSE 5001
+EXPOSE 8001
+
+CMD ["node", "index.js"]

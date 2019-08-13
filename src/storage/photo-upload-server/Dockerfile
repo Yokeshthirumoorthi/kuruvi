@@ -3,7 +3,7 @@ FROM node:12-alpine as base
 FROM base as builder
 
 # Create app directory
-WORKDIR /usr/src/app
+WORKDIR /srv
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
@@ -14,9 +14,9 @@ RUN npm install --only=production
 
 FROM base
 
-WORKDIR /usr/src/app
+WORKDIR /srv
 
-COPY --from=builder /usr/src/app/node_modules ./node_modules
+COPY --from=builder /srv/node_modules ./node_modules
 
 # Bundle app source
 COPY . .

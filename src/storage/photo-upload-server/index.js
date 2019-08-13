@@ -12,6 +12,7 @@ var http = require('http')
 var formidable = require('formidable')
 const utils = require('./src/utils')
 const grpc = require('./src/grpc');
+const fs = require('fs');
 
 const headers = {
   'Content-Type': 'application/json',
@@ -21,21 +22,27 @@ const headers = {
   /** add other headers as per requirement */
 }
 
+function copy(oldPath, newPath, callback) {
+  var readStream = fs.createReadStream(oldPath);
+  var writeStream = fs.createWriteStream(newPath);
+
+  readStream.on('error', callback);
+  writeStream.on('error', callback);
+
+  readStream.on('close', function () {
+      fs.unlink(oldPath, callback);
+  });
+
+  readStream.pipe(writeStream);
+}
+
 function saveFileToDisk(req, res) {
 
   // parse a file upload
   var form = new formidable.IncomingForm();
   form.keepExtensions = true;
 
-  form.on('field', function(name, value){
-    if (name === 'albumname') {
-      const albumPath = `./album-uploads/${value}`;
-      utils.createAlbumDirectory(albumPath);
-      form.uploadDir = albumPath;
-    }
-  });
-
-  form.parse(req, function (err, fields, files) {
+  form.parse(req, async function (err, fields, files) {
     if (err) {
         console.log('some error', err)
         res.writeHead(200, headers)
@@ -43,17 +50,25 @@ function saveFileToDisk(req, res) {
         return res.end()
     }
     
-    var file = files['files[]']
-    console.log('original name', file.name)
-    console.log('type', file.type)
-    console.log('size', file.size)
-    
-    // const addPhotoRequest = utils.getAddPhotoRequest(albumName, file.name)
-    // grpc.savePhotoToDatabase(addPhotoRequest);
+    const albumPath = `/srv/album-uploads/${fields.albumname}/uploads`;
+    await utils.createAlbumDirectory(albumPath);
 
-    res.writeHead(200, headers)
-    res.write(JSON.stringify({ fields, files }))
-    return res.end()
+    var file = files['files[]']
+    const fileLoaction = `${albumPath}/${file.name}`;
+
+    copy(file.path, fileLoaction, function (err) {
+      if (err) throw err;
+      console.log('original name', file.name)
+      console.log('type', file.type)
+      console.log('size', file.size)
+      
+      // const addPhotoRequest = utils.getAddPhotoRequest(albumName, file.name)
+      // grpc.savePhotoToDatabase(addPhotoRequest);
+
+      res.writeHead(200, headers)
+      res.write(JSON.stringify({ fields, files }))
+      res.end()
+    });
   })
 }
 
