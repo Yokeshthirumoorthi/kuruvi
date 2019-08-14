@@ -7,27 +7,27 @@
  * distribution of this software for license terms.
  *
  */
-var shell = require('shelljs');
-const makeDir = require('make-dir');
 
-function runStaticGenerator(albumName, cachePath) {
-  // Running external tool synchronously
-  if (shell.exec(`scanner/main.py album-uploads/${albumName} ${cachePath}`).code !== 0) {
-    shell.echo('Error: Photo scanner failed');
-    shell.exit(1);
-  }
+const shell = require('./shell');
+const albumfs = require('./albumfs');
+
+/**
+ * Creates a folder in the name of album.
+ * This folder has the html that is servered as static page.
+ * 
+ * The following steps are required to create the static page.
+ * 1. create a folder in name of album
+ * 2. create a subfolder as cache.
+ * 3. copy the static html and its js.
+ * 4. scan the uploaded album and create photos json 
+ * and resized photos into the cache folder.
+ * 5. Caddy can now server this folder as static page.
+ * @param {*} albumName 
+ */
+async function generateStaticPage(albumName) {
+    const {albumPath, cachePath} = await albumfs.getPaths(albumName);
+    shell.execCopyStaticJS(albumPath);
+    shell.execScanner(albumName, cachePath);
 }
 
-function prepareStaticFolder(path) {
-  // Running external tool synchronously
-  if (shell.exec(`cp -r web/* ${path}`).code !== 0) {
-    shell.echo('Error: Prepare static folder failed');
-    shell.exit(1);
-  }
-}
-
-function createDirectory(path) {
-    return  makeDir(path);
-}
-
-module.exports = {runStaticGenerator, prepareStaticFolder, createDirectory}
+module.exports = {generateStaticPage}

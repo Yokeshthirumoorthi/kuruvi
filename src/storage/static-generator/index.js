@@ -19,6 +19,7 @@ const headers = {
   'Access-Control-Max-Age': 2592000 // 30 days
   /** add other headers as per requirement */
 }
+
 function collectRequestData(request, callback) {
   let body = '';
       request.on('data', chunk => {
@@ -37,16 +38,9 @@ http.createServer(function (req, res) {
   }
 
   if (req.url === '/staticgen' && req.method.toLowerCase() == 'post') {
-    collectRequestData(req,async result => {
-      console.log(result);
-      const __baseDir = 'album-static-gen';
+    collectRequestData(req, result => {
       const albumName = result.albumName;
-      const albumPath = `${__baseDir}/${albumName}`;
-      const cachePath = `${albumPath}/cache`;
-      await utils.createDirectory(albumPath);
-      await utils.createDirectory(cachePath);
-      utils.prepareStaticFolder(albumPath);
-      utils.runStaticGenerator(albumName, cachePath);
+      utils.generateStaticPage(albumName);
     });
   }
 
