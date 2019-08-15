@@ -9,13 +9,15 @@ protogen:
 	cp ./pb/kuruvi.proto ./src/serviceX/proto
 	mkdir -p ./src/storage/static-generator/proto
 	cp ./pb/kuruvi.proto ./src/storage/static-generator/proto
-
+	mkdir -p ./src/storage/photo-upload-server/proto
+	cp ./pb/kuruvi.proto ./src/storage/photo-upload-server/proto
 
 dotenvgen:
 	@echo "Copying dotenv into services"
-	cp .env.sample .env
-	cp .env ./src/serviceX
-	cp .env ./src/storage/static-generator
+	cp -f .env.sample .env
+	cp -f .env ./src/serviceX
+	cp -f .env ./src/storage/static-generator
+	cp -f .env ./src/storage/photo-upload-server
 
 deploy:
 	@echo "Deploy kuruvi app..."

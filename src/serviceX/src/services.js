@@ -8,10 +8,10 @@
  *
  */
 
-function doAlbumUpload(saveAlbumReq) {
-    console.log('Given Album req:', saveAlbumReq);
+function doSavePhoto(savePhotoReq) {
+    console.log('Given Photo req:', savePhotoReq);
 }
 
-function saveAlbumUpload(call, callback) {
-    callback(null, doAlbumUpload(call.request));
+function savePhoto(call, callback) {
+    callback(null, doSavePhoto(call.request));
 }

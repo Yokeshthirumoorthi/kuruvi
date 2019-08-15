@@ -39,16 +39,16 @@ message PhotoDetails {
 
 // This message is sent by photo-upload-server
 // after saving all photos in the disk
-message AlbumFolder {
+message SavePhotoRequest {
     string albumName = 1;
-    repeated string photoNames = 2;
+    string photoName = 2;
 }
 
 service ServiceX {
     // A Simple RPC
     //
     // Saves the album details and photo details in database
-    rpc saveAlbum (SaveAlbumRequest) returns (Album) {}
+    rpc savePhoto (SavePhotoRequest) returns (PhotoDetails) {}
 }
 
 // -----------------Static generator server functions-----------------

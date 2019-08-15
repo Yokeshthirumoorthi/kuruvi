@@ -10,11 +10,11 @@
 const pino = require('pino');
 
 const {
-    IMGUPLOAD_SERVICE_PORT
-} = require('../config');
+    PHOTO_UPLOAD_SERVER_SERVICE
+} = require('./config');
 
 const logger = pino({
-  name: IMGUPLOAD_SERVICE_PORT,
+  name: PHOTO_UPLOAD_SERVER_SERVICE,
   messageKey: 'message',
   changeLevelName: 'severity',
   useLevelLabels: true

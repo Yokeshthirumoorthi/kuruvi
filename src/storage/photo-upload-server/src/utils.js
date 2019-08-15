@@ -79,8 +79,7 @@ function saveFileToDisk(req, onSuccess, onFailure) {
       
       // const addPhotoRequest = getAddPhotoRequest(albumName, file.name)
       // grpc.savePhotoToDatabase(addPhotoRequest);
-
-      onSuccess(JSON.stringify({fields, files}));
+      onSuccess({fields, files});
     });
   })
 }

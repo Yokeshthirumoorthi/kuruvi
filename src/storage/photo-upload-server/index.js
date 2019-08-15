@@ -36,8 +36,9 @@ http.createServer(function (req, res) {
     };
 
     const onSuccess = (result) => {
+      console.log(result);
       res.writeHead(200, headers);
-      res.write(result);
+      res.write(JSON.stringify(result));
       res.end();
     };
 
