@@ -9,12 +9,13 @@ services:
       args:
         PHOTO_UPLOAD_SERVER_PORT: ${PHOTO_UPLOAD_SERVER_PORT}
     volumes:
-      - album-uploads:/usr/src/app/album-uploads
+      - album-uploads:/srv/album-uploads
     ports:
-      - ${PHOTO_UPLOAD_SERVER_PORT}: ${PHOTO_UPLOAD_SERVER_PORT}
+      - ${PHOTO_UPLOAD_SERVER_PORT}:${PHOTO_UPLOAD_SERVER_PORT}
+    restart: on-failure
 
   caddy-server:
-    container_name: caddy-server
+    container_name: ${CADDY_SERVER_SERVICE}
     build:
       context: ./caddy-server
       dockerfile: Dockerfile
@@ -22,7 +23,7 @@ services:
     volumes:
       - album-uploads:/srv/album-uploads
     ports:
-      - 2015:2015
+      - ${CADDY_SERVER_PORT}:${CADDY_SERVER_PORT}
 
   static-generator:
     container_name: ${STATIC_GENERATOR_SERVICE}

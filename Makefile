@@ -1,4 +1,4 @@
-.PHONY: all protogen dotenvgen deploy clean
+.PHONY: all protogen dotenvgen deploy clean docker-clean
 
 all: protogen dotenvgen deploy
 prepare: protogen dotenvgen
@@ -27,3 +27,6 @@ clean:
 	@echo "Removing protofile..."
 	rm ./src/serviceX/proto/*.proto
 	rmdir ./src/serviceX/proto
+
+docker-clean:
+	./scripts/docker-cleanup.sh

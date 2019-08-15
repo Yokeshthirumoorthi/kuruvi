@@ -10,7 +10,6 @@
 const makeDir = require('make-dir');
 const formidable = require('formidable')
 const fs = require('fs');
-const grpc = require('./src/grpc');
 
 const WORKDIR = '/srv'; //TODO: use value from dotenv
 const ALBUM_UPLOADS = 'album_uploads'; //TODO: use value from dotenv
@@ -49,7 +48,7 @@ function copy(oldPath, newPath, callback) {
   readStream.pipe(writeStream);
 }
 
-function getFileLocation(fields, file) {
+async function getFileLocation(fields, file) {
   const albumPath = `${WORKDIR}/${ALBUM_UPLOADS}/${fields.albumname}/${UPLOADS}`;
   await makeDir(albumPath);
 
@@ -58,7 +57,7 @@ function getFileLocation(fields, file) {
   return fileLoaction;
 }
 
-function saveFileToDisk(req, onSuccess, onFailure) {
+async function saveFileToDisk(req, onSuccess, onFailure) {
   // parse a file upload
   var form = new formidable.IncomingForm();
   form.keepExtensions = true;
@@ -69,7 +68,7 @@ function saveFileToDisk(req, onSuccess, onFailure) {
     }
     
     var file = files['files[]']
-    const fileLoaction = getFileLocation(fields, file);
+    const fileLoaction = await getFileLocation(fields, file);
 
     copy(file.path, fileLoaction, function (err) {
       if (err) throw err;
