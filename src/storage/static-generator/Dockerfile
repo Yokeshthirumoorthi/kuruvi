@@ -8,6 +8,8 @@ FROM node:12-alpine AS base
 
 FROM base AS node-builder
 
+ARG STATIC_GENERATOR_PORT
+
 WORKDIR /srv
 
 COPY package*.json ./
@@ -59,6 +61,6 @@ COPY --from=node-builder /srv/node_modules ./node_modules
 COPY . .
 COPY --from=java-builder /srv/PhotoFloat .
 
-EXPOSE 8001
+EXPOSE $STATIC_GENERATOR_PORT
 
 CMD ["node", "index.js"]

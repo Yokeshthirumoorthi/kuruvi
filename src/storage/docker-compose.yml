@@ -2,14 +2,16 @@ version: '3.5'
 
 services:
   photo-upload-server:
-    container_name: photo-upload-server
+    container_name: ${PHOTO_UPLOAD_SERVER_SERVICE}
     build:
       context: ./photo-upload-server
       dockerfile: Dockerfile
+      args:
+        PHOTO_UPLOAD_SERVER_PORT: ${PHOTO_UPLOAD_SERVER_PORT}
     volumes:
       - album-uploads:/usr/src/app/album-uploads
     ports:
-      - 8000:8000
+      - ${PHOTO_UPLOAD_SERVER_PORT}: ${PHOTO_UPLOAD_SERVER_PORT}
 
   caddy-server:
     container_name: caddy-server
@@ -23,13 +25,15 @@ services:
       - 2015:2015
 
   static-generator:
-    container_name: static-generator
+    container_name: ${STATIC_GENERATOR_SERVICE}
     build:
       context: ./static-generator
       dockerfile: Dockerfile
+      args:
+        STATIC_GENETATOR_PORT: ${STATIC_GENERATOR_PORT}
     restart: on-failure
     ports:
-      - 8001:8001
+      - ${STATIC_GENERATOR_PORT}:${STATIC_GENERATOR_PORT}
     volumes:
       - album-uploads:/srv/album-uploads
       # - album-faces:/srv/album-faces

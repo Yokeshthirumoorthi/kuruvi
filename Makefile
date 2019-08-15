@@ -5,13 +5,17 @@ prepare: protogen dotenvgen
 
 protogen:
 	@echo "Copying protofile into services"
-	mkdir ./src/serviceX/proto
+	mkdir -p ./src/serviceX/proto
 	cp ./pb/kuruvi.proto ./src/serviceX/proto
+	mkdir -p ./src/storage/static-generator/proto
+	cp ./pb/kuruvi.proto ./src/storage/static-generator/proto
+
 
 dotenvgen:
 	@echo "Copying dotenv into services"
-	mv .env.sample .env
+	cp .env.sample .env
 	cp .env ./src/serviceX
+	cp .env ./src/storage/static-generator
 
 deploy:
 	@echo "Deploy kuruvi app..."

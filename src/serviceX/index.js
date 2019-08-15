@@ -8,8 +8,8 @@
  *
  */
 
-const grpc = require('grpc');
-const {kuruviProto} = require('./src/grpc');
+const {kuruviProto, credentials} = require('./src/grpc');
+const {saveAlbumUpload} = require('./src/services');
 const {
     // SERVICE_X_PORT,
     SERVICE_X_ENDPOINT
@@ -30,7 +30,7 @@ function getServer() {
 
 if (require.main === module) {
     // If this is run as a script, start a server on an unused port
-    var serviceXServer = getServer();
-    serviceXServer.bind(SERVICE_X_ENDPOINT, grpc.ServerCredentials.createInsecure());
-    serviceXServer.start();
+    var server= getServer();
+    server.bind(SERVICE_X_ENDPOINT, credentials);
+    server.start();
 }

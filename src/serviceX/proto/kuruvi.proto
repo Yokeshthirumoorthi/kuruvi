@@ -37,11 +37,31 @@ message PhotoDetails {
 
 // -----------------ServiceX grpc server functions-----------------
 
-message SaveAlbumUploadRequest {
+// This message is sent by photo-upload-server
+// after saving all photos in the disk
+message AlbumFolder {
     string albumName = 1;
     repeated string photoNames = 2;
 }
 
 service ServiceX {
-    rpc saveAlbumUpload (SaveAlbumUploadRequest) returns (Album) {}
+    // A Simple RPC
+    //
+    // Saves the album details and photo details in database
+    rpc saveAlbum (SaveAlbumRequest) returns (Album) {}
+}
+
+// -----------------Static generator server functions-----------------
+
+message AlbumFolders {
+    repeated AlbumFolder albums =1;
+}
+
+message Empty {}
+
+service StaticGenerator {
+    // A Simple RPC
+    //
+    // Copies uploaded files to new folders based exif data
+    rpc createExifFolders (AlbumFolders) returns (Empty) {}
 }
