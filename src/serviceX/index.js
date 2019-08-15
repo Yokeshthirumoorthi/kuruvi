@@ -8,9 +8,10 @@
  *
  */
 
-const {kuruviProto, credentials} = require('./src/common/grpc');
-const {saveAlbumUpload} = require('./src/services');
-const { SERVICE_X_PORT, } = require('./config');
+const grpc = require('grpc');
+const {kuruviProto,serverCredentials} = require('./src/common/grpc');
+const {savePhoto} = require('./src/services');
+const { SERVICE_X_PORT } = require('./src/common/config');
 
 /**
  * Get a new server with the handler functions in this file bound to the methods
@@ -19,8 +20,8 @@ const { SERVICE_X_PORT, } = require('./config');
  */
 function getServer() {
     var server = new grpc.Server();
-    server.addProtoService(kuruviProto.ServiceX.service, {
-      saveAlbumUpload: saveAlbumUpload
+    server.addService(kuruviProto.ServiceX.service, {
+      savePhoto:savePhoto
     });
     return server;
   }
@@ -28,6 +29,6 @@ function getServer() {
 if (require.main === module) {
     // If this is run as a script, start a server on an unused port
     var server= getServer();
-    server.bind(`0.0.0.0:${SERVICE_X_PORT}`, credentials);
+    server.bind(`0.0.0.0:${SERVICE_X_PORT}`, serverCredentials);
     server.start();
 }

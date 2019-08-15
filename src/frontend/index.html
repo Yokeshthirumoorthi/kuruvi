@@ -8,7 +8,7 @@
   </head>
   <body>
     <form id="upload-form" action='/'>
-      <input type="text" name="albumname" value="album2">
+      <input type="text" name="albumName" value="album2">
     </form>
     <script src="https://transloadit.edgly.net/releases/uppy/v1.3.0/uppy.min.js"></script>
     <script>
@@ -25,10 +25,10 @@
         if (result.failed.length === 0) {
           console.log('Upload successful 😀')
           console.log(result);
-          const albumname = result.successful[0].meta.albumname;
+          const albumName = result.successful[0].meta.albumName;
           var xhr = new XMLHttpRequest();
           xhr.open('POST', `http://192.168.1.100:8001/staticgen`, true);
-          xhr.send(`albumName=${albumname}`);
+          xhr.send(`albumName=${albumName}`);
         } else {
           console.warn('Upload failed 😞')
         }

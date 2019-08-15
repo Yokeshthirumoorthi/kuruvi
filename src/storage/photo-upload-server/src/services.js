@@ -20,7 +20,7 @@ function savePhotoCallback(err, response) {
 
 function savePhoto(savePhotoRequest) {
     const serviceX = new kuruviProto.ServiceX(SERVICE_X_ENDPOINT, credentials);
-    serviceX.SavePhoto(savePhotoRequest, savePhotoCallback);
+    serviceX.savePhoto(savePhotoRequest, savePhotoCallback);
 }
 
 module.exports = {savePhoto}

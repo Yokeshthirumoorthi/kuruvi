@@ -53,6 +53,11 @@ service ServiceX {
 
 // -----------------Static generator server functions-----------------
 
+message AlbumFolder {
+    string albumName= 1;
+    repeated string photos= 2;
+}
+
 message AlbumFolders {
     repeated AlbumFolder albums =1;
 }

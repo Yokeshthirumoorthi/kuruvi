@@ -15,3 +15,5 @@ function doSavePhoto(savePhotoReq) {
 function savePhoto(call, callback) {
     callback(null, doSavePhoto(call.request));
 }
+
+module.exports = {savePhoto}

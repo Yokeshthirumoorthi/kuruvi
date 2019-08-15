@@ -31,8 +31,9 @@ function _loadProto (path) {
   return grpc.loadPackageDefinition(packageDefinition);
 }
 const credentials = grpc.credentials.createInsecure();
+const serverCredentials = grpc.ServerCredentials.createInsecure();
 // The protoDescriptor object has the full package hierarchy
 const kuruviProto = _loadProto(PROTO_PATH).kuruvi;
 // const healthProto = _loadProto(HEALTH_PROTO_PATH).grpc.health.v1;
 
-module.exports = {kuruviProto, credentials}
+module.exports = {kuruviProto, credentials, serverCredentials}

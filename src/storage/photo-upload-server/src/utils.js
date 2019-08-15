@@ -10,23 +10,20 @@
 const makeDir = require('make-dir');
 const formidable = require('formidable')
 const fs = require('fs');
+const services = require('./services');
 
 const WORKDIR = '/srv'; //TODO: use value from dotenv
 const ALBUM_UPLOADS = 'album_uploads'; //TODO: use value from dotenv
 const UPLOADS ='uploads';
 
-// function getAddPhotoRequest(albumName, fileName) {
-//   const folderName =`${__dirname}/uploads/${albumName}`;
+function getSavePhotoRequest(fields) {
+  const savePhotoRequest = {
+    albumName: fields.albumname,
+    photoName: fields.name
+  };
 
-//   const AddPhotoRequest = {
-//     album: albumName,
-//     path: folderName,
-//     filename: fileName
-//   };
-
-//   return AddPhotoRequest
-// };
-
+  return savePhotoRequest;
+}
 /**
  * Formidable library writes the uploaded photo into tmp folder.
  * Tis function copies files from tmp folder to appropriate album folders
@@ -76,8 +73,9 @@ async function saveFileToDisk(req, onSuccess, onFailure) {
       console.log('type', file.type)
       console.log('size', file.size)
       
-      // const addPhotoRequest = getAddPhotoRequest(albumName, file.name)
-      // grpc.savePhotoToDatabase(addPhotoRequest);
+      const savePhotoRequest = getSavePhotoRequest(fields);
+      services.savePhoto(savePhotoRequest);
+
       onSuccess({fields, files});
     });
   })
