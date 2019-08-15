@@ -1,0 +1,16 @@
+{
+  "name": "servicex",
+  "version": "0.0.1",
+  "description": "manages workflow after uploading an album",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "yokesh thirumoorthi",
+  "license": "MIT",
+  "dependencies": {
+    "@grpc/proto-loader": "^0.5.1",
+    "grpc": "^1.22.2",
+    "pino": "^5.13.2"
+  }
+}

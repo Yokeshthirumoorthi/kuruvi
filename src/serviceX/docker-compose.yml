@@ -1,0 +1,9 @@
+version: '3.5'
+
+services:
+  servicex:
+    container_name: ${SERVICE_X_SERVICE}
+    build:
+      context: ./ 
+      dockerfile: Dockerfile
+    restart: on-failure

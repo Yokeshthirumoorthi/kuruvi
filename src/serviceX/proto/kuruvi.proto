@@ -1,0 +1,47 @@
+/*
+ *
+ * Copyright © 2019 Yokesh Thirumoorthi.
+ *
+ * [This program is licensed under the "MIT License"]
+ * Please see the file LICENSE in the source
+ * distribution of this software for license terms.
+ *
+ */
+
+syntax = "proto3";
+
+package kuruvi;
+
+// -----------------Common types that are almost similar to db schema def-----------------
+
+message Album {
+    int32 id = 1;
+    string name= 2;
+}
+
+message Photo {
+    int32 id= 1;
+    string albumId= 2;
+    string name= 3;
+}
+
+message PhotoDetails {
+    Album album= 1;
+    Photo photo= 2;
+    // Exif exif= 3;
+    // repeated BoundingBoxes boundingBoxes= 4;
+    // repeated Faces faces= 5;
+    // repeated FaceDescriptors faceDescriptors= 6;
+}
+
+
+// -----------------ServiceX grpc server functions-----------------
+
+message SaveAlbumUploadRequest {
+    string albumName = 1;
+    repeated string photoNames = 2;
+}
+
+service ServiceX {
+    rpc saveAlbumUpload (SaveAlbumUploadRequest) returns (Album) {}
+}
