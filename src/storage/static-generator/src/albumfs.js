@@ -10,16 +10,27 @@
 
 const makeDir = require('make-dir');
 
-const BASE_DIR = 'album-static-gen';// TODO: get this base dir from dotenv
+const BASE_DIR = 'album-uploads'; // TODO: get this from dotenv
+const STATIC_BASE_DIR = 'album-static-gen';// TODO: get this base dir from dotenv
 const CACHE_DIR = 'cache';
+
+function getAlbumPath(base_dir, albumName) {
+  const albumPath = `${base_dir}/${albumName}`;
+  return albumPath;
+}
+
+function getAlbumSubPath(albumPath, subFolderName) {
+  const subFolderPath = `${albumPath}/${subFolderName}`;
+  return subFolderPath;
+}
 
 /**
  * Creates albumPath and cache subfolder path dir path for albums
  * @param {*} albumName 
  */
 async function getPaths(albumName) {
-  const albumPath = `${BASE_DIR}/${albumName}`;
-  const cachePath = `${albumPath}/${CACHE_DIR}`;
+  const albumPath = getAlbumPath(STATIC_BASE_DIR, albumName);
+  const cachePath = getAlbumSubPath(albumPath, CACHE_DIR);
   const paths = {albumPath, cachePath};
   // Make directories for album if not exist
   await createStaticFolder(paths);
@@ -36,4 +47,14 @@ async function createStaticFolder(paths) {
     await makeDir(cachePath);
 }
 
-module.exports = {getPaths}
+async function getExifTagFolderPaths(albumName, tagName) {
+  const albumPath = getAlbumPath(BASE_DIR, albumName);
+  const tagPath = getAlbumSubPath(albumPath, tagName);
+  await makeDir(tagPath);
+  return {
+    albumPath,
+    tagPath
+  }
+}
+
+module.exports = {getPaths, getExifTagFolderPaths}

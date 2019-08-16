@@ -11,6 +11,8 @@
 const {kuruviProto, credentials} = require('./common/grpc');
 const {STATIC_GENERATOR_ENDPOINT} = require('./common/config');
 
+const staticGeneratorService = new kuruviProto.StaticGenerator(STATIC_GENERATOR_ENDPOINT, credentials);
+
 function doSavePhoto(savePhotoReq) {
     console.log('Given Photo req:', savePhotoReq);
 }
@@ -27,10 +29,29 @@ function startWorkFlowCallback(err, response) {
     console.log('Executed workflow: ', response);
 }
 
+function exifFoldersCallback(err, response) {
+    if (err !== null) {
+        console.log(err);
+        return;
+    }
+    const albumInfo = response;
+    // Finally all the folders in album directory is scanned 
+    // and copied into the static web's cache directory
+    staticGeneratorService.createStaticWebDirectory(albumInfo, startWorkFlowCallback);
+}
+
 function startWorkFlow(albumInfo) {
     console.log('Given Album Info: ', albumInfo);
-    const staticGeneratorService = new kuruviProto.StaticGenerator(STATIC_GENERATOR_ENDPOINT, credentials);
-    staticGeneratorService.createStaticWebDirectory(albumInfo, startWorkFlowCallback);
+
+    // This is temp data used for dev
+    const albumFolders = {albums: [
+        {albumName: 'amy', tagName: 'tag1', photos: ['amy1.png', 'amy5.png']},
+        {albumName: 'amy', tagName: 'tag2', photos: ['amy1.png', 'amy2.png']}
+    ]}
+
+    // Photos are grouped under various tags using the exif details.
+    // Copy the photos in given folder:photos directory structure.
+    staticGeneratorService.createExifFolders(albumFolders, exifFoldersCallback);
 }
 
 function initWorkFlow(call, callback) {

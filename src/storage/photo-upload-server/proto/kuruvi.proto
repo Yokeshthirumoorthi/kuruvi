@@ -66,7 +66,8 @@ service ServiceX {
 
 message AlbumFolder {
     string albumName= 1;
-    repeated string photos= 2;
+    string tagName=2;
+    repeated string photos= 3;
 }
 
 message AlbumFolders {
@@ -77,7 +78,7 @@ service StaticGenerator {
     // A Simple RPC
     //
     // Copies uploaded files to new folders based exif data
-    rpc createExifFolders (AlbumFolders) returns (Empty) {}
+    rpc createExifFolders (AlbumFolders) returns (AlbumInfo) {}
     // A Simple RPC
     //
     // Creates the web directory with js, html and the 

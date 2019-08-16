@@ -10,12 +10,17 @@
 
 const utils = require('./utils');
 
-function doExifBasedClassification(albumFolders) {
+async function doExifBasedClassification(albumFolders) {
     console.log('Given Album folders req:', albumFolders);
+    await utils.createExifFolders(albumFolders);
+    const albumInfo = {
+        name: albumFolders.albums[0].albumName
+    }
+    return albumInfo;
 }
 
-function createExifFolders(call, callback) {
-    callback(null, doExifBasedClassification(call.request));
+async function createExifFolders(call, callback) {
+    callback(null, await doExifBasedClassification(call.request));
 }
 
 async function createStaticDirectory(AlbumInfo) {
@@ -23,8 +28,8 @@ async function createStaticDirectory(AlbumInfo) {
     await utils.generateStaticPage(AlbumInfo.name);
 }
 
-function createStaticWebDirectory(call, callback) {
-    callback(null, createStaticDirectory(call.request));
+async function createStaticWebDirectory(call, callback) {
+    callback(null, await createStaticDirectory(call.request));
 }
 
 module.exports = {createExifFolders, createStaticWebDirectory}

@@ -30,4 +30,14 @@ async function generateStaticPage(albumName) {
     shell.execScanner(albumName, cachePath);
 }
 
-module.exports = {generateStaticPage}
+function createExifFolders(albumFolders) {
+    albumFolders.albums.map(async albumFolder => {
+        const {albumName, tagName, photos} = albumFolder;
+        const paths = await albumfs.getExifTagFolderPaths(albumName, tagName);
+        const src = paths.albumPath;
+        const dest = paths.tagPath;
+        shell.execExifFolderCreation(src, dest, photos);
+    });
+}
+
+module.exports = {generateStaticPage, createExifFolders}

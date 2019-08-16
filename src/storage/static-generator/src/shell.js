@@ -24,6 +24,12 @@ function getCopyWebScript(path) {
   return `cp -r web/* ${path}`; 
 }
 
+function getCreateExifFolderScript(src, dest, photos) {
+  const actualSrc = `${src}/uploads`;
+  const filePaths = photos.map(x => `${actualSrc}/${x}`).join(' ');
+  return `cp ${filePaths} ${dest}`;
+}
+
 function execScanner(albumName, cachePath) {
   const script = getScannerScript(albumName, cachePath);
   const errMsg ='Error: Photo scanner failed'; 
@@ -33,7 +39,13 @@ function execScanner(albumName, cachePath) {
 function execCopyStaticJS(path) {
   const script = getCopyWebScript(path);
   const errMsg = 'Error: Prepare static folder failed';
-  execShellScript(script, path);
+  execShellScript(script,errMsg);
 }
 
-module.exports = {execScanner, execCopyStaticJS} 
+function execExifFolderCreation(src, dest, photos) {
+  const script = getCreateExifFolderScript(src, dest, photos);
+  const errMsg = 'Error: Create exif tag folder @ ' + dest;
+  execShellScript(script, errMsg);
+}
+
+module.exports = {execScanner, execCopyStaticJS, execExifFolderCreation} 
