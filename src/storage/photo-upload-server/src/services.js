@@ -23,4 +23,18 @@ function savePhoto(savePhotoRequest) {
     serviceX.savePhoto(savePhotoRequest, savePhotoCallback);
 }
 
-module.exports = {savePhoto}
+function initWorkFlowCallback(err, response) {
+    if (err !== null) {
+        console.log(err);
+        return;
+    }
+    console.log('Executed workflow: ', response);
+}
+
+function initWorkFlow(albumInfo) {
+    const serviceX = new kuruviProto.ServiceX(SERVICE_X_ENDPOINT, credentials);
+    serviceX.initWorkFlow(albumInfo, initWorkFlowCallback);
+ 
+}
+
+module.exports = {savePhoto, initWorkFlow}

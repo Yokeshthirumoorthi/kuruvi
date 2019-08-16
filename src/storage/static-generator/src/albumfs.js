@@ -20,20 +20,18 @@ const CACHE_DIR = 'cache';
 async function getPaths(albumName) {
   const albumPath = `${BASE_DIR}/${albumName}`;
   const cachePath = `${albumPath}/${CACHE_DIR}`;
+  const paths = {albumPath, cachePath};
   // Make directories for album if not exist
-  await createStaticFolder(albumName);
-  return {
-    albumPath,
-    cachePath
-  };
+  await createStaticFolder(paths);
+  return paths;
 }
 
 /**
  * Make directories for album if not exist
  * @param {*} albumName 
  */
-async function createStaticFolder(albumName) {
-    const {albumPath, cachePath} = getFolderStructure(albumName);
+async function createStaticFolder(paths) {
+    const {albumPath, cachePath} = paths;
     await makeDir(albumPath);
     await makeDir(cachePath);
 }

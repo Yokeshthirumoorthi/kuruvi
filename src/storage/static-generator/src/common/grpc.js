@@ -35,5 +35,6 @@ function _loadProto (path) {
 const kuruviProto = _loadProto(PROTO_PATH).kuruvi;
 // const healthProto = _loadProto(HEALTH_PROTO_PATH).grpc.health.v1;
 const credentials = grpc.credentials.createInsecure();
+const serverCredentials = grpc.ServerCredentials.createInsecure();
 
-module.exports = {kuruviProto, credentials}
+module.exports = {kuruviProto, credentials, serverCredentials}

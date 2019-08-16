@@ -13,7 +13,7 @@ const fs = require('fs');
 const services = require('./services');
 
 const WORKDIR = '/srv'; //TODO: use value from dotenv
-const ALBUM_UPLOADS = 'album_uploads'; //TODO: use value from dotenv
+const ALBUM_UPLOADS = 'album-uploads'; //TODO: use value from dotenv
 const UPLOADS ='uploads';
 
 function getSavePhotoRequest(fields) {
@@ -46,7 +46,7 @@ function copy(oldPath, newPath, callback) {
 }
 
 async function getFileLocation(fields, file) {
-  const albumPath = `${WORKDIR}/${ALBUM_UPLOADS}/${fields.albumname}/${UPLOADS}`;
+  const albumPath = `${WORKDIR}/${ALBUM_UPLOADS}/${fields.albumName}/${UPLOADS}`;
   await makeDir(albumPath);
 
   const fileLoaction = `${albumPath}/${file.name}`;
@@ -74,11 +74,16 @@ async function saveFileToDisk(req, onSuccess, onFailure) {
       console.log('size', file.size)
       
       const savePhotoRequest = getSavePhotoRequest(fields);
-      services.savePhoto(savePhotoRequest);
+      // services.savePhoto(savePhotoRequest);
 
       onSuccess({fields, files});
     });
   })
 }
 
-module.exports = {saveFileToDisk}
+async function generateStaticPage(albumName) {
+  const albumInfo = {name: albumName};
+  services.initWorkFlow(albumInfo);
+}
+
+module.exports = {saveFileToDisk, generateStaticPage}

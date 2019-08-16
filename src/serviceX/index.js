@@ -10,7 +10,7 @@
 
 const grpc = require('grpc');
 const {kuruviProto,serverCredentials} = require('./src/common/grpc');
-const {savePhoto} = require('./src/services');
+const {savePhoto, initWorkFlow} = require('./src/services');
 const { SERVICE_X_PORT } = require('./src/common/config');
 
 /**
@@ -21,7 +21,8 @@ const { SERVICE_X_PORT } = require('./src/common/config');
 function getServer() {
     var server = new grpc.Server();
     server.addService(kuruviProto.ServiceX.service, {
-      savePhoto:savePhoto
+      savePhoto:savePhoto,
+      initWorkFlow:initWorkFlow
     });
     return server;
   }

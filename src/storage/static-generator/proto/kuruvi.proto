@@ -44,11 +44,22 @@ message SavePhotoRequest {
     string photoName = 2;
 }
 
+message AlbumInfo {
+    string name=1;
+}
+
+message Empty {}
+
 service ServiceX {
     // A Simple RPC
     //
     // Saves the album details and photo details in database
     rpc savePhoto (SavePhotoRequest) returns (PhotoDetails) {}
+    // A Simple RPC
+    //
+    // It will execute a set of workflow 
+    // and extracts more details about the photo
+    rpc initWorkFlow (AlbumInfo) returns (Empty) {}
 }
 
 // -----------------Static generator server functions-----------------
@@ -62,11 +73,14 @@ message AlbumFolders {
     repeated AlbumFolder albums =1;
 }
 
-message Empty {}
-
 service StaticGenerator {
     // A Simple RPC
     //
     // Copies uploaded files to new folders based exif data
     rpc createExifFolders (AlbumFolders) returns (Empty) {}
+    // A Simple RPC
+    //
+    // Creates the web directory with js, html and the 
+    // cache contents
+    rpc createStaticWebDirectory (AlbumInfo) returns (Empty) {}
 }

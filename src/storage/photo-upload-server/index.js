@@ -9,6 +9,7 @@
  */
 const http = require('http')
 const utils = require('./src/utils')
+const { parse } = require('querystring');
 
 const headers = {
   'Content-Type': 'application/json',
@@ -18,14 +19,28 @@ const headers = {
   /** add other headers as per requirement */
 }
 
+function collectRequestData(request, callback) {
+  let body = '';
+      request.on('data', chunk => {
+          body += chunk.toString();
+      });
+      request.on('end', () => {
+          callback(parse(body));
+  });
+}
+
 http.createServer(function (req, res) {
   if (req.method === 'OPTIONS') {
     res.writeHead(204, headers)
     res.end()
     return
   }
-  if (req.url === '/static' && req.method.toLowerCase() == 'get') {
-    utils.runStaticGenerator();
+  if (req.url === '/static' && req.method.toLowerCase() === 'post') {
+    collectRequestData(req, result => {
+      const albumName = result.albumName;
+      utils.generateStaticPage(albumName);
+      return res.end()
+    });
   }
   if (req.url === '/upload' && req.method.toLowerCase() === 'post') {
     const onFailure = (err) => {
@@ -36,14 +51,13 @@ http.createServer(function (req, res) {
     };
 
     const onSuccess = (result) => {
-      console.log(result);
       res.writeHead(200, headers);
       res.write(JSON.stringify(result));
       res.end();
     };
 
     // parse a file upload
-    utils.saveFileToDisk(req, onFailure, onSuccess);
+    utils.saveFileToDisk(req, onSuccess, onFailure);
   }
 }).listen(8000, () => {
   console.log('server started')

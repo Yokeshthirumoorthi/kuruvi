@@ -8,13 +8,10 @@
  *
  */
 const pino = require('pino');
-
-const {
-    IMGUPLOAD_SERVICE_PORT
-} = require('../config');
+const { STATIC_GENERATOR_SERVICE } = require('./config');
 
 const logger = pino({
-  name: IMGUPLOAD_SERVICE_PORT,
+  name: STATIC_GENERATOR_SERVICE,
   messageKey: 'message',
   changeLevelName: 'severity',
   useLevelLabels: true
