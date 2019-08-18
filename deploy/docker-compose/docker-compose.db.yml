@@ -88,13 +88,32 @@ services:
       - album-faces:/usr/src/app/album-faces
     restart: on-failure
 
-  adminer:
-    image: adminer
-    restart: always
+  imgproxyservice:
+    container_name: imgproxyservice
+    build:
+      context: ../../src/imgproxyservice
+      dockerfile: Dockerfile
+    volumes:
+      - album-uploads:/usr/src/app/album-upload
+      - album-resized:/usr/src/app/resized
+      - album-faces:/usr/src/app/faces
+    restart: on-failure
+
+  imgproxy:
+    container_name: imgproxy
+    image: "darthsim/imgproxy:latest"
     ports:
       - 8080:8080
+    restart: on-failure
+
+  # adminer:
+  #   image: adminer
+  #   restart: always
+  #   ports:
+  #     - 8080:8080
 
 volumes:
   album-uploads:
   album-static-gen:
   album-faces:
+  album-resized:

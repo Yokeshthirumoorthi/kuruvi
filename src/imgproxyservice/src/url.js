@@ -1,10 +1,14 @@
 const signature = require('./signature');
 const {
-  IMGPROXY_PORT,
-  IMGPROXY_SERVICE,
+  // IMGPROXY_PORT,
+  // IMGPROXY_SERVICE,
   CADDY_PORT,
   CADDY_SERVICE
 } = require('../config');
+
+const IMGPROXY_PORT = 8080;
+const IMGPROXY_SERVICE = 'imgproxy';
+
 /**
  * Generates a proper caddy url using the album name
  * and photo path.
@@ -12,7 +16,7 @@ const {
 function getCaddyURL(photoFSDetails) {
   const album = photoFSDetails.album;
   const photoPath = photoFSDetails.photo;
-  const URL =  `http://${CADDY_SERVICE}:${CADDY_PORT}/${album}/${photoPath}`;
+  const URL =  `http://${CADDY_SERVICE}:${CADDY_PORT}/album-uploads/${album}/uploads/${photoPath}`;
   return URL; 
 }
 
