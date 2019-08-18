@@ -98,9 +98,13 @@ function startWorkFlow(albumInfo) {
     console.log('Given Album Info: ', albumInfo);
 
     // This is temp data used for dev
+    // const albumFolders = {albums: [
+    //     {albumName: 'amy', tagName: 'tag1', photos: ['amy1.png', 'amy5.png']},
+    //     {albumName: 'amy', tagName: 'tag2', photos: ['amy1.png', 'amy2.png']}
+    // ]}
     const albumFolders = {albums: [
-        {albumName: 'amy', tagName: 'tag1', photos: ['amy1.png', 'amy5.png']},
-        {albumName: 'amy', tagName: 'tag2', photos: ['amy1.png', 'amy2.png']}
+        {albumName: 'album2', tagName: 'tag1', photos: ['bbt1.jpg', 'bbt2.jpg']},
+        {albumName: 'album2', tagName: 'tag2', photos: ['bbt1.jpg', 'bbt4.jpg']}
     ]}
 
     // Photos are grouped under various tags using the exif details.

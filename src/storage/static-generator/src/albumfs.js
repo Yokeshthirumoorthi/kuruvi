@@ -57,4 +57,13 @@ async function getExifTagFolderPaths(albumName, tagName) {
   }
 }
 
-module.exports = {getPaths, getExifTagFolderPaths}
+async function getFacesFolderPath(albumName) {
+  const albumPath = getAlbumPath(BASE_DIR, albumName);
+  const facePath = getAlbumSubPath(albumPath, 'faces');
+  await makeDir(facePath);
+  return {
+    facePath
+  } 
+}
+
+module.exports = {getPaths, getExifTagFolderPaths, getFacesFolderPath}

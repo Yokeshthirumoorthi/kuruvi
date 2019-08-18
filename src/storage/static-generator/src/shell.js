@@ -20,6 +20,10 @@ function getScannerScript(albumName, cachePath) {
   return `scanner/main.py album-uploads/${albumName} ${cachePath}`;
 }
 
+function getCopyFacesScript(albumName, facePath) {
+  return `cp -r album-faces/${albumName}/* ${facePath}`;
+}
+
 function getCopyWebScript(path) {
   return `cp -r web/* ${path}`; 
 }
@@ -42,10 +46,16 @@ function execCopyStaticJS(path) {
   execShellScript(script,errMsg);
 }
 
+function execCopyFaces(albumName, facePath) {
+  const script = getCopyFacesScript(albumName, facePath);
+  const errMsg ='Error: Face copy job failed'; 
+  execShellScript(script, errMsg);
+}
+
 function execExifFolderCreation(src, dest, photos) {
   const script = getCreateExifFolderScript(src, dest, photos);
   const errMsg = 'Error: Create exif tag folder @ ' + dest;
   execShellScript(script, errMsg);
 }
 
-module.exports = {execScanner, execCopyStaticJS, execExifFolderCreation} 
+module.exports = {execScanner, execCopyStaticJS, execExifFolderCreation, execCopyFaces} 

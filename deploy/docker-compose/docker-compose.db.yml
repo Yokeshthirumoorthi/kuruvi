@@ -50,6 +50,7 @@ services:
     volumes:
       - album-uploads:/srv/album-uploads
       - album-static-gen:/srv/album-static-gen
+      - album-faces:/srv/album-faces
     restart: on-failure
 
   servicex:
