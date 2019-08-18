@@ -6,8 +6,8 @@ const { Pool } = require('pg');
 
 const pool = new Pool({
   user: 'postgres',
-  host: 'postgresql',
-  database: 'kuruvi_photos',
+  host: 'postgres-db',
+  database: 'kuruvidb',
   password: 'postgres',
   port: 5432,
 });
@@ -17,7 +17,8 @@ const tableName = 'photos';
 const createAlbum = async (albumName, path) => {
   const client = await pool.connect();
   const values = [albumName, path];
-  const { rows } = client.query('INSERT INTO Albums (name, path) VALUES ($1, $2) RETURNING id', values);
+  const { rows } = await client.query('INSERT INTO Albums (name, path) VALUES ($1, $2) RETURNING id', values);
+
   return rows[0].id;
 }
 

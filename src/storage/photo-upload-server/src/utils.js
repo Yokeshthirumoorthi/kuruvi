@@ -18,7 +18,7 @@ const UPLOADS ='uploads';
 
 function getSavePhotoRequest(fields) {
   const savePhotoRequest = {
-    albumName: fields.albumname,
+    albumName: fields.albumName,
     photoName: fields.name
   };
 
@@ -74,7 +74,7 @@ async function saveFileToDisk(req, onSuccess, onFailure) {
       console.log('size', file.size)
       
       const savePhotoRequest = getSavePhotoRequest(fields);
-      // services.savePhoto(savePhotoRequest);
+      services.savePhoto(savePhotoRequest);
 
       onSuccess({fields, files});
     });

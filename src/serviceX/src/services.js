@@ -9,9 +9,27 @@
  */
 
 const {kuruviProto, credentials} = require('./common/grpc');
-const {STATIC_GENERATOR_ENDPOINT} = require('./common/config');
-
+const {STATIC_GENERATOR_ENDPOINT, PGSQL_SERVICE_API_ENDPOINT} = require('./common/config');
 const staticGeneratorService = new kuruviProto.StaticGenerator(STATIC_GENERATOR_ENDPOINT, credentials);
+
+const {fileUploaderProto, fileUploader_credentials} = require('./common/grpc_temp');
+const photoUploadServiceService_fileUploader = new fileUploaderProto.PhotoUploadService(PGSQL_SERVICE_API_ENDPOINT, fileUploader_credentials);
+
+
+
+/** TODO: Use this function until we completely
+ * get rid of fileUploader.proto
+ */
+function doSavePhoto_fileUploader(savePhotoReq) {
+    const request = {
+        album: savePhotoReq.albumName,
+        path: `/srv/album-uploads/${savePhotoReq.albumName}`,
+        filename: savePhotoReq.photoName
+    }
+    photoUploadServiceService_fileUploader.addPhoto(request, (err, res) => {
+        console.log(res);
+    })
+}
 
 /**
  * 
@@ -20,6 +38,7 @@ const staticGeneratorService = new kuruviProto.StaticGenerator(STATIC_GENERATOR_
  */
 function doSavePhoto(savePhotoReq) {
     console.log('Given Photo req:', savePhotoReq);
+    doSavePhoto_fileUploader(savePhotoReq);
 }
 
 function savePhoto(call, callback) {
