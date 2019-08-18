@@ -42,7 +42,7 @@ async function getBoundingBoxes(photoDetails) {
 }
 
 function getFaceFilesPath(photoDetails) {
-    const baseDir = path.resolve(__dirname, '../faces');
+    const baseDir = path.resolve(__dirname, '../album-faces');
     const albumName = photoDetails.album.name;
     const faces = photoDetails.faces;
     const newFaceObjects = faces.map(face => {

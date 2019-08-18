@@ -78,6 +78,16 @@ services:
     ports:
       - "5050:5050"
   
+  faceapi:
+    container_name: faceapi
+    build:
+      context: ../../src/faceapi
+      dockerfile: Dockerfile
+    volumes:
+      - album-uploads:/usr/src/app/album-uploads
+      - album-faces:/usr/src/app/album-faces
+    restart: on-failure
+
   adminer:
     image: adminer
     restart: always
@@ -87,3 +97,4 @@ services:
 volumes:
   album-uploads:
   album-static-gen:
+  album-faces:

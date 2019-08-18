@@ -9,12 +9,12 @@
  */
 
 const {kuruviProto, credentials} = require('./common/grpc');
-const {STATIC_GENERATOR_ENDPOINT, PGSQL_SERVICE_API_ENDPOINT} = require('./common/config');
+const {STATIC_GENERATOR_ENDPOINT, PGSQL_SERVICE_API_ENDPOINT, FACEAPI_SERVICE_API_ENDPOINT} = require('./common/config');
 const staticGeneratorService = new kuruviProto.StaticGenerator(STATIC_GENERATOR_ENDPOINT, credentials);
 
 const {fileUploaderProto, fileUploader_credentials} = require('./common/grpc_temp');
 const photoUploadServiceService_fileUploader = new fileUploaderProto.PhotoUploadService(PGSQL_SERVICE_API_ENDPOINT, fileUploader_credentials);
-
+const detectFaces_fileUploader = new fileUploaderProto.FaceApiService(FACEAPI_SERVICE_API_ENDPOINT, fileUploader_credentials);
 
 
 /** TODO: Use this function until we completely
@@ -23,11 +23,16 @@ const photoUploadServiceService_fileUploader = new fileUploaderProto.PhotoUpload
 function doSavePhoto_fileUploader(savePhotoReq) {
     const request = {
         album: savePhotoReq.albumName,
-        path: `/srv/album-uploads/${savePhotoReq.albumName}`,
+        path: `/usr/src/app/album-uploads/${savePhotoReq.albumName}/uploads`,
         filename: savePhotoReq.photoName
     }
     photoUploadServiceService_fileUploader.addPhoto(request, (err, res) => {
-        console.log(res);
+        const detectFaceRequest = {
+            photoId : res.photo_id
+        };
+        detectFaces_fileUploader.detectFaces(detectFaceRequest, (err, res) => {
+            console.log("Detect faces Res: ", res);
+        })
     })
 }
 
