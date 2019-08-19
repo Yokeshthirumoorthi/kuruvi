@@ -44,6 +44,11 @@ message SavePhotoRequest {
     string photoName = 2;
 }
 
+message InitWorkFlowRequest {
+    string albumName = 1;
+    repeated string photos = 2;
+}
+
 message AlbumInfo {
     string name=1;
 }
@@ -59,7 +64,7 @@ service ServiceX {
     //
     // It will execute a set of workflow 
     // and extracts more details about the photo
-    rpc initWorkFlow (AlbumInfo) returns (Empty) {}
+    rpc initWorkFlow (InitWorkFlowRequest) returns (Empty) {}
 }
 
 // -----------------Static generator server functions-----------------

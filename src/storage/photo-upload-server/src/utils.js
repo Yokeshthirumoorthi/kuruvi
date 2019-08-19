@@ -10,20 +10,13 @@
 const makeDir = require('make-dir');
 const formidable = require('formidable')
 const fs = require('fs');
+const path = require('path');
 const services = require('./services');
 
 const WORKDIR = '/srv'; //TODO: use value from dotenv
 const ALBUM_UPLOADS = 'album-uploads'; //TODO: use value from dotenv
 const UPLOADS ='uploads';
 
-function getSavePhotoRequest(fields) {
-  const savePhotoRequest = {
-    albumName: fields.albumName,
-    photoName: fields.name
-  };
-
-  return savePhotoRequest;
-}
 /**
  * Formidable library writes the uploaded photo into tmp folder.
  * Tis function copies files from tmp folder to appropriate album folders
@@ -46,8 +39,7 @@ function copy(oldPath, newPath, callback) {
 }
 
 async function getFileLocation(fields, file) {
-  const albumPath = `${WORKDIR}/${ALBUM_UPLOADS}/${fields.albumName}/${UPLOADS}`;
-  await makeDir(albumPath);
+  const albumPath = await getAlbumUploadsPath(fields.albumName);
 
   const fileLoaction = `${albumPath}/${file.name}`;
 
@@ -73,17 +65,78 @@ async function saveFileToDisk(req, onSuccess, onFailure) {
       console.log('type', file.type)
       console.log('size', file.size)
       
-      const savePhotoRequest = getSavePhotoRequest(fields);
-      services.savePhoto(savePhotoRequest);
+      // const savePhotoRequest = getSavePhotoRequest(fields);
+      // services.savePhoto(savePhotoRequest);
 
       onSuccess({fields, files});
     });
   })
 }
 
+// async function generateStaticPage(albumName) {
+//   const albumInfo = {name: albumName};
+//   services.initWorkFlow(albumInfo);
+// }
+
+/**
+ * 
+ * After upload is completed, the generate
+ * static pages job is triggered via grpc
+ * @param {*} albumName Album for which static page is generated
+ */
 async function generateStaticPage(albumName) {
-  const albumInfo = {name: albumName};
-  services.initWorkFlow(albumInfo);
+  const message = await getInitWorkFlowRequestMessage(albumName);
+  services.initWorkFlow(message);
 }
 
+/**
+ * 
+ * Album name and the list of files are passed as
+ * grpc request to do the photo-organising 
+ * @param {*} albumName Album for which workflow is being kicked off
+ */
+async function getInitWorkFlowRequestMessage(albumName) {
+  const photos = await getFileNamesInDir(albumName);
+  const message = {
+    albumName: albumName,
+    photos: photos
+  };
+  return message;
+}
+
+/**
+ * Reads the directory and lists down 
+ * the names of files in it.
+ * @param {*} albumName The album name
+ */
+async function getFileNamesInDir(albumName) {
+  const albumPath = await getAlbumUploadsPath(albumName)
+  const fileNames = fs.readdirSync(albumPath);
+  return fileNames;
+}
+
+/**
+ * 
+ * Provide a resolved path from
+ * workdir to the uploads folders
+ * @param {*} albumName Folder where photos are uploaded
+ */
+async function getAlbumUploadsPath(albumName) {
+  // the path has 4 components -
+  // 1. workdir ususally the one mentioned as docker workdir
+  // 2. name of the volume used to store the uploaded photos
+  // 3. album name and uploads folder
+  const albumPath = path.resolve(WORKDIR, ALBUM_UPLOADS, albumName, UPLOADS);
+  // Ensure the folder exists before returning the resolved path
+  await makeDir(albumPath);
+  return albumPath;
+}
+// function getSavePhotoRequest(albumName) {
+//   const savePhotoRequest = {
+//     albumName: fields.albumName,
+//     photoName: fields.name
+//   };
+
+//   return savePhotoRequest;
+// }
 module.exports = {saveFileToDisk, generateStaticPage}

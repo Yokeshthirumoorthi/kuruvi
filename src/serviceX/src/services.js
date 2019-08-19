@@ -112,8 +112,13 @@ function startWorkFlow(albumInfo) {
     staticGeneratorService.createExifFolders(albumFolders, exifFoldersGenCallback);
 }
 
+function extractExifDetails(albumUploadsFolder) {
+    console.log("Inside extract exif details folder", albumUploadsFolder);
+    startWorkFlow(albumUploadsFolder.albumName);
+}
+
 function initWorkFlow(call, callback) {
-    callback(null, startWorkFlow(call.request));
+    callback(null, extractExifDetails(call.request));
 }
 
 module.exports = {savePhoto, initWorkFlow}

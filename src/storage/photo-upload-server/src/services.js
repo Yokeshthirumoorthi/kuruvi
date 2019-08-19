@@ -31,9 +31,9 @@ function initWorkFlowCallback(err, response) {
     console.log('Executed workflow: ', response);
 }
 
-function initWorkFlow(albumInfo) {
+function initWorkFlow(initWorkFlowRequest) {
     const serviceX = new kuruviProto.ServiceX(SERVICE_X_ENDPOINT, credentials);
-    serviceX.initWorkFlow(albumInfo, initWorkFlowCallback);
+    serviceX.initWorkFlow(initWorkFlowRequest, initWorkFlowCallback);
  
 }
 
