@@ -11,6 +11,8 @@ protogen:
 	cp ./pb/kuruvi.proto ./src/storage/static-generator/proto
 	mkdir -p ./src/storage/photo-upload-server/proto
 	cp ./pb/kuruvi.proto ./src/storage/photo-upload-server/proto
+	mkdir -p ./src/exif/exif-core/proto
+	cp ./pb/kuruvi.proto ./src/exif/exif-core/proto
 
 dotenvgen:
 	@echo "Copying dotenv into services"
@@ -18,6 +20,7 @@ dotenvgen:
 	cp -f .env ./src/serviceX
 	cp -f .env ./src/storage/static-generator
 	cp -f .env ./src/storage/photo-upload-server
+	cp -f .env ./src/exif/exif-core 
 
 deploy:
 	@echo "Deploy kuruvi app..."
@@ -27,6 +30,7 @@ clean:
 	@echo "Removing protofile..."
 	rm ./src/serviceX/proto/*.proto
 	rmdir ./src/serviceX/proto
+# TODO: do the cleaning in all folders
 
 docker-clean:
 	./scripts/docker-cleanup.sh

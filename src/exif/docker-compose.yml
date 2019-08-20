@@ -1,0 +1,11 @@
+version: '3.5'
+
+services:
+  exif-core:
+    container_name: ${EXIF_CORE_SERVICE}
+    build:
+      context: ./exif-core
+      dockerfile: Dockerfile
+      args:
+        EXIF_CORE_PORT: ${EXIF_CORE_PORT}
+    restart: on-failure

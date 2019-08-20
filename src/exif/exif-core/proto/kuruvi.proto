@@ -90,22 +90,3 @@ service StaticGenerator {
     // cache contents
     rpc createStaticWebDirectory (AlbumInfo) returns (Empty) {}
 }
-
-// -----------------Exif functions-----------------
-
-// remote url of photo for exif extraction
-message PhotoURL {
-    string url= 1;
-}
-
-// exif details extracted from a photo
-message ExifData {
-    string name= 1;
-}
-
-service Exif {
-    // A Simple RPC
-    // 
-    // Downloads photo from remote server and extracts exif 
-    rpc extractExif (PhotoURL) returns (ExifData)
-}
