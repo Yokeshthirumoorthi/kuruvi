@@ -20,7 +20,7 @@ services:
       context: ../../src/storage/photo-upload-server
       dockerfile: Dockerfile
       args:
-        - PHOTO_UPLOAD_SERVER_PORT:${PHOTO_UPLOAD_SERVER_PORT}
+        PHOTO_UPLOAD_SERVER_PORT: ${PHOTO_UPLOAD_SERVER_PORT}
     volumes:
       - album-uploads:/srv/album-uploads
     ports:
@@ -44,12 +44,30 @@ services:
       context: ../../src/storage/static-generator
       dockerfile: Dockerfile
       args:
-        - STATIC_GENETATOR_PORT:${STATIC_GENERATOR_PORT}
+        STATIC_GENETATOR_PORT: ${STATIC_GENERATOR_PORT}
     ports:
       - ${STATIC_GENERATOR_PORT}:${STATIC_GENERATOR_PORT}
     volumes:
       - album-uploads:/srv/album-uploads
       - album-static-gen:/srv/album-static-gen
+    restart: on-failure
+
+  exif-core:
+    container_name: ${EXIF_CORE_SERVICE}
+    build:
+      context: ../../src/exif/exif-core
+      dockerfile: Dockerfile
+      args:
+        EXIF_CORE_PORT: ${EXIF_CORE_PORT}
+    restart: on-failure
+
+  exif-api:
+    container_name: ${EXIF_API_SERVICE}
+    build:
+      context: ../../src/exif/exif-api
+      dockerfile: Dockerfile
+      args:
+        EXIF_API_PORT: ${EXIF_API_PORT}
     restart: on-failure
 
   servicex:

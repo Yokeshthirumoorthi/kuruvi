@@ -9,14 +9,15 @@
  */
 
 const _ = require('lodash');
-const { CADDY_PORT, CADDY_SERVICE } = require('./common/config');
+const {CADDT_SERVER_ENDPOINT} = require('./common/config');
 
+const VOLUME_NAME = 'album-uploads';
 /**
  * Generates a proper caddy url using the album name
  * and photo path.
  */
 function getCaddyURL(albumName, photoName) {
-  const URL =  `http://${CADDY_SERVICE}:${CADDY_PORT}/album-uploads/${albumName}/uploads/${photoName}`;
+  const URL =  `http://${CADDT_SERVER_ENDPOINT}/${VOLUME_NAME}/${albumName}/uploads/${photoName}`;
   return URL; 
 }
 
@@ -28,7 +29,8 @@ function getCaddyURL(albumName, photoName) {
  */
 function getRemoteURLList(exififyAlbumRequest) {
   const albumName = exififyAlbumRequest.albumName;
-  const URLList = exififyAlbumRequest.photos.map(
+  const photos = exififyAlbumRequest.photos;
+  const URLList = photos.map(
     photoName => getCaddyURL(albumName, photoName)
   );
   return URLList;

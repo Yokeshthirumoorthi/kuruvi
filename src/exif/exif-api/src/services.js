@@ -22,11 +22,21 @@ function extractExifCallback(err, response) {
     console.log('Extracted Exif: ', response);
 }
 
+/**
+ * grpc handler for exififyAlbum. Iterates and extracts 
+ * exif for all the photos in a given album.
+ * @param {*} message 
+ */
 function exififyAlbum(message) {
-    const exifCore= new kuruviProto.Exif(EXIF_CORE_ENDPOINT, credentials);
-    const remoteURLList = utils.getRemoteURLList(message);
+    const exifCore= new kuruviProto.ExifCore(EXIF_CORE_ENDPOINT, credentials);
+    const exififyAlbumRequest = message.request;
+    const remoteURLList = utils.getRemoteURLList(exififyAlbumRequest);
     console.log("remote urls are : ", remoteURLList);
-    // exifCore.extractExif(message,extractExifCallback);
+    const photoURL = remoteURLList[4];
+    const extractExifRequest = {
+        url: photoURL
+    }
+    exifCore.extractExif(extractExifRequest,extractExifCallback);
 }
 
 module.exports = {exififyAlbum}

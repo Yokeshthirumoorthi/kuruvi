@@ -13,6 +13,8 @@ protogen:
 	cp ./pb/kuruvi.proto ./src/storage/photo-upload-server/proto
 	mkdir -p ./src/exif/exif-core/proto
 	cp ./pb/kuruvi.proto ./src/exif/exif-core/proto
+	mkdir -p ./src/exif/exif-api/proto
+	cp ./pb/kuruvi.proto ./src/exif/exif-api/proto
 
 dotenvgen:
 	@echo "Copying dotenv into services"
@@ -21,10 +23,11 @@ dotenvgen:
 	cp -f .env ./src/storage/static-generator
 	cp -f .env ./src/storage/photo-upload-server
 	cp -f .env ./src/exif/exif-core 
+	cp -f .env ./src/exif/exif-api 
 
 deploy:
 	@echo "Deploy kuruvi app..."
-	docker-compose -f deploy/docker-compose/docker-compose.db.yml up -d --build
+	docker-compose -f deploy/docker-compose/docker-compose.yml up -d --build
 
 clean:
 	@echo "Removing protofile..."

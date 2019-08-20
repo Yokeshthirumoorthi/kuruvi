@@ -17,10 +17,11 @@ async function getImage(url) {
   const image = await Axios({
     url: url,
     method: 'GET',
-    responseType: 'stream'
+    responseType: 'arraybuffer'
   });
 
-  return image; 
+  const imageBuffer = Buffer.from(image.data)
+  return imageBuffer;
 }
 
 module.exports = {getImage}

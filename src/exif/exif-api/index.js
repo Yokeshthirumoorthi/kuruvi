@@ -20,7 +20,7 @@ const grpc = require('grpc');
  */
 function getServer() {
   var server = new grpc.Server();
-  server.addService(kuruviProto.Exif.service, {
+  server.addService(kuruviProto.ExifApi.service, {
       exififyAlbum: exififyAlbum
   });
   return server;
