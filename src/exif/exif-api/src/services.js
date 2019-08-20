@@ -12,7 +12,8 @@ const utils = require('./utils');
 
 const {kuruviProto, credentials} = require('./common/grpc');
 const {EXIF_CORE_ENDPOINT} = require('./common/config');
-
+const {createQueue} = require('./queue/send');
+const {runQueueForAlbum} = require('./queue/receive');
 
 function extractExifCallback(err, response) {
     if (err !== null) {
@@ -36,7 +37,9 @@ function exififyAlbum(message) {
     const extractExifRequest = {
         url: photoURL
     }
-    exifCore.extractExif(extractExifRequest,extractExifCallback);
+    createQueue(exififyAlbumRequest);
+    runQueueForAlbum(exififyAlbumRequest.albumName);
+    // exifCore.extractExif(extractExifRequest,extractExifCallback);
 }
 
 module.exports = {exififyAlbum}

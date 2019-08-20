@@ -18,3 +18,10 @@ services:
       args:
         EXIF_API_PORT: ${EXIF_API_PORT}
     restart: on-failure
+
+  exif-queue:
+    container_name: ${EXIF_QUEUE_SERVICE}
+    build:
+      context: ./exif-queue
+      dockerfile: Dockerfile
+    restart: on-failure
