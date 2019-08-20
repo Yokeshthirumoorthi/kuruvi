@@ -9,3 +9,12 @@ services:
       args:
         EXIF_CORE_PORT: ${EXIF_CORE_PORT}
     restart: on-failure
+
+  exif-api:
+    container_name: ${EXIF_API_SERVICE}
+    build:
+      context: ./exif-api
+      dockerfile: Dockerfile
+      args:
+        EXIF_API_PORT: ${EXIF_API_PORT}
+    restart: on-failure
