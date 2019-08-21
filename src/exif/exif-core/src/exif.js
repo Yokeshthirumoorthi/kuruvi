@@ -5,19 +5,10 @@
 
 const _ = require('lodash');
 const exif = require('exif-parser');
-// const fs = require('fs');
-const pino = require('pino');
-
-const logger = pino({
-  name: 'currencyservice-client',
-  messageKey: 'message',
-  changeLevelName: 'severity',
-  useLevelLabels: true
-});
 
 // Given an imagebuffer, extract exif out of it
-const getEXIF = (imageBuffer) => {
-  const parser = exif.create(imageBuffer);
+const getEXIF = async (imageBuffer) => {
+  const parser = await exif.create(imageBuffer);
   const result = parser.parse();
   return result;
 };
@@ -29,49 +20,34 @@ const parseEXIF = (rawEXIF, parsebyKeys) => {
   return result;
 };
 
-// // Given a path, generate apropriate exif json
-// const generateEXIFJson = (imageBufferWithPath) => {
-//   const {buffer, path} = imageBufferWithPath;
-
-//   var rawEXIF;
-//   try {
-//      rawEXIF = getEXIF(buffer);
-//   } catch (error) {
-//     logger.error(`Error in Exif: ${error} | @ path: ${path}`);
-//   }
-
-//   const parsedEXIF = parseEXIF(rawEXIF);
-//   const result = {...parsedEXIF, path};
-//   return result;
-// };
-
-// const getImageBuffer = (path) => {
-//   const buffer = fs.readFileSync(path);
-//   const result = {buffer, path};
-//   return result;
-// }
-
-// const runLamda = (imagePath) => {
-//   const imageBuffersWithPath = getImageBuffer(imagePath);
-//   const exifJson = generateEXIFJson(imageBuffersWithPath);
-//   return exifJson;
-// };
-
-
+/**
+ * Convert to format required by grpc message
+ * @param {*} parsedExif 
+ */
+const formatResult = (parsedExif) => {
+  return {
+    make: parsedExif.Make,
+    model: parsedExif.Model,
+    create_on: parsedExif.CreateDate,
+    width: parsedExif.ExifImageWidth,
+    height: parsedExif.ExifImageHeight
+  }
+}
 /**
  * 
  * Extracts exif and filter only required values
  * @param {*} buffer image buffer downloaded from remote url or file system
  */
-const extract = (buffer) => {
+const extract = async (buffer) => {
   var rawEXIF;
   try {
-    rawEXIF = getEXIF(buffer);
+    rawEXIF = await getEXIF(buffer);
     const parsebyKeys = ['Make', 'Model', 'CreateDate', 'ExifImageWidth', 'ExifImageHeight'];
     const parsedEXIF = parseEXIF(rawEXIF, parsebyKeys); 
-    return parsedEXIF;
+    const formattedResult = formatResult(parsedEXIF);
+    return formattedResult;
   } catch (error) {
-    logger.error(`Error in Exif extraction : ${error}`);
+    console.log(`Error in Exif extraction : ${error}`);
   }
   return {};
 }

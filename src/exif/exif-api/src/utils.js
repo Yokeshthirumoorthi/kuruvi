@@ -8,7 +8,6 @@
  *
  */
 
-const _ = require('lodash');
 const {CADDT_SERVER_ENDPOINT} = require('./common/config');
 
 const VOLUME_NAME = 'album-uploads';
@@ -21,26 +20,4 @@ function getCaddyURL(albumName, photoName) {
   return URL; 
 }
 
-/**
- * 
- * Transforms the exififyalbumrequest to a list 
- * of remote urls
- * @param {*} exififyAlbumRequest 
- */
-function getRemoteURLList(exififyAlbumRequest) {
-  const albumName = exififyAlbumRequest.albumName;
-  const photos = exififyAlbumRequest.photos;
-  const URLList = photos.map(
-    photoName => getCaddyURL(albumName, photoName)
-  );
-  return URLList;
-}
-
-// Given a raw exif json, reduce it to required-keys json
-const parseEXIF = (rawEXIF, parsebyKeys) => {
-  const tags = _.get(rawEXIF, 'tags');
-  const result = _.pick(tags, parsebyKeys);
-  return result;
-};
-
-module.exports = {parseEXIF, getRemoteURLList}
+module.exports = {getCaddyURL}

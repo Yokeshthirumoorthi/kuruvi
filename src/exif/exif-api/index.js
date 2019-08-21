@@ -9,7 +9,7 @@
  */
 
 const {kuruviProto, serverCredentials} = require('./src/common/grpc');
-const {exififyAlbum} = require('./src/services');
+const {runExififyAlbumUsingQueue} = require('./src/queue');
 const {EXIF_API_PORT} = require('./src/common/config');
 const grpc = require('grpc');
 
@@ -21,7 +21,7 @@ const grpc = require('grpc');
 function getServer() {
   var server = new grpc.Server();
   server.addService(kuruviProto.ExifApi.service, {
-      exififyAlbum: exififyAlbum
+     exififyAlbum: runExififyAlbumUsingQueue
   });
   return server;
 }

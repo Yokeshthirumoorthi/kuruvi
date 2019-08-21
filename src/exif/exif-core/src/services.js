@@ -19,13 +19,14 @@ const exif = require('./exif');
  */
 async function doExifExtraction(photoURL) {
     const imageBuffer = await utils.getImage(photoURL.url);
-    const data = exif.extract(imageBuffer);
+    const data = await exif.extract(imageBuffer);
     console.log('Extracted Exif: ', data);
     return data;
 }
 
 async function extractExif(call, callback) {
-    callback(null, await doExifExtraction(call.request));
+    const responseMessage = await doExifExtraction(call.request)
+    callback(null, responseMessage);
 }
 
 module.exports = {extractExif}

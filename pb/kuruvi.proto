@@ -101,6 +101,11 @@ message PhotoURL {
 // exif details extracted from a photo
 message ExifData {
     string name= 1;
+    string make= 2;
+    string model= 3;
+    int32 create_on= 4;
+    int32 width= 5;
+    int32 height= 6;
 }
 
 message ExififyAlbumRequest {
