@@ -12,6 +12,19 @@ const utils = require('./utils');
 
 const {kuruviProto, credentials} = require('./common/grpc');
 const {EXIF_CORE_ENDPOINT} = require('./common/config');
+const dgraph = require('./dgraph');
+
+function formatExifToSaveInDB (exif, predicate) {
+    return {
+        ...exif,
+        exif_of: {
+            name: predicate.photoName,
+            belongs_to: {
+                name: predicate.albumName
+            }
+        }
+    }
+}
 
 /**
  * This callback is executed after exif extraction.
@@ -23,14 +36,15 @@ const {EXIF_CORE_ENDPOINT} = require('./common/config');
  * @param {*} response 
  * @param {*} sendAckToQueue 
  */
-function extractExifCallback(err, response, sendAckToQueue) {
+function extractExifCallback(err, response, message, sendAckToQueue) {
     if (err !== null) {
         console.log(err);
         sendAckToQueue();
         return;
     }
     console.log('Extracted Exif: ', response);
-    sendAckToQueue();
+    const data  = formatExifToSaveInDB(response, message);
+    dgraph.createData(data).then(sendAckToQueue);
 }
 
 /**
@@ -47,7 +61,7 @@ function exififyAlbum(message, sendAckToQueue) {
         url: caddyURL
     }
     exifCore.extractExif(extractExifRequest,
-        (err, response) => extractExifCallback(err, response, sendAckToQueue));
+        (err, response) => extractExifCallback(err, response, message, sendAckToQueue));
 }
 
 module.exports = {exififyAlbum}

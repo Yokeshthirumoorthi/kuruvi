@@ -130,7 +130,7 @@ services:
         volume:
           nocopy: true
     ports:
-      - ${DGRAPH_RATEL_PORT}:${DGRAPH_RATEL_PORT}
+      - ${DGRAPH_RATEL_PORT}:8000
     command: dgraph-ratel
 
 volumes:

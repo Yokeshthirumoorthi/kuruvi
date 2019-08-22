@@ -13,6 +13,9 @@ function newClient(clientStub) {
     return new dgraph.DgraphClient(clientStub);
 }
 
+const dgraphClientStub = newClientStub();
+const dgraphClient = newClient(dgraphClientStub);
+
 // Drop All - discard all data and start from a clean slate.
 async function dropAll(dgraphClient) {
     const op = new dgraph.Operation();
@@ -35,7 +38,7 @@ async function setSchema(dgraphClient) {
 }
 
 // Create data using JSON.
-async function createData(dgraphClient) {
+async function createData(data) {
     // Create a new transaction.
     const txn = dgraphClient.newTxn();
     try {
@@ -65,22 +68,23 @@ async function createData(dgraphClient) {
         //         }
         //     ]
         // };
-        const p = {
-            make: "Canon",
-            model: "80 D",
-            create_on: new Date(1980, 1, 1, 23, 0, 0, 0),
-            width: 3600,
-            height: 1000,
-            exif_of: [
-                {
-                    name: "bbt1.jpg",
-                    photo_of: [{
-                        name: "album2"
-                    }]
-                }
-            ]
-        }
+        // const p = {
+        //     make: "Canon",
+        //     model: "80 D",
+        //     create_on: new Date(1980, 1, 1, 23, 0, 0, 0),
+        //     width: 3600,
+        //     height: 1000,
+        //     exif_of: [
+        //         {
+        //             name: "bbt1.jpg",
+        //             photo_of: [{
+        //                 name: "album2"
+        //             }]
+        //         }
+        //     ]
+        // }
 
+        const p = data;
         // Run mutation.
         const mu = new dgraph.Mutation();
         mu.setSetJson(p);
@@ -105,45 +109,21 @@ async function createData(dgraphClient) {
     }
 }
 
-// Query for data.
-async function queryData(dgraphClient) {
-    // Run query.
-    const query = `query all($a: string) {
-        all(func: eq(name, $a)) {
-            uid
-            name
-            age
-            married
-            loc
-            dob
-            friend {
-                name
-                age
-            }
-            school {
-                name
-            }
-        }
-    }`;
-    const vars = { $a: "Alice" };
-    const res = await dgraphClient.newTxn().queryWithVars(query, vars);
-    const ppl = res.getJson();
-
-    // Print results.
-    console.log(`Number of people named "Alice": ${ppl.all.length}`);
-    ppl.all.forEach((person) => console.log(person));
-}
-
 async function main() {
-    const dgraphClientStub = newClientStub();
-    const dgraphClient = newClient(dgraphClientStub);
+    // const dgraphClientStub = newClientStub();
+    // const dgraphClient = newClient(dgraphClientStub);
     await dropAll(dgraphClient);
     await setSchema(dgraphClient);
-    await createData(dgraphClient);
+    // await createData(dgraphClient);
     // await queryData(dgraphClient);
 
     // Close the client stub.
     // dgraphClientStub.close();
+}
+
+async function close() {
+    // Close the client stub.
+    dgraphClientStub.close();
 }
 
 main().then(() => {
@@ -151,3 +131,5 @@ main().then(() => {
 }).catch((e) => {
     console.log("ERROR: ", e);
 });
+
+module.exports = {createData, close}
