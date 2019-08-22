@@ -1,0 +1,1 @@
+FROM dgraph/dgraph:latest

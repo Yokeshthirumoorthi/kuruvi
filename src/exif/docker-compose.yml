@@ -25,3 +25,55 @@ services:
       context: ./exif-queue
       dockerfile: Dockerfile
     restart: on-failure
+
+  zero:
+    container_name: ${DGRAPH_ZERO}
+    build:
+      context: ./exif-dgraph
+      dockerfile: Dockerfile
+    volumes:
+      - type: volume
+        source: dgraph
+        target: /dgraph
+        volume:
+          nocopy: true
+    ports:
+      - ${DGRAPH_ZERO_PORT_1}:${DGRAPH_ZERO_PORT_1}
+      - ${DGRAPH_ZERO_PORT_2}:${DGRAPH_ZERO_PORT_2}
+    restart: on-failure
+    command: dgraph zero --my=${DGRAPH_ZERO}:${DGRAPH_ZERO_PORT_1}
+
+  exif-dgraph:
+    container_name: ${EXIF_DGRAPH}
+    build:
+      context: ./exif-dgraph
+      dockerfile: Dockerfile
+    volumes:
+      - type: volume
+        source: dgraph
+        target: /dgraph
+        volume:
+          nocopy: true
+    ports:
+      - ${EXIF_DGRAPH_PORT_1}:${EXIF_DGRAPH_PORT_1}
+      - ${EXIF_DGRAPH_PORT_2}:${EXIF_DGRAPH_PORT_2}
+    restart: on-failure
+    command: dgraph alpha --my=${EXIF_DGRAPH}:${EXIF_DGRAPH_PORT_3} --lru_mb=2048 --zero=${DGRAPH_ZERO}:${DGRAPH_ZERO_PORT_1}
+
+  ratel:
+    container_name: ${DGRAPH_RATEL}
+    build:
+      context: ./exif-dgraph
+      dockerfile: Dockerfile
+    volumes:
+      - type: volume
+        source: dgraph
+        target: /dgraph
+        volume:
+          nocopy: true
+    ports:
+      - ${DGRAPH_RATEL_PORT}:${DGRAPH_RATEL_PORT}
+    command: dgraph-ratel
+
+volumes:
+  dgraph:

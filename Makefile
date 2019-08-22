@@ -27,7 +27,7 @@ dotenvgen:
 
 deploy:
 	@echo "Deploy kuruvi app..."
-	docker-compose -f deploy/docker-compose/docker-compose.yml up -d --build
+	docker-compose -f deploy/docker-compose/docker-compose.dgraph.yml up -d --build
 
 clean:
 	@echo "Removing protofile..."
