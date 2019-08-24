@@ -1,0 +1,40 @@
+{
+    "set": [
+        {
+            "uid": "_:album2",
+            "name": "album2"
+        }
+    ]
+}
+
+// {
+//     "set": [
+//         {
+//             "uid": "_:photo3",
+//             "name": "photo3.jpg"
+//         },
+//         {
+//             "uid":"0x99",
+//             "has_photo": {
+//                 "uid":"_:photo3"
+//             }
+//         }
+//     ]
+// }
+
+// {
+//     "set": [
+//         {
+//             "uid": "_:exif1",
+//             "make": "Canon",
+//             "model": "80 D",
+//             "create_date": "1977-05-25"
+//         },
+//         {
+//             "uid": "0x9a",
+//             "has_details": {
+//                 "uid": "_:exif1"
+//             }
+//         }
+//     ]
+// }

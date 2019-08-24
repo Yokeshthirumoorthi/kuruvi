@@ -1,0 +1,39 @@
+{
+    set {
+       _:album1 <name> "album1" .
+
+       _:photo1 <name> "photo1.jpg" .
+       _:photo1 <belongs_to> _:album1 .
+       _:album1 <has_photo> _:photo1 .
+
+       _:photo2 <name> "photo2.jpg" .
+       _:photo2 <belongs_to> _:album1 . 
+       _:album1 <has_photo> _:photo2 .
+
+       _:exif1 <make> "Canon" .
+       _:exif1 <model> "80 D" .
+       _:exif1 <create_date> "1977-05-25" .
+       _:exif1 <details_of> _:photo1 .
+       _:photo1 <has_details> _:exif1 .	
+      
+       _:exif2 <make> "Canon" .
+       _:exif2 <model> "80 D" .
+       _:exif2 <create_date> "1980-05-25" .
+       _:exif2 <details_of> _:photo2 .
+       _:photo2 <has_details> _:exif2 .
+    }
+}
+
+{
+   structure(func:allofterms(name, "album1")) {
+     name
+     has_photo {
+      	name
+        has_details {
+          make
+          model
+          create_date
+        }
+    	}
+    }
+}
