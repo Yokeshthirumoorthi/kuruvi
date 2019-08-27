@@ -131,5 +131,5 @@ service ExifApi {
     //
     // Gets the exif details of all photos in an album
     // and save it to database
-    rpc exififyAlbum (ExififyAlbumRequest) returns (JobStatus) {}
+    rpc exififyAlbum (ExififyAlbumRequest) returns (AlbumFolders) {}
 }
