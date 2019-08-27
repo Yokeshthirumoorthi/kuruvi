@@ -26,15 +26,56 @@ async function dropAll(dgraphClient) {
 // Set schema.
 async function setSchema(dgraphClient) {
     const schema = `
-        make: string @index(exact) .
-        model: string .
-        create_on: datetime .
-        width: int .
-        height: int .
+        name: string @index(term) .
     `;
     const op = new dgraph.Operation();
     op.setSchema(schema);
     await dgraphClient.alter(op);
+}
+
+async function addPhoto(photoName, albumUID) {
+    const query = [{
+            "uid": "_:photo",
+            "name": photoName
+        },
+        {
+            "uid": albumUID,
+            "photos": {
+                "uid": "_:photo"
+            }
+        }];
+    
+    createData(query);
+}
+
+async function getPhotoUID(photoName) {
+    const query = `query photo($a: string) {
+        all(func: eq(name, $a)) {
+            uid
+        }
+    }`; 
+    const vars = { $a: photoName };
+    const res = await dgraphClient.newTxn().queryWithVars(query, vars);
+    const photoNode= res.getJson();
+
+    console.log("Photonode: ", photoNode);
+    const photoUID = photoNode.uid;
+
+    return photoUID;
+}
+
+async function addExif(exif, photoUID) {
+    const query = [{
+        "uid": "_:exif",
+        ...exif
+    },
+    {
+        "uid": photoUID,
+        "details": {
+            "uid": "_:exif"
+        }
+    }]
+    await createData(query);
 }
 
 // Create data using JSON.
@@ -42,48 +83,6 @@ async function createData(data) {
     // Create a new transaction.
     const txn = dgraphClient.newTxn();
     try {
-        // Create data.
-        // const p = {
-        //     name: "Alice",
-        //     age: 26,
-        //     married: true,
-        //     loc: {
-        //         type: "Point",
-        //         coordinates: [1.1, 2],
-        //     },
-        //     dob: new Date(1980, 1, 1, 23, 0, 0, 0),
-        //     friend: [
-        //         {
-        //             name: "Bob",
-        //             age: 24,
-        //         },
-        //         {
-        //             name: "Charlie",
-        //             age: 29,
-        //         }
-        //     ],
-        //     school: [
-        //         {
-        //             name: "Crown Public School",
-        //         }
-        //     ]
-        // };
-        // const p = {
-        //     make: "Canon",
-        //     model: "80 D",
-        //     create_on: new Date(1980, 1, 1, 23, 0, 0, 0),
-        //     width: 3600,
-        //     height: 1000,
-        //     exif_of: [
-        //         {
-        //             name: "bbt1.jpg",
-        //             photo_of: [{
-        //                 name: "album2"
-        //             }]
-        //         }
-        //     ]
-        // }
-
         const p = data;
         // Run mutation.
         const mu = new dgraph.Mutation();
@@ -101,12 +100,34 @@ async function createData(data) {
 
         console.log("All created nodes (map from blank node names to uids):");
         assigned.getUidsMap().forEach((uid, key) => console.log(`${key} => ${uid}`));
-        console.log();
     } finally {
         // Clean up. Calling this after txn.commit() is a no-op
         // and hence safe.
         await txn.discard();
     }
+}
+
+// Query for data.
+async function queryData(albumName) {
+    // Run query.
+    const query = `query all($a: string) {
+        all(func: eq(name, $a)) {
+            uid
+            name
+            photos {
+                name
+            }
+        }
+    }`;
+    const vars = { $a: albumName };
+    const res = await dgraphClient.newTxn().queryWithVars(query, vars);
+    const ppl = res.getJson();
+
+    // Print results.
+    // console.log(`Number of people named "Alice": ${ppl.all.length}`);
+    // ppl.all.forEach((person) => console.log(person));
+
+    return ppl;
 }
 
 async function main() {
@@ -132,4 +153,8 @@ main().then(() => {
     console.log("ERROR: ", e);
 });
 
-module.exports = {createData, close}
+module.exports = {
+    createData, close, 
+    queryData, addPhoto, 
+    addExif, getPhotoUID
+}

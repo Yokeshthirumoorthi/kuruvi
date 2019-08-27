@@ -95,20 +95,21 @@ function exifFoldersGenCallback(err, response) {
  * is started. This function
  * helps in executing the process by calling 
  * each service in some defined order.
- * @param {*} albumInfo Contains the name of album to be processed
+ * @param {*} albumFolders Contains the name of album to be processed
  */
-function startWorkFlow(albumInfo) {
-    console.log('Given Album Info: ', albumInfo);
+function startWorkFlow(err, response) {
+    const albumFolders = response;
+    console.log('Given Album Info: ', albumFolders);
 
     // This is temp data used for dev
     // const albumFolders = {albums: [
     //     {albumName: 'amy', tagName: 'tag1', photos: ['amy1.png', 'amy5.png']},
     //     {albumName: 'amy', tagName: 'tag2', photos: ['amy1.png', 'amy2.png']}
     // ]}
-    const albumFolders = {albums: [
-        {albumName: 'album2', tagName: 'tag1', photos: ['bbt1.jpg', 'bbt2.jpg']},
-        {albumName: 'album2', tagName: 'tag2', photos: ['bbt1.jpg', 'bbt4.jpg']}
-    ]}
+    // const albumFolders = {albums: [
+    //     {albumName: 'album2', tagName: 'tag1', photos: ['bbt1.jpg', 'bbt2.jpg']},
+    //     {albumName: 'album2', tagName: 'tag2', photos: ['bbt1.jpg', 'bbt4.jpg']}
+    // ]}
 
     // Photos are grouped under various tags using the exif details.
     // Copy the photos in given folder:photos directory structure.
@@ -117,8 +118,7 @@ function startWorkFlow(albumInfo) {
 
 function extractExif(albumUploadsFolder) {
     console.log("Inside extract exif details folder", albumUploadsFolder);
-    exifService.exififyAlbum(albumUploadsFolder, endWorkFlowCallback)
-    // startWorkFlow(albumUploadsFolder.albumName);
+    exifService.exififyAlbum(albumUploadsFolder, startWorkFlow);
 }
 
 function initWorkFlow(call, callback) {

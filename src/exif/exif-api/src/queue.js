@@ -11,9 +11,9 @@
 
 var amqp = require('amqplib/callback_api');
 const {EXIF_QUEUE_ENDPOINT} = require('./common/config');
-const {exififyAlbum} = require('./services');
-
+const {exififyAlbum, organizePhotosByExif} = require('./services');
 const QUEUE_CONNECTION_STRING = `amqp://${EXIF_QUEUE_ENDPOINT}`;
+const END_OF_QUEUE = "EOQ";
 
 function runServices(message, sendAckToQueue) {
     console.log(" [x] Received %s", message);
@@ -26,7 +26,7 @@ function runServices(message, sendAckToQueue) {
  * and save it in database.
  * @param {*} albumName The queue name
  */
-function consumeQueue(albumName) {
+function consumeQueue(albumName, callback) {
     amqp.connect(QUEUE_CONNECTION_STRING, function(error0, connection) {
         if (error0) {
             throw error0;
@@ -47,10 +47,14 @@ function consumeQueue(albumName) {
 
             console.log(" [*] Waiting for messages in %s. To exit press CTRL+C", queue);
     
-            channel.consume(queue, function(msg) {
+            channel.consume(queue, async function(msg) {
                 const message = JSON.parse(msg.content);
-                const sendAckToQueue = () => channel.ack(msg);
-                runServices(message, sendAckToQueue)
+                if (message.albumName === '' && message.photoName === '') {
+                    callback(null, await organizePhotosByExif());
+                } else {
+                    const sendAckToQueue = () => channel.ack(msg);
+                    runServices(message, sendAckToQueue)
+                }
             }, {
                 noAck: false
             });
@@ -99,10 +103,10 @@ function sendToQueue(albumName, msgs) {
  * logic. The queue consumer treats each message one
  * after the other and ensures exif if extracted for
  * all the photos in the album
- * @param {*} message Json object with albumname and list of photonames in it
+ * @param {*} call Json object with albumname and list of photonames in it
  */
-function runExififyAlbumUsingQueue(message) {
-  const exififyAlbumRequest = message.request; 
+function runExififyAlbumUsingQueue(call, callback) {
+  const exififyAlbumRequest = call.request; 
   var msgs = exififyAlbumRequest.photos.map(
     photoName => {
         return {
@@ -111,8 +115,12 @@ function runExififyAlbumUsingQueue(message) {
         }
     }
   );
-  sendToQueue(exififyAlbumRequest.albumName, msgs);
-  consumeQueue(exififyAlbumRequest.albumName);
+  const endMessage = {
+      albumName: '',
+      photoName: ''
+  };
+  sendToQueue(exififyAlbumRequest.albumName, [...msgs, endMessage]);
+  consumeQueue(exififyAlbumRequest.albumName, callback);
 }
 
 module.exports = {runExififyAlbumUsingQueue}

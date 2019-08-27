@@ -26,6 +26,35 @@ function formatExifToSaveInDB (exif, predicate) {
     }
 }
 
+function generateFolderStructureByExif(exifJson) {
+    const tag1Photos = exifJson.all[0].photos.map(photo => photo.name);
+    const albumFolders = {albums: [
+        {albumName: 'album2', tagName: 'tag1', photos: tag1Photos},
+        {albumName: 'album2', tagName: 'tag2', photos: ['bbt1.jpg', 'bbt4.jpg']}
+    ]}
+    // TODO: implement groupby functionality
+    return albumFolders;
+}
+
+/**
+ * 
+ * After the photos are completely uploaded, 
+ * the photo-details extraction process
+ * is started. This function
+ * helps in executing the process by calling 
+ * each service in some defined order.
+ * @param {*} albumInfo Contains the name of album to be processed
+ */
+async function organizePhotosByExif(albumName) {
+    console.log("Inside organizePhotosByExif")
+    const exif = await dgraph.queryData('album2');
+
+    const folders = generateFolderStructureByExif(exif);
+    console.log(folders);
+
+    return folders;
+}
+
 /**
  * This callback is executed after exif extraction.
  * When exif is extracted from photo, 
@@ -44,7 +73,8 @@ function extractExifCallback(err, response, message, sendAckToQueue) {
     }
     console.log('Extracted Exif: ', response);
     const data  = formatExifToSaveInDB(response, message);
-    dgraph.createData(data).then(sendAckToQueue);
+    // dgraph.createData(data).then(sendAckToQueue);
+    sendAckToQueue();
 }
 
 /**
@@ -64,4 +94,4 @@ function exififyAlbum(message, sendAckToQueue) {
         (err, response) => extractExifCallback(err, response, message, sendAckToQueue));
 }
 
-module.exports = {exififyAlbum}
+module.exports = {exififyAlbum, organizePhotosByExif}

@@ -27,8 +27,9 @@ const albumfs = require('./albumfs');
 async function generateStaticPage(albumName) {
     const {albumPath, cachePath} = await albumfs.getPaths(albumName);
     shell.execCopyStaticJS(albumPath);
-    const {facePath} = await albumfs.getFacesFolderPath(albumName);
-    shell.execCopyFaces(albumName, facePath);
+    // TODO : catch error gracefully
+    // const {facePath} = await albumfs.getFacesFolderPath(albumName);
+    // shell.execCopyFaces(albumName, facePath);
     shell.execScanner(albumName, cachePath);
 }
 
