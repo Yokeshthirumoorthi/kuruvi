@@ -49,6 +49,7 @@ services:
       - ${STATIC_GENERATOR_PORT}:${STATIC_GENERATOR_PORT}
     volumes:
       - album-uploads:/srv/album-uploads
+      - album-faces:/usr/src/app/faces
       - album-static-gen:/srv/album-static-gen
     restart: on-failure
 
@@ -136,4 +137,5 @@ services:
 volumes:
   album-uploads:
   album-static-gen:
+  album-faces:
   dgraph:
