@@ -45,7 +45,25 @@ async function addPhoto(photoName, albumUID) {
             }
         }];
     
-    createData(query);
+    console.log("photo query", query);
+    
+    await createData(query);
+}
+
+async function getAlbumUID(albumName) {
+    const query = `query album($a: string) {
+        all(func: eq(name, $a)) {
+            uid
+        }
+    }`; 
+    const vars = { $a: albumName };
+    const res = await dgraphClient.newTxn().queryWithVars(query, vars);
+    const albumNode= res.getJson();
+
+    console.log("albumnode: ", albumNode);
+    const albumUID = albumNode.all[0].uid;
+
+    return albumUID;
 }
 
 async function getPhotoUID(photoName) {
@@ -59,22 +77,24 @@ async function getPhotoUID(photoName) {
     const photoNode= res.getJson();
 
     console.log("Photonode: ", photoNode);
-    const photoUID = photoNode.uid;
+    const photoUID = photoNode.all[0].uid;
 
     return photoUID;
 }
 
 async function addExif(exif, photoUID) {
     const query = [{
-        "uid": "_:exif",
-        ...exif
-    },
-    {
-        "uid": photoUID,
-        "details": {
-            "uid": "_:exif"
-        }
-    }]
+            "uid": "_:exif",
+            ...exif,
+            create_date: new Date(exif.create_on)
+        },
+        {
+            "uid": photoUID,
+            "exif": {
+                "uid": "_:exif"
+            }
+        }];
+    console.log("Add exif query: ", query);
     await createData(query);
 }
 
@@ -116,16 +136,15 @@ async function queryData(albumName) {
             name
             photos {
                 name
+                exif {
+                    expand(_all_)
+                }
             }
         }
     }`;
     const vars = { $a: albumName };
     const res = await dgraphClient.newTxn().queryWithVars(query, vars);
     const ppl = res.getJson();
-
-    // Print results.
-    // console.log(`Number of people named "Alice": ${ppl.all.length}`);
-    // ppl.all.forEach((person) => console.log(person));
 
     return ppl;
 }
@@ -156,5 +175,6 @@ main().then(() => {
 module.exports = {
     createData, close, 
     queryData, addPhoto, 
-    addExif, getPhotoUID
+    addExif, getPhotoUID,
+    getAlbumUID
 }

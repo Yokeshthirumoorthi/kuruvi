@@ -13,26 +13,40 @@ const utils = require('./utils');
 const {kuruviProto, credentials} = require('./common/grpc');
 const {EXIF_CORE_ENDPOINT} = require('./common/config');
 const dgraph = require('./dgraph');
-
-function formatExifToSaveInDB (exif, predicate) {
-    return {
-        ...exif,
-        exif_of: {
-            name: predicate.photoName,
-            belongs_to: {
-                name: predicate.albumName
-            }
-        }
-    }
-}
+const _ = require('lodash');
+const moment = require('moment');
 
 function generateFolderStructureByExif(exifJson) {
-    const tag1Photos = exifJson.all[0].photos.map(photo => photo.name);
-    const albumFolders = {albums: [
-        {albumName: 'album2', tagName: 'tag1', photos: tag1Photos},
-        {albumName: 'album2', tagName: 'tag2', photos: ['bbt1.jpg', 'bbt4.jpg']}
-    ]}
-    // TODO: implement groupby functionality
+    // const otherPhotos = exifJson.all[0].photos.filter(photo => photo.exif.create_on === '');
+    const photos = exifJson.all[0].photos;
+
+    console.log("exifjson", exifJson);
+
+
+    const photosWithExif = photos.map(photo => {
+        console.log("photo:", photo);
+        return {name: photo.name, date: photo.exif[0].create_on} 
+    });
+    
+    console.log("PHotoswithexif", photosWithExif);
+
+    var groupedResults = _.groupBy(photosWithExif, function (result) {
+        return moment(result.date).format("hA");
+    });
+
+    const albumTags = Object.keys(groupedResults).map(tagName => {
+        const photos = groupedResults[tagName].map(photo => photo.name);
+        return {
+            albumName: 'album2',
+            tagName: tagName,
+            photos: photos
+        }
+    });
+
+    console.log(groupedResults);
+
+    const albumFolders = {albums: albumTags};
+
     return albumFolders;
 }
 
@@ -48,6 +62,8 @@ function generateFolderStructureByExif(exifJson) {
 async function organizePhotosByExif(albumName) {
     console.log("Inside organizePhotosByExif")
     const exif = await dgraph.queryData('album2');
+
+    console.log("Query album: ", exif)
 
     const folders = generateFolderStructureByExif(exif);
     console.log(folders);
@@ -65,15 +81,18 @@ async function organizePhotosByExif(albumName) {
  * @param {*} response 
  * @param {*} sendAckToQueue 
  */
-function extractExifCallback(err, response, message, sendAckToQueue) {
+async function extractExifCallback(err, response, message, sendAckToQueue) {
     if (err !== null) {
         console.log(err);
         sendAckToQueue();
         return;
     }
-    console.log('Extracted Exif: ', response);
-    const data  = formatExifToSaveInDB(response, message);
-    // dgraph.createData(data).then(sendAckToQueue);
+    const photoName = message.photoName;
+    const albumUID = await dgraph.getAlbumUID(message.albumName);
+    await dgraph.addPhoto(photoName, albumUID);
+    const photoUID = await dgraph.getPhotoUID(photoName);
+    console.log("Photo UID: ", photoUID);
+    await dgraph.addExif(response, photoUID);
     sendAckToQueue();
 }
 
