@@ -14,9 +14,9 @@ const {FACE_QUEUE_ENDPOINT} = require('./common/config');
 const {doSavePhoto_fileUploader} = require('./services');
 const QUEUE_CONNECTION_STRING = `amqp://${FACE_QUEUE_ENDPOINT}`;
 
-function runServices(message) {
+function runServices(message, sendAckToQueue) {
     console.log(" [x] Received %s", message);
-    doSavePhoto_fileUploader(message)
+    doSavePhoto_fileUploader(message, sendAckToQueue)
 }
 
 // /**
@@ -49,9 +49,10 @@ function consumeQueue() {
             channel.consume(queue, async function(msg) {
                 const message = JSON.parse(msg.content);
                 console.log("Consumed message: ", message);
-                runServices(message);
+                const sendAckToQueue = () => channel.ack(msg);
+                runServices(message, sendAckToQueue);
             }, {
-                noAck: true
+                noAck: false
             });
         });
     });

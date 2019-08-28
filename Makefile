@@ -1,3 +1,8 @@
+DOCKER_COMPOSE_DIR = deploy/docker-compose
+DOCKER_COMPOSE_FILE = docker-compose.faces.yml
+
+DOCKER_COMPOSE = $(DOCKER_COMPOSE_DIR)/$(DOCKER_COMPOSE_FILE)
+
 .PHONY: all protogen dotenvgen deploy clean docker-clean
 
 all: protogen dotenvgen deploy
@@ -35,7 +40,11 @@ dotenvgen:
 
 deploy:
 	@echo "Deploy kuruvi app..."
-	docker-compose -f deploy/docker-compose/docker-compose.faces.yml up -d --build
+	docker-compose -f $(DOCKER_COMPOSE) up -d --build
+
+down:
+	@echo "Running dockercompose down"
+	docker-compose -f $(DOCKER_COMPOSE) down -v
 
 clean:
 	@echo "Removing protofile..."

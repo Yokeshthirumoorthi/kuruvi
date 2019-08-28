@@ -122,9 +122,10 @@ const detectFaces_fileUploader = new fileUploaderProto.FaceApiService(FACEAPI_SE
 /** TODO: Use this function until we completely
  * get rid of fileUploader.proto
  */
-function doSavePhoto_fileUploader(detectFaceRequest) {
+function doSavePhoto_fileUploader(detectFaceRequest, sendAckToQueue) {
     detectFaces_fileUploader.detectFaces(detectFaceRequest, (err, res) => {
         console.log("Detect faces Res: ", res);
+        sendAckToQueue();
     })
 }
 
