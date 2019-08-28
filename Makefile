@@ -3,10 +3,14 @@ DOCKER_COMPOSE_FILE = docker-compose.faces.yml
 
 DOCKER_COMPOSE = $(DOCKER_COMPOSE_DIR)/$(DOCKER_COMPOSE_FILE)
 
+IMGPROXYSERVICE = imgproxyservice
+SERVICEX = servicex
+
 .PHONY: all protogen dotenvgen deploy clean docker-clean
 
 all: protogen dotenvgen deploy
 prepare: protogen dotenvgen faces
+reset: down deploy
 
 protogen:
 	@echo "Copying protofile into services"
@@ -45,6 +49,12 @@ deploy:
 down:
 	@echo "Running dockercompose down"
 	docker-compose -f $(DOCKER_COMPOSE) down -v
+
+rebuild-$(IMGPROXYSERVICE):
+	docker-compose -f $(DOCKER_COMPOSE) up -d --build --no-deps --force-recreate $(IMGPROXYSERVICE)
+
+rebuild-$(SERVICEX):
+	docker-compose -f $(DOCKER_COMPOSE) up -d --build --no-deps --force-recreate $(SERVICEX)
 
 clean:
 	@echo "Removing protofile..."

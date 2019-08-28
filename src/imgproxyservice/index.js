@@ -85,7 +85,8 @@ async function describeFaces(photoDetailsRequest) {
 async function saveFaces(photoDetailsRequest, photoDetails) {
   pgsqlservice.saveFaces(photoDetails, (err, res) => {
     logger.info(`Saved faces #'s ${res}`);
-    describeFaces(photoDetailsRequest);
+    // describeFaces(photoDetailsRequest);
+    return res;
   })
 }
 
@@ -108,6 +109,7 @@ async function cropFaces(call, callback) {
 
   getPhotoDetails(photoDetailsRequest, async (photoDetails) => {
       const photoDetailsWithFaceInfo = await RPC.cropAndSaveFaces(photoDetails);
+      console.log("Croped and saved face: ", photoDetailsWithFaceInfo);
       saveFaces(photoDetailsRequest, photoDetailsWithFaceInfo);
   });
 }
