@@ -113,12 +113,6 @@ message ExififyAlbumRequest {
     repeated string photos = 2;
 }
 
-// message to acknowledge the status
-message JobStatus {
-    int32 success =1;
-    int32 error =2;
-}
-
 service ExifCore {
     // A Simple RPC
     // 
@@ -132,4 +126,25 @@ service ExifApi {
     // Gets the exif details of all photos in an album
     // and save it to database
     rpc exififyAlbum (ExififyAlbumRequest) returns (AlbumFolders) {}
+}
+
+// -----------------Face Api functions-----------------
+
+message cropAlbumFacesRequest {
+    // string albumName = 1;
+    int32 photoId =1;
+}
+
+// message to acknowledge the status
+message JobStatus {
+    int32 success =1;
+    int32 error =2;
+}
+
+service FaceApi {
+    // A Simple RPC
+    //
+    // Gets the face details of all photos in an album
+    // and save it to database
+    rpc cropAlbumFaces (cropAlbumFacesRequest) returns (JobStatus) {}
 }

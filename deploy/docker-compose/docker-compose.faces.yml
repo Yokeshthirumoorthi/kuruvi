@@ -1,0 +1,211 @@
+version: '3.5'
+
+services:
+  frontend:
+    container_name: ${FRONTEND_SERVICE}
+    build:
+      context: ../../src/frontend 
+      dockerfile: Dockerfile
+    environment:
+     - FRONTEND_PORT=${FRONTEND_PORT}
+    ports:
+     - ${FRONTEND_PORT}:${FRONTEND_PORT}
+    volumes:
+     - album-static-gen:/srv
+    restart: on-failure
+
+  photo-upload-server:
+    container_name: ${PHOTO_UPLOAD_SERVER_SERVICE}
+    build:
+      context: ../../src/storage/photo-upload-server
+      dockerfile: Dockerfile
+      args:
+        - PHOTO_UPLOAD_SERVER_PORT:${PHOTO_UPLOAD_SERVER_PORT}
+    volumes:
+      - album-uploads:/srv/album-uploads
+    ports:
+      - ${PHOTO_UPLOAD_SERVER_PORT}:${PHOTO_UPLOAD_SERVER_PORT}
+    restart: on-failure
+
+  caddy-server:
+    container_name: ${CADDY_SERVER_SERVICE}
+    build:
+      context: ../../src/storage/caddy-server
+      dockerfile: Dockerfile
+    volumes:
+      - album-uploads:/srv/album-uploads
+    ports:
+      - ${CADDY_SERVER_PORT}:${CADDY_SERVER_PORT}
+    restart: on-failure
+
+  static-generator:
+    container_name: ${STATIC_GENERATOR_SERVICE}
+    build:
+      context: ../../src/storage/static-generator
+      dockerfile: Dockerfile
+      args:
+        - STATIC_GENETATOR_PORT:${STATIC_GENERATOR_PORT}
+    ports:
+      - ${STATIC_GENERATOR_PORT}:${STATIC_GENERATOR_PORT}
+    volumes:
+      - album-uploads:/srv/album-uploads
+      - album-static-gen:/srv/album-static-gen
+      - album-faces:/srv/album-faces
+    restart: on-failure
+
+  servicex:
+    container_name: ${SERVICE_X_SERVICE}
+    build:
+      context: ../../src/serviceX 
+      dockerfile: Dockerfile
+    restart: on-failure
+
+  postgres-db:
+    container_name: postgres-db
+    build:
+      context: ../../src/database/postgres-db
+      dockerfile: Dockerfile
+
+  postgres-api:
+    container_name: postgres-api
+    build:
+      context: ../../src/database/postgres-api
+      dockerfile: Dockerfile
+    restart: on-failure
+
+  pgadmin4:
+    container_name: pgadmin4
+    image: "thajeztah/pgadmin4"
+    ports:
+      - "5050:5050"
+  
+  faceapi:
+    container_name: faceapi
+    build:
+      context: ../../src/faceapi
+      dockerfile: Dockerfile
+    volumes:
+      - album-uploads:/usr/src/app/album-uploads
+      - album-faces:/usr/src/app/album-faces
+    restart: on-failure
+
+  imgproxyservice:
+    container_name: imgproxyservice
+    build:
+      context: ../../src/imgproxyservice
+      dockerfile: Dockerfile
+    volumes:
+      - album-uploads:/usr/src/app/album-upload
+      - album-resized:/usr/src/app/resized
+      - album-faces:/usr/src/app/faces
+    restart: on-failure
+
+  imgproxy:
+    container_name: imgproxy
+    image: "darthsim/imgproxy:latest"
+    ports:
+      - 8082:8080
+    restart: on-failure
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080
+
+  exif-core:
+    container_name: ${EXIF_CORE_SERVICE}
+    build:
+      context: ../../src/exif/exif-core
+      dockerfile: Dockerfile
+      args:
+        EXIF_CORE_PORT: ${EXIF_CORE_PORT}
+    restart: on-failure
+
+  exif-api:
+    container_name: ${EXIF_API_SERVICE}
+    build:
+      context: ../../src/exif/exif-api
+      dockerfile: Dockerfile
+      args:
+        EXIF_API_PORT: ${EXIF_API_PORT}
+    restart: on-failure
+
+  exif-queue:
+    container_name: ${EXIF_QUEUE_SERVICE}
+    build:
+      context: ../../src/exif/exif-queue
+      dockerfile: Dockerfile
+    restart: on-failure
+
+  zero:
+    container_name: ${DGRAPH_ZERO}
+    build:
+      context: ../../src/exif/exif-dgraph
+      dockerfile: Dockerfile
+    volumes:
+      - type: volume
+        source: dgraph
+        target: /dgraph
+        volume:
+          nocopy: true
+    ports:
+      - ${DGRAPH_ZERO_PORT_1}:${DGRAPH_ZERO_PORT_1}
+      - ${DGRAPH_ZERO_PORT_2}:${DGRAPH_ZERO_PORT_2}
+    restart: on-failure
+    command: dgraph zero --my=${DGRAPH_ZERO}:${DGRAPH_ZERO_PORT_1}
+
+  exif-dgraph:
+    container_name: ${EXIF_DGRAPH}
+    build:
+      context: ../../src/exif/exif-dgraph
+      dockerfile: Dockerfile
+    volumes:
+      - type: volume
+        source: dgraph
+        target: /dgraph
+        volume:
+          nocopy: true
+    ports:
+      - ${EXIF_DGRAPH_PORT_1}:${EXIF_DGRAPH_PORT_1}
+      - ${EXIF_DGRAPH_PORT_2}:${EXIF_DGRAPH_PORT_2}
+    restart: on-failure
+    command: dgraph alpha --my=${EXIF_DGRAPH}:${EXIF_DGRAPH_PORT_3} --lru_mb=2048 --zero=${DGRAPH_ZERO}:${DGRAPH_ZERO_PORT_1}
+
+  ratel:
+    container_name: ${DGRAPH_RATEL}
+    build:
+      context: ../../src/exif/exif-dgraph
+      dockerfile: Dockerfile
+    volumes:
+      - type: volume
+        source: dgraph
+        target: /dgraph
+        volume:
+          nocopy: true
+    ports:
+      - ${DGRAPH_RATEL_PORT}:8000
+    command: dgraph-ratel
+
+  face-api:
+    container_name: ${FACE_API_SERVICE}
+    build:
+      context: ../../src/faces/face-api
+      dockerfile: Dockerfile
+      args:
+        FACE_API_PORT: ${FACE_API_PORT}
+    restart: on-failure
+
+  face-queue:
+    container_name: ${FACE_QUEUE_SERVICE}
+    build:
+      context: ../../src/faces/face-queue
+      dockerfile: Dockerfile
+    restart: on-failure
+    
+volumes:
+  album-uploads:
+  album-static-gen:
+  album-faces:
+  album-resized:
+  dgraph:

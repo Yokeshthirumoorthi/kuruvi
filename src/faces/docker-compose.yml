@@ -9,3 +9,10 @@ services:
       args:
         FACE_API_PORT: ${FACE_API_PORT}
     restart: on-failure
+
+  face-queue:
+    container_name: ${FACE_QUEUE_SERVICE}
+    build:
+      context: ./face-queue
+      dockerfile: Dockerfile
+    restart: on-failure
