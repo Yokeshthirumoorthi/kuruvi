@@ -1,0 +1,11 @@
+version: '3.5'
+
+services:
+  face-api:
+    container_name: ${FACE_API_SERVICE}
+    build:
+      context: ./face-api
+      dockerfile: Dockerfile
+      args:
+        FACE_API_PORT: ${FACE_API_PORT}
+    restart: on-failure

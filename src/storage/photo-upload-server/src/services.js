@@ -12,7 +12,7 @@ const { SERVICE_X_ENDPOINT } = require('./common/config');
 
 function savePhotoCallback(err, response) {
     if (err !== null) {
-        console.log(err);
+        console.log("Error", err);
         return;
     }
     console.log('Saved photo with id: ', response.photo.id);

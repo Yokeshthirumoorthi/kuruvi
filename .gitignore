@@ -66,5 +66,3 @@ out
 src/faceapi/**/*.js
 target
 **.gv
-faces
-resized

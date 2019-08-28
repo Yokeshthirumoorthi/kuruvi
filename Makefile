@@ -1,7 +1,7 @@
 .PHONY: all protogen dotenvgen deploy clean docker-clean
 
 all: protogen dotenvgen deploy
-prepare: protogen dotenvgen
+prepare: protogen dotenvgen faces
 
 protogen:
 	@echo "Copying protofile into services"
@@ -16,6 +16,14 @@ protogen:
 	mkdir -p ./src/exif/exif-api/proto
 	cp ./pb/kuruvi.proto ./src/exif/exif-api/proto
 
+faces:
+	@echo "Preparing Faces services"
+	mkdir -p ./src/faces/face-api/proto
+	cp ./pb/kuruvi.proto ./src/faces/face-api/proto
+
+	@echo "Copy env for Faces services"
+	cp -f .env ./src/faces/face-api
+
 dotenvgen:
 	@echo "Copying dotenv into services"
 	cp -f .env.sample .env
@@ -27,7 +35,7 @@ dotenvgen:
 
 deploy:
 	@echo "Deploy kuruvi app..."
-	docker-compose -f deploy/docker-compose/docker-compose.dgraph.yml up -d --build
+	docker-compose -f deploy/docker-compose/docker-compose.faces.yml up -d --build
 
 clean:
 	@echo "Removing protofile..."

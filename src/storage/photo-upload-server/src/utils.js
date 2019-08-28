@@ -65,8 +65,8 @@ async function saveFileToDisk(req, onSuccess, onFailure) {
       console.log('type', file.type)
       console.log('size', file.size)
       
-      // const savePhotoRequest = getSavePhotoRequest(fields);
-      // services.savePhoto(savePhotoRequest);
+      const savePhotoRequest = getSavePhotoRequest(fields);
+      services.savePhoto(savePhotoRequest);
 
       onSuccess({fields, files});
     });
@@ -131,12 +131,14 @@ async function getAlbumUploadsPath(albumName) {
   await makeDir(albumPath);
   return albumPath;
 }
-// function getSavePhotoRequest(albumName) {
-//   const savePhotoRequest = {
-//     albumName: fields.albumName,
-//     photoName: fields.name
-//   };
 
-//   return savePhotoRequest;
-// }
+function getSavePhotoRequest(fields) {
+  const savePhotoRequest = {
+    albumName: fields.albumName,
+    photoName: fields.name
+  };
+
+  return savePhotoRequest;
+}
+
 module.exports = {saveFileToDisk, generateStaticPage}
