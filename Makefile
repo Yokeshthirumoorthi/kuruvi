@@ -5,6 +5,8 @@ DOCKER_COMPOSE = $(DOCKER_COMPOSE_DIR)/$(DOCKER_COMPOSE_FILE)
 
 IMGPROXYSERVICE = imgproxyservice
 SERVICEX = servicex
+FACE_API_SERVICE = face-api
+EXIF_API_SERVICE = exif-api
 
 .PHONY: all protogen dotenvgen deploy clean docker-clean
 
@@ -55,6 +57,12 @@ rebuild-$(IMGPROXYSERVICE):
 
 rebuild-$(SERVICEX):
 	docker-compose -f $(DOCKER_COMPOSE) up -d --build --no-deps --force-recreate $(SERVICEX)
+
+rebuild-$(FACE_API_SERVICE):
+	docker-compose -f $(DOCKER_COMPOSE) up -d --build --no-deps --force-recreate $(FACE_API_SERVICE)
+
+rebuild-$(EXIF_API_SERVICE):
+	docker-compose -f $(DOCKER_COMPOSE) up -d --build --no-deps --force-recreate $(EXIF_API_SERVICE)
 
 clean:
 	@echo "Removing protofile..."

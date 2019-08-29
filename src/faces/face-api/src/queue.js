@@ -25,7 +25,7 @@ function runServices(message, sendAckToQueue) {
 //  * and save it in database.
 //  * @param {*} albumName The queue name
 //  */
-function consumeQueue() {
+function consumeQueue(albumName, callback) {
     amqp.connect(QUEUE_CONNECTION_STRING, function(error0, connection) {
         if (error0) {
             throw error0;
@@ -35,7 +35,7 @@ function consumeQueue() {
                 throw error1;
             }
     
-            var queue = "crop-faces-queue";
+            var queue = albumName;
     
             channel.assertQueue(queue, {
                 durable: true,
@@ -48,9 +48,12 @@ function consumeQueue() {
     
             channel.consume(queue, async function(msg) {
                 const message = JSON.parse(msg.content);
-                console.log("Consumed message: ", message);
-                const sendAckToQueue = () => channel.ack(msg);
-                runServices(message, sendAckToQueue);
+                if (message.photoId === '') {
+                    callback(null, () => {});
+                } else {
+                    const sendAckToQueue = () => channel.ack(msg);
+                    runServices(message, sendAckToQueue)
+                }
             }, {
                 noAck: false
             });
@@ -64,7 +67,7 @@ function consumeQueue() {
 //  * @param {*} albumName the queue name
 //  * @param {*} msgs list of photoname along with albumname as json array
 //  */
-function sendToQueue(msg) {
+function sendToQueue(albumName, msgs) {
     amqp.connect(QUEUE_CONNECTION_STRING, function(error0, connection) {
         if (error0) {
             throw error0;
@@ -74,21 +77,41 @@ function sendToQueue(msg) {
                 throw error1;
             }
     
-            var queue = "crop-faces-queue";
+            var queue = albumName;
     
             channel.assertQueue(queue, {
                 durable: true,
                 autoDelete: true
             });
 
+            msgs.map(msg => {
                 channel.sendToQueue(queue, Buffer.from(JSON.stringify(msg)), {
                     persistent: true
                 });
                 console.log(" [x] Sent %s", msg);
-            
-        });
+            })
+
+         });
     });
 }
+
+const fixtureData = [
+    {
+        photoId : "1"
+    },
+    {
+        photoId : "2"
+    },
+    {
+        photoId : "3"
+    },
+    {
+        photoId : "4"
+    },
+    {
+        photoId : "5"
+    },
+]
 
 /**
  * With the given album and the list of photos in it,
@@ -100,23 +123,16 @@ function sendToQueue(msg) {
  * @param {*} call Json object with albumname and list of photonames in it
  */
 function runCropAlbumFacesUsingQueue(call, callback) {
-    console.log("Inside crop album faces using queue",call.request);
-    const msg = call.request;
-//   const exififyAlbumRequest = call.request; 
-//   var msgs = exififyAlbumRequest.photos.map(
-//     photoName => {
-//         return {
-//             albumName: exififyAlbumRequest.albumName,
-//             photoName: photoName
-//         }
-//     }
-//   );
-//   const endMessage = {
-//       albumName: '',
-//       photoName: ''
-//   };
-  sendToQueue(msg);
-  consumeQueue();
+    // console.log("Inside crop album faces using queue",call.request);
+    const albumName = 'album2';
+    // const msgs = call.request;
+    const msgs = fixtureData;
+    console.log(msgs);
+    const endMessage = {
+        photoId: ""
+    };
+    sendToQueue(albumName, [...msgs, endMessage]);
+    consumeQueue(albumName, callback);
 }
 
 module.exports = {runCropAlbumFacesUsingQueue}

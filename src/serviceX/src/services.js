@@ -35,9 +35,6 @@ function doSavePhoto_fileUploader(savePhotoReq) {
             photoId : res.photo_id
         };
         console.log(detectFaceRequest);
-        faceService.cropAlbumFaces(detectFaceRequest, (err, res) => {
-            console.log("Detect faces Res: ", res);
-        })
         // detectFaces_fileUploader.detectFaces(detectFaceRequest, (err, res) => {
         //     console.log("Detect faces Res: ", res);
         // })
@@ -126,8 +123,32 @@ function extractExif(albumUploadsFolder) {
     exifService.exififyAlbum(albumUploadsFolder, startWorkFlow);
 }
 
+function extractFaces(albumUploadsFolder) {
+    const fixtureData = [
+        {
+            photoId : "1"
+        },
+        {
+            photoId : "2"
+        },
+        {
+            photoId : "3"
+        },
+        {
+            photoId : "4"
+        },
+        {
+            photoId : "5"
+        },
+    ]
+    faceService.cropAlbumFaces(fixtureData, (err, res) => {
+        console.log("Detect faces Res: ", res);
+        extractExif(albumUploadsFolder)
+    })
+}
+
 function initWorkFlow(call, callback) {
-    callback(null, extractExif(call.request));
+    callback(null, extractFaces(call.request));
 }
 
 module.exports = {savePhoto, initWorkFlow}
