@@ -173,4 +173,12 @@ CREATE TABLE face_descriptors (
   foreign key (face_id) references faces(id)
 );
 
--- INSERT INTO albums (name, path) VALUES ('album1', '/var/app/uploads');
+INSERT INTO "albums" ("id", "name", "path") VALUES
+(1,	'album2',	'/usr/src/app/album-uploads/album2/uploads');
+
+INSERT INTO "photos" ("id", "album_id", "name") VALUES
+(1,	1,	'bbt2.jpg'),
+(2,	1,	'bbt4.jpg'),
+(3,	1,	'bbt5.jpg'),
+(4,	1,	'bbt3.jpg'),
+(5,	1,	'bbt1.jpg');
