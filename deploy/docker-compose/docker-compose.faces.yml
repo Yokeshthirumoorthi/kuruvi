@@ -203,6 +203,15 @@ services:
       dockerfile: Dockerfile
     restart: on-failure
     
+  face-detect:
+    container_name: ${FACE_DETECT_SERVICE}
+    build:
+      context: ../../src/faces/face-detect
+      dockerfile: Dockerfile
+      args:
+        FACE_DETECT_PORT: ${FACE_DETECT_PORT}
+    restart: on-failure
+
 volumes:
   album-uploads:
   album-static-gen:

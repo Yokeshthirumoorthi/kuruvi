@@ -1,0 +1,28 @@
+{
+  "name": "faceapi",
+  "version": "0.0.1",
+  "description": "recognize faces in a photo",
+  "main": "faceRecognition.js",
+  "dependencies": {
+    "@tensorflow/tfjs-node": "^1.0.2",
+    "canvas": "^2.0.1",
+    "face-api.js": "^0.20.1",
+    "ts-node": "^8.3.0",
+    "@grpc/proto-loader": "^0.1.0",
+    "google-protobuf": "^3.0.0",
+    "pino": "^5.6.2",
+    "grpc": "^1.11.0",
+    "dotenv": "^8.0.0",
+    "axios": "^0.19.0",
+    "typescript": "^3.5.2"
+  },
+  "devDependencies": {
+    "mocha": "^6.2.0"
+  },
+  "scripts": {
+    "test": "mocha",
+    "start": "tsc index.ts && node index.js"
+  },
+  "author": "yokeshthirumoorthi@gmail.com",
+  "license": "MIT"
+}

@@ -16,3 +16,12 @@ services:
       context: ./face-queue
       dockerfile: Dockerfile
     restart: on-failure
+  
+  face-detect:
+    container_name: ${FACE_DETECT_SERVICE}
+    build:
+      context: ./face-detect
+      dockerfile: Dockerfile
+      args:
+        FACE_DETECT_PORT: ${FACE_DETECT_PORT}
+    restart: on-failure
