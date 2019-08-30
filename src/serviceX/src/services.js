@@ -141,7 +141,7 @@ function extractFaces(albumUploadsFolder) {
             photoId : "5"
         },
     ]
-    faceService.cropAlbumFaces(fixtureData, (err, res) => {
+    faceService.cropAlbumFaces(albumUploadsFolder, (err, res) => {
         console.log("Detect faces Res: ", res);
         extractExif(albumUploadsFolder)
     })

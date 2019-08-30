@@ -79,15 +79,15 @@ services:
     ports:
       - "5050:5050"
   
-  faceapi:
-    container_name: faceapi
-    build:
-      context: ../../src/faceapi
-      dockerfile: Dockerfile
-    volumes:
-      - album-uploads:/usr/src/app/album-uploads
-      - album-faces:/usr/src/app/album-faces
-    restart: on-failure
+  # faceapi:
+  #   container_name: faceapi
+  #   build:
+  #     context: ../../src/faceapi
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - album-uploads:/usr/src/app/album-uploads
+  #     - album-faces:/usr/src/app/album-faces
+  #   restart: on-failure
 
   imgproxyservice:
     container_name: imgproxyservice
@@ -210,6 +210,8 @@ services:
       dockerfile: Dockerfile
       args:
         FACE_DETECT_PORT: ${FACE_DETECT_PORT}
+    volumes:
+      - album-uploads:/srv/album-uploads
     restart: on-failure
 
 volumes:

@@ -11,20 +11,20 @@
 
 var amqp = require('amqplib/callback_api');
 const {FACE_QUEUE_ENDPOINT} = require('./common/config');
-const {doSavePhoto_fileUploader} = require('./services');
+const services = require('./services');
 const QUEUE_CONNECTION_STRING = `amqp://${FACE_QUEUE_ENDPOINT}`;
 
 function runServices(message, sendAckToQueue) {
     console.log(" [x] Received %s", message);
-    doSavePhoto_fileUploader(message, sendAckToQueue)
+    services.detectFaces(message, sendAckToQueue)
 }
 
-// /**
-//  * Consume each message in queue and 
-//  * do the grpc call to extract exif
-//  * and save it in database.
-//  * @param {*} albumName The queue name
-//  */
+/**
+ * Consume each message in queue and 
+ * do the grpc call to extract exif
+ * and save it in database.
+ * @param {*} albumName The queue name
+ */
 function consumeQueue(albumName, callback) {
     amqp.connect(QUEUE_CONNECTION_STRING, function(error0, connection) {
         if (error0) {
@@ -48,7 +48,7 @@ function consumeQueue(albumName, callback) {
     
             channel.consume(queue, async function(msg) {
                 const message = JSON.parse(msg.content);
-                if (message.photoId === '') {
+                if (message.albumName === '' && message.photoName === '') {
                     callback(null, () => {});
                 } else {
                     const sendAckToQueue = () => channel.ack(msg);
@@ -61,12 +61,12 @@ function consumeQueue(albumName, callback) {
     });
 }
 
-// /**
-//  * 
-//  * Add each message to the queue
-//  * @param {*} albumName the queue name
-//  * @param {*} msgs list of photoname along with albumname as json array
-//  */
+/**
+ * 
+ * Add each message to the queue
+ * @param {*} albumName the queue name
+ * @param {*} msgs list of photoname along with albumname as json array
+ */
 function sendToQueue(albumName, msgs) {
     amqp.connect(QUEUE_CONNECTION_STRING, function(error0, connection) {
         if (error0) {
@@ -95,24 +95,6 @@ function sendToQueue(albumName, msgs) {
     });
 }
 
-const fixtureData = [
-    {
-        photoId : "1"
-    },
-    {
-        photoId : "2"
-    },
-    {
-        photoId : "3"
-    },
-    {
-        photoId : "4"
-    },
-    {
-        photoId : "5"
-    },
-]
-
 /**
  * With the given album and the list of photos in it,
  * this function adds each photoname (with albumname)
@@ -123,16 +105,24 @@ const fixtureData = [
  * @param {*} call Json object with albumname and list of photonames in it
  */
 function runCropAlbumFacesUsingQueue(call, callback) {
-    // console.log("Inside crop album faces using queue",call.request);
-    const albumName = 'album2';
-    // const msgs = call.request;
-    const msgs = fixtureData;
-    console.log(msgs);
+    console.log("Inside crop album faces using queue",call.request);
+    const requestMessage = call.request;
+    const albumName = requestMessage.albumName;
+    var msgs = requestMessage.photos.map(
+        photoName => {
+            return {
+                albumName: albumName,
+                photoName: photoName
+            }
+        }
+    );
     const endMessage = {
-        photoId: ""
+        albumName: '',
+        photoName: ''
     };
     sendToQueue(albumName, [...msgs, endMessage]);
     consumeQueue(albumName, callback);
 }
+
 
 module.exports = {runCropAlbumFacesUsingQueue}

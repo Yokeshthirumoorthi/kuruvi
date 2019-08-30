@@ -9,7 +9,6 @@
  */
 
 import * as faceDetection from './faceDetection';
-import * as utils from './util';
 
 /**
  * Sanitize Face Detection object
@@ -27,24 +26,15 @@ function sanitizeFaceDetectionObject(faceDetections) {
     return boundingBoxes;
 }
 
-// // /**
-// //  * Implements the get bounding box rpc method 
-// //  */ 
-// async function getBoundingBoxes(photoDetails) {
-//     const albumPath = photoDetails.album.path;
-//     const photoName = photoDetails.photo.name;
-//     const photoPath = `${albumPath}/${photoName}`;
-//     const faceDetections = await faceDetection.run(photoPath);
-//     const boundingBoxes = sanitizeFaceDetectionObject(faceDetections);
-//     const photoDetailsWithBoundingBoxes = {...photoDetails, boundingBoxes};
-//     return photoDetailsWithBoundingBoxes;
-// }
-
-async function getBoundingBoxes(photoURL) {
-    const imageBuffer = await utils.getImage(photoURL.url);
-    const data = await faceDetection.run(imageBuffer);
-    const boundingBoxes = sanitizeFaceDetectionObject(data);
-    return boundingBoxes;
+// /**
+//  * Implements the get bounding box rpc method 
+//  */ 
+async function getBoundingBoxes(message) {
+    const photoPath = message.url;
+    const faceDetections = await faceDetection.run(photoPath);
+    const boundingBoxes = sanitizeFaceDetectionObject(faceDetections);
+    console.log(boundingBoxes);
+    return {boxes: boundingBoxes};
 }
 
 /**

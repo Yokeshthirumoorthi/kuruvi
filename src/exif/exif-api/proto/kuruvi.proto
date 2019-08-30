@@ -131,8 +131,8 @@ service ExifApi {
 // -----------------Face Api functions-----------------
 
 message CropAlbumFacesRequest {
-    // string albumName = 1;
-    int32 photoId =1;
+    string albumName = 1;
+    repeated string photos = 2;
 }
 
 // message to acknowledge the status
