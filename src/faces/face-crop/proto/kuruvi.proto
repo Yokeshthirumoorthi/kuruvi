@@ -181,3 +181,10 @@ service FaceCrop {
     // crop and save faces
     rpc cropFaces (CropFacesRequest) returns (JobStatus) {}
 }
+
+service ResizeApi {
+    // A Simple RPC
+    //
+    // For the given album, resize and save to disk
+    rpc resizePhotos (AlbumFolder) returns (JobStatus) {}
+}

@@ -3,82 +3,79 @@ DOCKER_COMPOSE_FILE = docker-compose.faces.yml
 
 DOCKER_COMPOSE = $(DOCKER_COMPOSE_DIR)/$(DOCKER_COMPOSE_FILE)
 
+PHOTO_UPLOAD_SERVER = photo-upload-server
+STATIC_GENERATOR = static-generator
 IMGPROXYSERVICE = imgproxyservice
 SERVICEX = servicex
 FACE_API_SERVICE = face-api
 EXIF_API_SERVICE = exif-api
+EXIF_CORE_SERVICE = exif-core
 FACE_DETECT_SERVICE = face-detect
 FACE_CROP_SERVICE = face-crop
+RESIZE_API_SERVICE = resize-api
+RESIZE_CORE_SERVICE = resize-core
 
+EXIF = $(EXIF_API_SERVICE) $(EXIF_CORE_SERVICE)
 FACES = $(FACE_API_SERVICE) $(FACE_DETECT_SERVICE) $(FACE_CROP_SERVICE)
+STORAGE = $(STATIC_GENERATOR) $(PHOTO_UPLOAD_SERVER)
+SERVICES = serviceX $(EXIF) $(FACES) $(STORAGE)
+RESIZE = $(RESIZE_API_SERVICE) $(RESIZE_CORE_SERVICE)
 
-.PHONY: all protogen dotenvgen deploy clean docker-clean
+.PHONY: all dotenvgen deploy clean
 
-all: protogen dotenvgen deploy
-prepare: protogen dotenvgen faces
-reset: down deploy
+all: prepare deploy
+prepare: dotenvgen exif faces resize storage servicex
+reset: down prepare deploy
 
-protogen:
-	@echo "Copying protofile into services"
-	mkdir -p ./src/serviceX/proto
-	cp ./pb/kuruvi.proto ./src/serviceX/proto
-	mkdir -p ./src/storage/static-generator/proto
-	cp ./pb/kuruvi.proto ./src/storage/static-generator/proto
-	mkdir -p ./src/storage/photo-upload-server/proto
-	cp ./pb/kuruvi.proto ./src/storage/photo-upload-server/proto
-	mkdir -p ./src/exif/exif-core/proto
-	cp ./pb/kuruvi.proto ./src/exif/exif-core/proto
-	mkdir -p ./src/exif/exif-api/proto
-	cp ./pb/kuruvi.proto ./src/exif/exif-api/proto
+exif:
+	for f in $(EXIF); do	  \
+		mkdir -p ./src/exif/$$f/proto;	\
+		cp ./pb/kuruvi.proto ./src/exif/$$f/proto; \
+		cp -f .env ./src/exif/$$f; \
+	done
 
 faces:
 	for f in $(FACES); do	  \
-		mkdir ./src/faces/$$f/proto;	\
+		mkdir -p ./src/faces/$$f/proto;	\
 		cp ./pb/kuruvi.proto ./src/faces/$$f/proto; \
 		cp -f .env ./src/faces/$$f; \
 	done
 
-dotenvgen:
-	@echo "Copying dotenv into services"
-	cp -f .env.sample .env
-	cp -f .env ./src/serviceX
-	cp -f .env ./src/storage/static-generator
-	cp -f .env ./src/storage/photo-upload-server
-	cp -f .env ./src/exif/exif-core 
-	cp -f .env ./src/exif/exif-api 
+resize:
+	for f in $(RESIZE); do \
+		mkdir -p ./src/resize/$$f/proto;	\
+		cp ./pb/kuruvi.proto ./src/resize/$$f/proto; \
+		cp -f .env ./src/resize/$$f; \
+	done
 
+storage:
+	for f in $(STORAGE); do	  \
+		mkdir -p ./src/storage/$$f/proto;	\
+		cp ./pb/kuruvi.proto ./src/storage/$$f/proto; \
+		cp -f .env ./src/storage/$$f; \
+	done
+
+servicex:
+	mkdir -p ./src/serviceX/proto
+	cp ./pb/kuruvi.proto ./src/serviceX/proto
+	cp -f .env ./src/serviceX
+
+dotenvgen:
+	cp -f .env.sample .env
+	
 deploy:
 	@echo "Deploy kuruvi app..."
 	docker-compose -f $(DOCKER_COMPOSE) up -d --build
 
+# Ref: https://stackoverflow.com/questions/6273608/how-to-pass-argument-to-makefile-from-command-line/6273809
+%:      # thanks to chakrit
+	@:    # thanks to William Pursell
+
+up:
+	docker-compose -f $(DOCKER_COMPOSE) up -d --build --no-deps --force-recreate $(filter-out $@,$(MAKECMDGOALS))
+
 down:
-	@echo "Running dockercompose down"
 	docker-compose -f $(DOCKER_COMPOSE) down -v
 
-rebuild-$(IMGPROXYSERVICE):
-	docker-compose -f $(DOCKER_COMPOSE) up -d --build --no-deps --force-recreate $(IMGPROXYSERVICE)
-
-rebuild-$(SERVICEX):
-	docker-compose -f $(DOCKER_COMPOSE) up -d --build --no-deps --force-recreate $(SERVICEX)
-
-rebuild-$(FACE_API_SERVICE):
-	docker-compose -f $(DOCKER_COMPOSE) up -d --build --no-deps --force-recreate $(FACE_API_SERVICE)
-
-rebuild-$(FACE_DETECT_SERVICE):
-	docker-compose -f $(DOCKER_COMPOSE) up -d --build --no-deps --force-recreate $(FACE_DETECT_SERVICE)
-
-rebuild-$(EXIF_API_SERVICE):
-	docker-compose -f $(DOCKER_COMPOSE) up -d --build --no-deps --force-recreate $(EXIF_API_SERVICE)
-
-rebuild-$(FACE_CROP_SERVICE):
-	docker-compose -f $(DOCKER_COMPOSE) up -d --build --no-deps --force-recreate $(FACE_CROP_SERVICE)
-
-
 clean:
-	@echo "Removing protofile..."
-	rm ./src/serviceX/proto/*.proto
-	rmdir ./src/serviceX/proto
-# TODO: do the cleaning in all folders
-
-docker-clean:
 	./scripts/docker-cleanup.sh

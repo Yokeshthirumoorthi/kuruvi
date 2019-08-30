@@ -234,6 +234,31 @@ services:
       dockerfile: Dockerfile
     restart: on-failure
 
+  resize-core:
+    container_name: ${RESIZE_CORE_SERVICE}
+    build:
+      context: ../../src/resize/resize-core
+      dockerfile: Dockerfile
+      args:
+        RESIZE_CORE_PORT: ${RESIZE_CORE_PORT}
+    restart: on-failure
+
+  resize-api:
+    container_name: ${RESIZE_API_SERVICE}
+    build:
+      context: ../../src/resize/resize-api
+      dockerfile: Dockerfile
+      args:
+        RESIZE_API_PORT: ${RESIZE_API_PORT}
+    restart: on-failure
+
+  resize-queue:
+    container_name: ${RESIZE_QUEUE_SERVICE}
+    build:
+      context: ../../src/resize/resize-queue
+      dockerfile: Dockerfile
+    restart: on-failure
+
 volumes:
   album-uploads:
   album-static-gen:
