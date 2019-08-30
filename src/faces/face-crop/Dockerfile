@@ -2,7 +2,7 @@ FROM node:12-alpine as base
 
 FROM base as builder
 
-ARG EXIF_API_PORT
+ARG FACE_CROP_PORT
 
 # Create app directory
 WORKDIR /srv
@@ -21,6 +21,6 @@ COPY --from=builder /srv/node_modules ./node_modules
 # Bundle app source
 COPY . .
 
-EXPOSE $EXIF_API_PORT
+EXPOSE $FACE_CROP_PORT
 
 CMD [ "node", "index.js" ]

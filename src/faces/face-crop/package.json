@@ -1,0 +1,26 @@
+{
+  "name": "imgproxy",
+  "version": "0.0.1",
+  "description": "Image resizer",
+  "main": "imgproxy.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "mocha"
+  },
+  "dependencies": {
+    "@grpc/proto-loader": "^0.1.0",
+    "amqplib": "latest",
+    "axios": "^0.19.0",
+    "dotenv": "^8.0.0",
+    "google-protobuf": "^3.0.0",
+    "grpc": "^1.11.0",
+    "pg": "^7.11.0",
+    "pino": "^5.6.2",
+    "shortid": "^2.2.14"
+  },
+  "author": "yokesh thirumoorthi",
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "^6.2.0"
+  }
+}

@@ -124,23 +124,6 @@ function extractExif(albumUploadsFolder) {
 }
 
 function extractFaces(albumUploadsFolder) {
-    const fixtureData = [
-        {
-            photoId : "1"
-        },
-        {
-            photoId : "2"
-        },
-        {
-            photoId : "3"
-        },
-        {
-            photoId : "4"
-        },
-        {
-            photoId : "5"
-        },
-    ]
     faceService.cropAlbumFaces(albumUploadsFolder, (err, res) => {
         console.log("Detect faces Res: ", res);
         extractExif(albumUploadsFolder)

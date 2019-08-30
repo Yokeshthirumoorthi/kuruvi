@@ -129,6 +129,8 @@ services:
       dockerfile: Dockerfile
       args:
         EXIF_API_PORT: ${EXIF_API_PORT}
+    depends_on:
+      - exif-dgraph
     restart: on-failure
 
   exif-queue:
@@ -212,6 +214,24 @@ services:
         FACE_DETECT_PORT: ${FACE_DETECT_PORT}
     volumes:
       - album-uploads:/srv/album-uploads
+    restart: on-failure
+
+  face-crop:
+    container_name: ${FACE_CROP_SERVICE}
+    build:
+      context: ../../src/faces/face-crop
+      dockerfile: Dockerfile
+      args:
+        FACE_CROP_PORT: ${FACE_CROP_PORT}
+    volumes:
+      - album-faces:/srv/faces
+    restart: on-failure
+
+  face-crop-server:
+    container_name: ${FACE_CROP_SERVER_SERVICE}
+    build:
+      context: ../../src/faces/face-crop-server
+      dockerfile: Dockerfile
     restart: on-failure
 
 volumes:

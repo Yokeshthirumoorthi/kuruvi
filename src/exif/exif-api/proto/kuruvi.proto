@@ -152,6 +152,12 @@ message BoundingBoxes {
     repeated BoundingBox boxes=1;
 }
 
+message CropFacesRequest {
+    string albumName = 1;
+    string photoName = 2;
+    repeated BoundingBox boundingBoxes =3; 
+}
+
 service FaceApi {
     // A Simple RPC
     //
@@ -166,4 +172,12 @@ service FaceCore {
     // Gets the face details of all photos in an album
     // and save it to database
     rpc detectFaces (PhotoURL) returns (BoundingBoxes) {}
+}
+
+service FaceCrop {
+    // A Simple RPC
+    //
+    // For the given photodetails and bounding boxes,
+    // crop and save faces
+    rpc cropFaces (CropFacesRequest) returns (JobStatus) {}
 }

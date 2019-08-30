@@ -8,6 +8,9 @@ SERVICEX = servicex
 FACE_API_SERVICE = face-api
 EXIF_API_SERVICE = exif-api
 FACE_DETECT_SERVICE = face-detect
+FACE_CROP_SERVICE = face-crop
+
+FACES = $(FACE_API_SERVICE) $(FACE_DETECT_SERVICE) $(FACE_CROP_SERVICE)
 
 .PHONY: all protogen dotenvgen deploy clean docker-clean
 
@@ -29,16 +32,11 @@ protogen:
 	cp ./pb/kuruvi.proto ./src/exif/exif-api/proto
 
 faces:
-	@echo "Preparing Faces services"
-	mkdir -p ./src/faces/$(FACE_API_SERVICE)/proto
-	cp ./pb/kuruvi.proto ./src/faces/$(FACE_API_SERVICE)/proto
-
-	mkdir -p ./src/faces/$(FACE_DETECT_SERVICE)/proto
-	cp ./pb/kuruvi.proto ./src/faces/$(FACE_DETECT_SERVICE)/proto  
-
-	@echo "Copy env for Faces services"
-	cp -f .env ./src/faces/$(FACE_API_SERVICE)
-	cp -f .env ./src/faces/$(FACE_DETECT_SERVICE)
+	for f in $(FACES); do	  \
+		mkdir ./src/faces/$$f/proto;	\
+		cp ./pb/kuruvi.proto ./src/faces/$$f/proto; \
+		cp -f .env ./src/faces/$$f; \
+	done
 
 dotenvgen:
 	@echo "Copying dotenv into services"
@@ -71,6 +69,10 @@ rebuild-$(FACE_DETECT_SERVICE):
 
 rebuild-$(EXIF_API_SERVICE):
 	docker-compose -f $(DOCKER_COMPOSE) up -d --build --no-deps --force-recreate $(EXIF_API_SERVICE)
+
+rebuild-$(FACE_CROP_SERVICE):
+	docker-compose -f $(DOCKER_COMPOSE) up -d --build --no-deps --force-recreate $(FACE_CROP_SERVICE)
+
 
 clean:
 	@echo "Removing protofile..."

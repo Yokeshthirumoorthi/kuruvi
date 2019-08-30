@@ -8,11 +8,22 @@
  *
  */
 
-const { FACE_DETECT_ENDPOINT } = require('./common/config');
+const { FACE_DETECT_ENDPOINT, FACE_CROP_ENDPOINT } = require('./common/config');
 const {kuruviProto, credentials} = require('./common/grpc');
 const utils = require('./utils');
 
-async function detectFacesCallback(err, response, message, sendAckToQueue) {
+function cropFacesCallback(err, response, sendAckToQueue) {
+    console.log("Inside cropFacesCallback", err, response);
+    sendAckToQueue();
+}
+
+function cropFaces(cropFacesRequest, sendAckToQueue) {
+    const faceCore= new kuruviProto.FaceCrop(FACE_CROP_ENDPOINT, credentials);
+    faceCore.cropFaces(cropFacesRequest, 
+        (err, response) => cropFacesCallback(err, response, sendAckToQueue))
+}
+
+function detectFacesCallback(err, response, message, sendAckToQueue) {
     if (err !== null) {
         console.log(err);
         sendAckToQueue();
@@ -25,17 +36,21 @@ async function detectFacesCallback(err, response, message, sendAckToQueue) {
     // const photoUID = await dgraph.getPhotoUID(photoName);
     // console.log("Photo UID: ", photoUID);
     // await dgraph.addExif(response, photoUID);
-    sendAckToQueue();
+    const cropFacesRequest = {
+        ...message,
+        boundingBoxes: response.boxes
+    }
+    cropFaces(cropFacesRequest, sendAckToQueue);
 }
 
 
 function detectFaces(message, sendAckToQueue) {
     const faceCore= new kuruviProto.FaceCore(FACE_DETECT_ENDPOINT, credentials);
     const {albumName, photoName} = message;
-    const caddyURL = utils.getCaddyURL(albumName, photoName);
-    console.log("remote urls are : ", caddyURL);
+    const fsURL = utils.fsURL(albumName, photoName);
+    console.log("fs url  : ", fsURL);
     const photoURL = {
-        url: caddyURL
+        url: fsURL
     }
     faceCore.detectFaces(photoURL,
         (err, response) => detectFacesCallback(err, response, message, sendAckToQueue));
