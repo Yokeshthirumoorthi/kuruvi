@@ -250,6 +250,8 @@ services:
       dockerfile: Dockerfile
       args:
         RESIZE_API_PORT: ${RESIZE_API_PORT}
+    volumes:
+      - album-resized:/srv/resized
     restart: on-failure
 
   resize-queue:

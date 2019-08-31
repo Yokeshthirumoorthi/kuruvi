@@ -114,3 +114,18 @@
 // }
 
 // module.exports = {exififyAlbum, organizePhotosByExif}
+
+const {resizeImageAndSave} = require('./resize');
+
+/**
+ * gRPC function implementation 
+ * get the photo_id from the Imgproxy request.
+ * Retrieve the album path from the database. 
+ * Download the photo in the path from fs, resize it and save it.
+ */
+async function resizeImage(message, sendAckToQueue) {
+  const result = await resizeImageAndSave(message);
+  sendAckToQueue();
+}
+
+module.exports = {resizeImage}
