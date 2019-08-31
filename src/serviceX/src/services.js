@@ -134,6 +134,7 @@ function extractFaces(albumUploadsFolder) {
 function resizePhotos(albumUploadsFolder) {
     resizeService.resizePhotos(albumUploadsFolder, (err, res) => {
         console.log("resize photos res: ", res);
+        extractFaces(albumUploadsFolder);
     });
 }
 

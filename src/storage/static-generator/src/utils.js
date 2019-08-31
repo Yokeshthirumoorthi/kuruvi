@@ -29,6 +29,8 @@ async function generateStaticPage(albumName) {
     shell.execCopyStaticJS(albumPath);
     const {facePath} = await albumfs.getFacesFolderPath(albumName);
     shell.execCopyFaces(albumName, facePath);
+    const {resizedPath} = await albumfs.getResizedFolderPath(albumName);
+    shell.execCopyResized(albumName, resizedPath);
     shell.execScanner(albumName, cachePath);
 }
 

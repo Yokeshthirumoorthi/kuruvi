@@ -66,4 +66,13 @@ async function getFacesFolderPath(albumName) {
   } 
 }
 
-module.exports = {getPaths, getExifTagFolderPaths, getFacesFolderPath}
+async function getResizedFolderPath(albumName) {
+  const albumPath = getAlbumPath(BASE_DIR, albumName);
+  const resizedPath = getAlbumSubPath(albumPath, 'resized');
+  await makeDir(resizedPath);
+  return {
+    resizedPath
+  }
+}
+
+module.exports = {getPaths, getExifTagFolderPaths, getFacesFolderPath, getResizedFolderPath}

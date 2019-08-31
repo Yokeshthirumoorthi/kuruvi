@@ -24,6 +24,10 @@ function getCopyFacesScript(albumName, facePath) {
   return `cp -r album-faces/${albumName}/* ${facePath}`;
 }
 
+function getCopyResizedScript(albumName, resizedPath) {
+  return `cp -r album-resized/${albumName}/* ${resizedPath}`;
+}
+
 function getCopyWebScript(path) {
   return `cp -r web/* ${path}`; 
 }
@@ -52,10 +56,16 @@ function execCopyFaces(albumName, facePath) {
   execShellScript(script, errMsg);
 }
 
+function execCopyResized(albumName, facePath) {
+  const script = getCopyResizedScript(albumName, facePath);
+  const errMsg ='Error: Resized copy job failed'; 
+  execShellScript(script, errMsg);
+}
+
 function execExifFolderCreation(src, dest, photos) {
   const script = getCreateExifFolderScript(src, dest, photos);
   const errMsg = 'Error: Create exif tag folder @ ' + dest;
   execShellScript(script, errMsg);
 }
 
-module.exports = {execScanner, execCopyStaticJS, execExifFolderCreation, execCopyFaces} 
+module.exports = {execScanner, execCopyStaticJS, execExifFolderCreation, execCopyFaces, execCopyResized} 

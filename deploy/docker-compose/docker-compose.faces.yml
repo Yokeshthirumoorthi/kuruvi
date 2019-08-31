@@ -51,6 +51,7 @@ services:
       - album-uploads:/srv/album-uploads
       - album-static-gen:/srv/album-static-gen
       - album-faces:/srv/album-faces
+      - album-resized:/srv/album-resized
     restart: on-failure
 
   servicex:
