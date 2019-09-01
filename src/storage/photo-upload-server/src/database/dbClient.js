@@ -27,6 +27,18 @@ function newOperation() {
     return new dgraph.Operation();
 }
 
+// Set schema.
+async function setSchema() {
+    const schema = `
+        name: string @index(term) .
+    `;
+    const op = newOperation();
+    op.setSchema(schema);
+    const dgraphClientStub = newClientStub();
+    const dgraphClient = newClient(dgraphClientStub);
+    await dgraphClient.alter(op);
+}
+
 function newMutation() {
     return new dgraph.Mutation();
 }
@@ -36,5 +48,7 @@ function newTransaction() {
     const dgraphClient = newClient(dgraphClientStub);
     return dgraphClient.newTxn();
 }
+
+setSchema()
 
 module.exports = {newTransaction, newOperation, newMutation}

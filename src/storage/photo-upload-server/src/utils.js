@@ -89,6 +89,9 @@ async function generateStaticPage(albumName) {
   services.initWorkFlow(message);
 }
 
+async function createNewAlbum(albumName) {
+  await services.createAlbum(albumName)
+}
 /**
  * 
  * Album name and the list of files are passed as
@@ -141,4 +144,4 @@ function getSavePhotoRequest(fields) {
   return savePhotoRequest;
 }
 
-module.exports = {saveFileToDisk, generateStaticPage}
+module.exports = {saveFileToDisk, generateStaticPage, createNewAlbum}

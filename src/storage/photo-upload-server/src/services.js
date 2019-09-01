@@ -21,7 +21,13 @@ function savePhotoCallback(err, response) {
 
 async function savePhoto(savePhotoRequest) {
     console.log("Inside save photo", savePhotoRequest);
-    const albumUID = await database.getAlbumUID(savePhotoRequest.albumName);
+    var albumUID;
+    albumUID = await database.getAlbumUID(savePhotoRequest.albumName);
+    console.log("AlbumUID: ", albumUID);
+    if (albumUID === '') {
+        await database.createAlbum(savePhotoRequest.albumName); 
+        albumUID = await database.getAlbumUID(savePhotoRequest.albumName); 
+    }
     await database.addPhoto(savePhotoRequest.photoName, albumUID);
     // const serviceX = new kuruviProto.ServiceX(SERVICE_X_ENDPOINT, credentials);
     // serviceX.savePhoto(savePhotoRequest, savePhotoCallback);

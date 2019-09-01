@@ -33,4 +33,15 @@ function getAlbumUIDQuery() {
     return query;
 }
 
-module.exports = {getAddPhotoQuery, getAlbumUIDQuery}
+function getCreateAlbumQuery(albumName) {
+    const query = {
+        "uid": "_:album",
+        "name": albumName
+    };
+
+    return query;
+}
+
+module.exports = {getAddPhotoQuery, 
+    getAlbumUIDQuery, 
+    getCreateAlbumQuery}

@@ -25,7 +25,8 @@ services:
       - album-uploads:/srv/album-uploads
     ports:
       - ${PHOTO_UPLOAD_SERVER_PORT}:${PHOTO_UPLOAD_SERVER_PORT}
-    restart: on-failure
+    # restart: on-failure
+    restart: always
 
   caddy-server:
     container_name: ${CADDY_SERVER_SERVICE}

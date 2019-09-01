@@ -24,9 +24,11 @@ async function getAlbumUID(albumName) {
     const albumNode= res.getJson();
 
     console.log("albumnode: ", albumNode);
-    const albumUID = albumNode.all[0].uid;
+    if(albumNode.all.length > 0) {
+        return albumNode.all[0].uid;
+    }
 
-    return albumUID;
+    return '';
 }
 
 // Create data using JSON.
@@ -50,4 +52,9 @@ async function createData(data) {
     }
 }
 
-module.exports = {addPhoto, getAlbumUID}
+async function createAlbum(albumName) {
+    const query = utils.getCreateAlbumQuery(albumName);
+    await createData(query);
+}
+
+module.exports = {addPhoto, getAlbumUID, createAlbum}
