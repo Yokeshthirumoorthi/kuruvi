@@ -90,29 +90,29 @@ services:
   #     - album-faces:/usr/src/app/album-faces
   #   restart: on-failure
 
-  imgproxyservice:
-    container_name: imgproxyservice
-    build:
-      context: ../../src/imgproxyservice
-      dockerfile: Dockerfile
-    volumes:
-      - album-uploads:/usr/src/app/album-upload
-      - album-resized:/usr/src/app/resized
-      - album-faces:/usr/src/app/faces
-    restart: on-failure
+  # imgproxyservice:
+  #   container_name: imgproxyservice
+  #   build:
+  #     context: ../../src/imgproxyservice
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - album-uploads:/usr/src/app/album-upload
+  #     - album-resized:/usr/src/app/resized
+  #     - album-faces:/usr/src/app/faces
+  #   restart: on-failure
 
-  imgproxy:
-    container_name: imgproxy
-    image: "darthsim/imgproxy:latest"
-    ports:
-      - 8082:8080
-    restart: on-failure
+  # imgproxy:
+  #   container_name: imgproxy
+  #   image: "darthsim/imgproxy:latest"
+  #   ports:
+  #     - 8082:8080
+  #   restart: on-failure
 
   adminer:
     image: adminer
     restart: always
     ports:
-      - 8081:8080
+      - 8090:8080
 
   exif-core:
     container_name: ${EXIF_CORE_SERVICE}
@@ -132,7 +132,7 @@ services:
         EXIF_API_PORT: ${EXIF_API_PORT}
     depends_on:
       - exif-dgraph
-    restart: on-failure
+    restart: always
 
   exif-queue:
     container_name: ${EXIF_QUEUE_SERVICE}
@@ -147,16 +147,25 @@ services:
       context: ../../src/exif/exif-dgraph
       dockerfile: Dockerfile
     volumes:
-      - type: volume
-        source: dgraph
-        target: /dgraph
-        volume:
-          nocopy: true
+      - dgraph-zero:/dgraph
     ports:
       - ${DGRAPH_ZERO_PORT_1}:${DGRAPH_ZERO_PORT_1}
       - ${DGRAPH_ZERO_PORT_2}:${DGRAPH_ZERO_PORT_2}
     restart: on-failure
-    command: dgraph zero --my=${DGRAPH_ZERO}:${DGRAPH_ZERO_PORT_1}
+    command: dgraph zero --my=${DGRAPH_ZERO}:${DGRAPH_ZERO_PORT_1} --replicas=3
+
+  storage-dgraph:
+    container_name: ${STORAGE_DGRAPH}
+    build:
+      context: ../../src/storage/storage-db
+      dockerfile: Dockerfile
+    volumes:
+      - dgraph-storage:/dgraph  
+    ports:
+      - ${STORAGE_DGRAPH_PORT_1}:${STORAGE_DGRAPH_PORT_1}
+      - ${STORAGE_DGRAPH_PORT_2}:${STORAGE_DGRAPH_PORT_2}
+    restart: on-failure
+    command: dgraph alpha --my=${STORAGE_DGRAPH}:${STORAGE_DGRAPH_PORT_3} --lru_mb=2048 --zero=${DGRAPH_ZERO}:${DGRAPH_ZERO_PORT_1}
 
   exif-dgraph:
     container_name: ${EXIF_DGRAPH}
@@ -164,28 +173,18 @@ services:
       context: ../../src/exif/exif-dgraph
       dockerfile: Dockerfile
     volumes:
-      - type: volume
-        source: dgraph
-        target: /dgraph
-        volume:
-          nocopy: true
+      - dgraph-exif:/dgraph
     ports:
       - ${EXIF_DGRAPH_PORT_1}:${EXIF_DGRAPH_PORT_1}
       - ${EXIF_DGRAPH_PORT_2}:${EXIF_DGRAPH_PORT_2}
     restart: on-failure
-    command: dgraph alpha --my=${EXIF_DGRAPH}:${EXIF_DGRAPH_PORT_3} --lru_mb=2048 --zero=${DGRAPH_ZERO}:${DGRAPH_ZERO_PORT_1}
+    command: dgraph alpha --my=${EXIF_DGRAPH}:${EXIF_DGRAPH_PORT_3} --lru_mb=2048 --zero=${DGRAPH_ZERO}:${DGRAPH_ZERO_PORT_1} -o 1
 
   ratel:
     container_name: ${DGRAPH_RATEL}
     build:
       context: ../../src/exif/exif-dgraph
       dockerfile: Dockerfile
-    volumes:
-      - type: volume
-        source: dgraph
-        target: /dgraph
-        volume:
-          nocopy: true
     ports:
       - ${DGRAPH_RATEL_PORT}:8000
     command: dgraph-ratel
@@ -267,4 +266,6 @@ volumes:
   album-static-gen:
   album-faces:
   album-resized:
-  dgraph:
+  dgraph-zero:
+  dgraph-exif:
+  dgraph-storage:
