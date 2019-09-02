@@ -8,10 +8,10 @@
  *
  */
 
+const {kuruviProto, serverCredentials} = require('./src/common/grpc');
+const {runSaveFolderDetailsUsingQueue} = require('./src/queue');
+const {STORAGE_API_PORT} = require('./src/common/config');
 const grpc = require('grpc');
-const {kuruviProto,serverCredentials} = require('./src/common/grpc');
-const {initWorkFlow} = require('./src/services');
-const { SERVICE_X_PORT } = require('./src/common/config');
 
 /**
  * Get a new server with the handler functions in this file bound to the methods
@@ -19,16 +19,17 @@ const { SERVICE_X_PORT } = require('./src/common/config');
  * @return {Server} The new server object
  */
 function getServer() {
-    var server = new grpc.Server();
-    server.addService(kuruviProto.ServiceX.service, {
-      initWorkFlow:initWorkFlow
-    });
-    return server;
-  }
+  var server = new grpc.Server();
+  server.addService(kuruviProto.StorageApi.service, {
+     saveFolderDetails: runSaveFolderDetailsUsingQueue
+  });
+  return server;
+}
 
 if (require.main === module) {
     // If this is run as a script, start a server on an unused port
-    var server= getServer();
-    server.bind(`0.0.0.0:${SERVICE_X_PORT}`, serverCredentials);
+    var server = getServer();
+    server.bind(`0.0.0.0:${STORAGE_API_PORT}`, serverCredentials);
     server.start();
+    console.log("Listening on port: ", STORAGE_API_PORT);
 }

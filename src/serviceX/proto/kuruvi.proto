@@ -188,3 +188,10 @@ service ResizeApi {
     // For the given album, resize and save to disk
     rpc resizePhotos (AlbumFolder) returns (JobStatus) {}
 }
+
+service StorageApi {
+    // A Simple RPC
+    //
+    // Saves the album details and photo details in database
+    rpc saveFolderDetails (AlbumFolder) returns (JobStatus) {}
+}

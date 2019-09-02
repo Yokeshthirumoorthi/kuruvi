@@ -88,8 +88,8 @@ async function extractExifCallback(err, response, message, sendAckToQueue) {
         return;
     }
     const photoName = message.photoName;
-    const albumUID = await dgraph.getAlbumUID(message.albumName);
-    await dgraph.addPhoto(photoName, albumUID);
+    // const albumUID = await dgraph.getAlbumUID(message.albumName);
+    // await dgraph.addPhoto(photoName, albumUID);
     const photoUID = await dgraph.getPhotoUID(photoName);
     console.log("Photo UID: ", photoUID);
     await dgraph.addExif(response, photoUID);

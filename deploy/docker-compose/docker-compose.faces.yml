@@ -262,6 +262,24 @@ services:
       dockerfile: Dockerfile
     restart: on-failure
 
+  storage-api:
+    container_name: ${STORAGE_API_SERVICE}
+    build:
+      context: ../../src/storage/storage-api
+      dockerfile: Dockerfile
+      args:
+        STORAGE_API_PORT: ${STORAGE_API_PORT}
+    depends_on:
+      - storage-dgraph
+    restart: always
+
+  storage-queue:
+    container_name: ${STORAGE_QUEUE_SERVICE}
+    build:
+      context: ../../src/storage/storage-queue
+      dockerfile: Dockerfile
+    restart: on-failure
+
 volumes:
   album-uploads:
   album-static-gen:

@@ -65,8 +65,8 @@ async function saveFileToDisk(req, onSuccess, onFailure) {
       console.log('type', file.type)
       console.log('size', file.size)
       
-      const savePhotoRequest = getSavePhotoRequest(fields);
-      services.savePhoto(savePhotoRequest);
+      // const savePhotoRequest = getSavePhotoRequest(fields);
+      // services.savePhoto(savePhotoRequest);
 
       onSuccess({fields, files});
     });
