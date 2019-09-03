@@ -15,17 +15,19 @@ FACE_DETECT_SERVICE = face-detect
 FACE_CROP_SERVICE = face-crop
 RESIZE_API_SERVICE = resize-api
 RESIZE_CORE_SERVICE = resize-core
+PGSQL_API_SERVICE = pgsql-api
+PGSQL_CORE_SERVICE = pgsql-core
 
 EXIF = $(EXIF_API_SERVICE) $(EXIF_CORE_SERVICE)
 FACES = $(FACE_API_SERVICE) $(FACE_DETECT_SERVICE) $(FACE_CROP_SERVICE)
 STORAGE = $(STATIC_GENERATOR) $(PHOTO_UPLOAD_SERVER) $(STORAGE_API)
-SERVICES = serviceX $(EXIF) $(FACES) $(STORAGE)
 RESIZE = $(RESIZE_API_SERVICE) $(RESIZE_CORE_SERVICE)
+PGSQL = $(PGSQL_API_SERVICE)
 
 .PHONY: all dotenvgen deploy clean
 
 all: prepare deploy
-prepare: dotenvgen exif faces resize storage servicex
+prepare: dotenvgen exif faces resize storage servicex pgsql
 reset: down prepare deploy
 
 exif:
@@ -60,6 +62,13 @@ servicex:
 	mkdir -p ./src/serviceX/proto
 	cp ./pb/kuruvi.proto ./src/serviceX/proto
 	cp -f .env ./src/serviceX
+
+pgsql:
+	for f in $(PGSQL); do	  \
+		mkdir -p ./src/pgsql/$$f/proto;	\
+		cp ./pb/kuruvi.proto ./src/pgsql/$$f/proto; \
+		cp -f .env ./src/pgsql/$$f; \
+	done
 
 dotenvgen:
 	cp -f .env.sample .env

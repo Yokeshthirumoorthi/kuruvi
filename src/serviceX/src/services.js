@@ -12,13 +12,14 @@ const {kuruviProto, credentials} = require('./common/grpc');
 const {STATIC_GENERATOR_ENDPOINT, PGSQL_SERVICE_API_ENDPOINT, 
     FACEAPI_SERVICE_API_ENDPOINT, EXIF_API_ENDPOINT,
     FACE_API_ENDPOINT, RESIZE_API_ENDPOINT,
-    STORAGE_API_ENDPOINT
+    STORAGE_API_ENDPOINT, PGSQL_API_ENDPOINT
     } = require('./common/config');
 const staticGeneratorService = new kuruviProto.StaticGenerator(STATIC_GENERATOR_ENDPOINT, credentials);
 const exifService = new kuruviProto.ExifApi(EXIF_API_ENDPOINT, credentials);
 const faceService = new kuruviProto.FaceApi(FACE_API_ENDPOINT, credentials);
 const resizeService = new kuruviProto.ResizeApi(RESIZE_API_ENDPOINT, credentials);
 const storageService = new kuruviProto.StorageApi(STORAGE_API_ENDPOINT, credentials);
+const pgsqlService = new kuruviProto.PgsqlApi(PGSQL_API_ENDPOINT, credentials);
 
 // const {fileUploaderProto, fileUploader_credentials} = require('./common/grpc_temp');
 // const photoUploadServiceService_fileUploader = new fileUploaderProto.PhotoUploadService(PGSQL_SERVICE_API_ENDPOINT, fileUploader_credentials);
@@ -107,24 +108,24 @@ function startWorkFlow(err, response) {
     const albumFolders = response;
     console.log('Given Album Info: ', albumFolders);
 
-    // This is temp data used for dev
-    // const albumFolders = {albums: [
-    //     {albumName: 'amy', tagName: 'tag1', photos: ['amy1.png', 'amy5.png']},
-    //     {albumName: 'amy', tagName: 'tag2', photos: ['amy1.png', 'amy2.png']}
-    // ]}
-    // const albumFolders = {albums: [
-    //     {albumName: 'album2', tagName: 'tag1', photos: ['bbt1.jpg', 'bbt2.jpg']},
-    //     {albumName: 'album2', tagName: 'tag2', photos: ['bbt1.jpg', 'bbt4.jpg']}
-    // ]}
-
     // Photos are grouped under various tags using the exif details.
     // Copy the photos in given folder:photos directory structure.
     staticGeneratorService.createExifFolders(albumFolders, exifFoldersGenCallback);
 }
 
+function organizeData(albumUploadsFolder) {
+    console.log("calling organize data")
+    pgsqlService.organizeData(albumUploadsFolder, (err, res) => {
+        console.log("organized data: ", res);
+        startWorkFlow(albumUploadsFolder)
+    })
+}
+
 function extractExif(albumUploadsFolder) {
     console.log("Inside extract exif details folder", albumUploadsFolder);
-    exifService.exififyAlbum(albumUploadsFolder, startWorkFlow);
+    exifService.exififyAlbum(albumUploadsFolder, (err, res) => {
+        organizeData(albumUploadsFolder)
+    });
 }
 
 function extractFaces(albumUploadsFolder) {
@@ -144,12 +145,12 @@ function resizePhotos(albumUploadsFolder) {
 function saveFolderDetails(albumUploadsFolder) {
     storageService.saveFolderDetails(albumUploadsFolder, (err, res) => {
         console.log("saved to folder: ", res);
-        resizePhotos(albumUploadsFolder);
+        // resizePhotos(albumUploadsFolder);
+        extractExif(albumUploadsFolder)
     });
 }
 
 function initWorkFlow(call, callback) {
-    // callback(null, extractFaces(call.request));
     callback(null, saveFolderDetails(call.request));
 }
 

@@ -181,6 +181,19 @@ services:
     restart: on-failure
     command: dgraph alpha --my=${EXIF_DGRAPH}:${EXIF_DGRAPH_PORT_3} --lru_mb=2048 --zero=${DGRAPH_ZERO}:${DGRAPH_ZERO_PORT_1} -o 1
 
+  pgsql-dgraph:
+    container_name: ${PGSQL_DGRAPH}
+    build:
+      context: ../../src/pgsql/pgsql-dgraph
+      dockerfile: Dockerfile
+    volumes:
+      - dgraph-pgsql:/dgraph
+    ports:
+      - ${PGSQL_DGRAPH_PORT_1}:${PGSQL_DGRAPH_PORT_1}
+      - ${PGSQL_DGRAPH_PORT_2}:${PGSQL_DGRAPH_PORT_2}
+    restart: on-failure
+    command: dgraph alpha --my=${PGSQL_DGRAPH}:${PGSQL_DGRAPH_PORT_3} --lru_mb=2048 --zero=${DGRAPH_ZERO}:${DGRAPH_ZERO_PORT_1} -o 2
+
   ratel:
     container_name: ${DGRAPH_RATEL}
     build:
@@ -280,6 +293,31 @@ services:
       dockerfile: Dockerfile
     restart: on-failure
 
+  pgsql-core:
+    container_name: ${PGSQL_CORE_SERVICE}
+    build:
+      context: ../../src/pgsql/pgsql-core
+      dockerfile: Dockerfile
+      args:
+        PGSQL_CORE_PORT: ${PGSQL_CORE_PORT}
+    restart: on-failure
+
+  pgsql-api:
+    container_name: ${PGSQL_API_SERVICE}
+    build:
+      context: ../../src/pgsql/pgsql-api
+      dockerfile: Dockerfile
+      args:
+        PGSQL_API_PORT: ${PGSQL_API_PORT}
+    restart: on-failure
+
+  pgsql-queue:
+    container_name: ${PGSQL_QUEUE_SERVICE}
+    build:
+      context: ../../src/pgsql/pgsql-queue
+      dockerfile: Dockerfile
+    restart: on-failure
+
 volumes:
   album-uploads:
   album-static-gen:
@@ -288,3 +326,4 @@ volumes:
   dgraph-zero:
   dgraph-exif:
   dgraph-storage:
+  dgraph-pgsql:
