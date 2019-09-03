@@ -9,8 +9,7 @@
  */
 
 const {kuruviProto, credentials} = require('./common/grpc');
-const {STATIC_GENERATOR_ENDPOINT, PGSQL_SERVICE_API_ENDPOINT, 
-    FACEAPI_SERVICE_API_ENDPOINT, EXIF_API_ENDPOINT,
+const {STATIC_GENERATOR_ENDPOINT, EXIF_API_ENDPOINT,
     FACE_API_ENDPOINT, RESIZE_API_ENDPOINT,
     STORAGE_API_ENDPOINT, PGSQL_API_ENDPOINT
     } = require('./common/config');
@@ -20,46 +19,6 @@ const faceService = new kuruviProto.FaceApi(FACE_API_ENDPOINT, credentials);
 const resizeService = new kuruviProto.ResizeApi(RESIZE_API_ENDPOINT, credentials);
 const storageService = new kuruviProto.StorageApi(STORAGE_API_ENDPOINT, credentials);
 const pgsqlService = new kuruviProto.PgsqlApi(PGSQL_API_ENDPOINT, credentials);
-
-// const {fileUploaderProto, fileUploader_credentials} = require('./common/grpc_temp');
-// const photoUploadServiceService_fileUploader = new fileUploaderProto.PhotoUploadService(PGSQL_SERVICE_API_ENDPOINT, fileUploader_credentials);
-// const detectFaces_fileUploader = new fileUploaderProto.FaceApiService(FACEAPI_SERVICE_API_ENDPOINT, fileUploader_credentials);
-
-
-// /** TODO: Use this function until we completely
-//  * get rid of fileUploader.proto
-//  */
-// function doSavePhoto_fileUploader(savePhotoReq) {
-//     const request = {
-//         album: savePhotoReq.albumName,
-//         path: `/usr/src/app/album-uploads/${savePhotoReq.albumName}/uploads`,
-//         filename: savePhotoReq.photoName
-//     }
-//     photoUploadServiceService_fileUploader.addPhoto(request, (err, res) => {
-//         const detectFaceRequest = {
-//             photoId : res.photo_id
-//         };
-//         console.log(detectFaceRequest);
-//         // detectFaces_fileUploader.detectFaces(detectFaceRequest, (err, res) => {
-//         //     console.log("Detect faces Res: ", res);
-//         // })
-//     })
-// }
-
-// /**
-//  * 
-//  * Persists the albumname and photoname in database.
-//  * @param {*} savePhotoReq AlbumName and PhotoName are provided in this param
-//  */
-// function doSavePhoto(savePhotoReq) {
-//     console.log('Given Photo req:', savePhotoReq);
-//     doSavePhoto_fileUploader(savePhotoReq);
-// }
-
-// function savePhoto(call, callback) {
-//     callback(null, doSavePhoto(call.request));
-// }
-
 /**
  * This is the final callback in executing photo-uploads to
  * photo-static-album creation process.
