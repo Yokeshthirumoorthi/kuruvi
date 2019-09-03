@@ -59,7 +59,7 @@ service ServiceX {
     // A Simple RPC
     //
     // Saves the album details and photo details in database
-    rpc savePhoto (SavePhotoRequest) returns (PhotoDetails) {}
+    // rpc savePhoto (SavePhotoRequest) returns (PhotoDetails) {}
     // A Simple RPC
     //
     // It will execute a set of workflow 
@@ -194,4 +194,11 @@ service StorageApi {
     //
     // Saves the album details and photo details in database
     rpc saveFolderDetails (AlbumFolder) returns (JobStatus) {}
+}
+
+service PgsqlApi {
+    // A Simple RPC
+    //
+    // Saves the album details and photo details in database
+    rpc organizeData (AlbumFolder) returns (JobStatus) {}
 }
