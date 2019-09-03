@@ -1,5 +1,5 @@
 DOCKER_COMPOSE_DIR = deploy/docker-compose
-DOCKER_COMPOSE_FILE = docker-compose.faces.yml
+DOCKER_COMPOSE_FILE = docker-compose.yml
 
 DOCKER_COMPOSE = $(DOCKER_COMPOSE_DIR)/$(DOCKER_COMPOSE_FILE)
 
