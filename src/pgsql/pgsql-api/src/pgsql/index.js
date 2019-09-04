@@ -10,13 +10,14 @@
 const db = require('./dbClient');
 
 async function insertAlbum(albumName) {
-    const queryText = 'INSERT INTO albums(name, path) VALUES($1, $2) RETURNING id'
+    const queryText = 'INSERT INTO albums(name, path) VALUES ($1, $2) RETURNING id'
     const albumsRes = await db.query(queryText, [albumName, ''])
     const albumId = albumsRes.rows[0].id; 
+    console.log("album ID: ", albumId);
     return albumId;
 }
 
-async function insertPhoto(albumID, photo) {
+async function insertPhoto(albumId, photo) {
     const insertPhotoText = 'INSERT INTO photos(album_id, name) VALUES ($1, $2) RETURNING id'
     const insertPhotoValues = [albumId, photo.name];
     const photoRes = await db.query(insertPhotoText, insertPhotoValues);
@@ -48,9 +49,9 @@ async function insertAlbumDetails(albumDetails) {
     // we don't need to dispose of the client (it will be undefined)
     const albumName = albumDetails.name;
     const photos = albumDetails.photos;
+    const albumId = await insertAlbum(albumName);
     try {
         await db.query('BEGIN')
-        const albumId = await insertAlbum(albumName);
         await insertPhotos(albumId, photos);        
         await db.query('COMMIT')
     } catch (e) {
