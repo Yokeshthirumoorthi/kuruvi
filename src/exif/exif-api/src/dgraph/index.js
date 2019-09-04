@@ -14,7 +14,7 @@ const {newTransaction, newMutation} = require('./dbClient');
 async function getPhotoUID(photoName) {
     const query = utils.getPhotoUIDQuery(); 
     const vars = { $a: photoName };
-    const res = await dgraphClient.newTxn().queryWithVars(query, vars);
+    const res = await newTransaction().queryWithVars(query, vars);
     const photoNode= res.getJson();
 
     console.log("Photonode: ", photoNode);

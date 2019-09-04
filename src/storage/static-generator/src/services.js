@@ -10,44 +10,53 @@
 
 const utils = require('./utils');
 const dgraph = require('./dgraph');
-const _ = require('lodash');
-const moment = require('moment');
+// const _ = require('lodash');
+// const moment = require('moment');
 
-function generateFolderStructureByExif(exifJson) {
-    // const otherPhotos = exifJson.all[0].photos.filter(photo => photo.exif.create_on === '');
-    const photos = exifJson.all[0].photos;
+// function generateFolderStructureByExif(exifJson) {
+//     // const otherPhotos = exifJson.all[0].photos.filter(photo => photo.exif.create_on === '');
+//     const photos = exifJson.all[0].photos;
 
-    console.log("exifjson", exifJson);
+//     console.log("exifjson", exifJson);
 
 
-    const photosWithExif = photos.map(photo => {
-        console.log("photo:", photo);
-        if (!photo.exif) {
-            return {name: photo.name, date: ''}
-        }
-        return {name: photo.name, date: photo.exif[0].create_on} 
-    });
+//     const photosWithExif = photos.map(photo => {
+//         console.log("photo:", photo);
+//         if (!photo.exif) {
+//             return {name: photo.name, date: ''}
+//         }
+//         return {name: photo.name, date: photo.exif[0].create_on} 
+//     });
     
-    console.log("PHotoswithexif", photosWithExif);
+//     console.log("PHotoswithexif", photosWithExif);
 
-    var groupedResults = _.groupBy(photosWithExif, function (result) {
-        return moment(result.date).format("hA");
-    });
+//     var groupedResults = _.groupBy(photosWithExif, function (result) {
+//         return moment(result.date).format("hA");
+//     });
 
-    const albumTags = Object.keys(groupedResults).map(tagName => {
-        const photos = groupedResults[tagName].map(photo => photo.name);
-        return {
-            albumName: 'album2',
-            tagName: tagName,
-            photos: photos
-        }
-    });
+//     const albumTags = Object.keys(groupedResults).map(tagName => {
+//         const photos = groupedResults[tagName].map(photo => photo.name);
+//         return {
+//             albumName: 'album2',
+//             tagName: tagName,
+//             photos: photos
+//         }
+//     });
 
-    console.log(groupedResults);
+//     console.log(groupedResults);
 
-    const albumFolders = {albums: albumTags};
+//     const albumFolders = {albums: albumTags};
 
-    return albumFolders;
+//     return albumFolders;
+// }
+
+function generateFolderStructureByExif(albumDetails) {
+    const albumName =  albumDetails.all[0].name; 
+    const photos = albumDetails.all[0].photos.map(photo => photo.name);
+    const tagName = 'all';
+    const albumTag = { albumName, tagName, photos };
+    const albumFolders = { albums: [albumTag] };
+    return albumFolders; 
 }
 
 /**
@@ -60,12 +69,14 @@ function generateFolderStructureByExif(exifJson) {
  * @param {*} albumInfo Contains the name of album to be processed
  */
 async function organizePhotosByExif(albumName) {
-    console.log("Inside organizePhotosByExif")
-    const exif = await dgraph.queryData('album2');
+    console.log("Inside organizePhotosByExif");
 
-    console.log("Query album: ", exif)
+    const albumDetails = await dgraph.queryData(albumName);
 
-    const folders = generateFolderStructureByExif(exif);
+    console.log("Query album: ", albumDetails);
+
+    const folders = generateFolderStructureByExif(albumDetails);
+    
     console.log(folders);
 
     return folders;

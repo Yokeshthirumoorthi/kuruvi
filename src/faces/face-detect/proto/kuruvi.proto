@@ -87,7 +87,7 @@ service StaticGenerator {
     //
     // Creates the web directory with js, html and the 
     // cache contents
-    rpc createStaticWebDirectory (AlbumInfo) returns (Empty) {}
+    rpc createStaticWebDirectory (AlbumFolder) returns (Empty) {}
 }
 
 // -----------------Exif functions-----------------
