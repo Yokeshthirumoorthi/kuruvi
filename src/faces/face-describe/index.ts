@@ -8,7 +8,7 @@
  *
  */
 const grpc = require('grpc');
-import { FACE_DETECT_PORT } from './src/common/config';
+import { FACE_DESCRIBE_PORT } from './src/common/config';
 import { kuruviProto, serverCredentials } from './src/common/grpc'
 import {describeFaces} from './src/services';
 
@@ -31,7 +31,7 @@ function getServer() {
 if (require.main === module) {
     // If this is run as a script, start a server on an unused port
     var server = getServer();
-    server.bind(`0.0.0.0:${FACE_DETECT_PORT}`, serverCredentials);
+    server.bind(`0.0.0.0:${FACE_DESCRIBE_PORT}`, serverCredentials);
     server.start();
-    console.log("Listening on port: ", FACE_DETECT_PORT);
+    console.log("Listening on port: ", FACE_DESCRIBE_PORT);
 }
