@@ -9,11 +9,38 @@
  */
 const db = require('./dbClient');
 
+async function insertAlbum(albumName) {
+    const queryText = 'INSERT INTO albums(name, path) VALUES($1, $2) RETURNING id'
+    const albumsRes = await db.query(queryText, [albumName, ''])
+    const albumId = albumsRes.rows[0].id; 
+    return albumId;
+}
+
+async function insertPhoto(albumID, photo) {
+    const insertPhotoText = 'INSERT INTO photos(album_id, name) VALUES ($1, $2) RETURNING id'
+    const insertPhotoValues = [albumId, photo.name];
+    const photoRes = await db.query(insertPhotoText, insertPhotoValues);
+    const photoId = photoRes.rows[0].id; 
+    return photoId;
+}
+
 async function insertExif(photoId, exif) {
     const insertExifText = 'INSERT INTO exif (photo_id, make, model, create_on, width, height) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id';
     const {make, model, createOn, width, height} = exif;
     const insertExifValues = [photoId, make, model, createOn, width, height];
-    await db.query(insertExifText, insertExifValues)
+    await db.query(insertExifText, insertExifValues);
+}
+
+async function insertPhotos(albumId, photos) {
+    const promises = photos.map(async photo => {
+        const photoId = await insertPhoto(albumId, photo);
+        const exif = photo.exif;
+        if (exif) {
+            await insertExif(photoId, exif);
+        }
+    });
+
+    return await Promise.all(promises);
 }
 
 async function insertAlbumDetails(albumDetails) {
@@ -23,21 +50,8 @@ async function insertAlbumDetails(albumDetails) {
     const photos = albumDetails.photos;
     try {
         await db.query('BEGIN')
-        const queryText = 'INSERT INTO albums(name, path) VALUES($1, $2) RETURNING id'
-        const albumsRes = await db.query(queryText, [albumName, ''])
-        const albumId = albumsRes.rows[0].id;
-        await Promise.all(photos.map(async photo => {
-            const insertPhotoText = 'INSERT INTO photos(album_id, name) VALUES ($1, $2) RETURNING id'
-            const insertPhotoValues = [albumId, photo.name];
-            const photoRes = await db.query(insertPhotoText, insertPhotoValues);
-            const photoId = photoRes.rows[0].id;
-            console.log("photoID: ", photoId);
-            await Promise.all(photos.map(async photo => {
-                if (photo.exif) {
-                    await insertExif(photoId, photo.exif)
-                }                
-            })); 
-        }));        
+        const albumId = await insertAlbum(albumName);
+        await insertPhotos(albumId, photos);        
         await db.query('COMMIT')
     } catch (e) {
         await db.query('ROLLBACK')
@@ -47,6 +61,4 @@ async function insertAlbumDetails(albumDetails) {
     }
 }
 
-module.exports = {
-    insertAlbumDetails
-}
+module.exports = { insertAlbumDetails }
