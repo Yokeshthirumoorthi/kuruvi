@@ -82,10 +82,6 @@ message AlbumFolders {
 service StaticGenerator {
     // A Simple RPC
     //
-    // Copies uploaded files to new folders based exif data
-    rpc createExifFolders (AlbumFolders) returns (AlbumInfo) {}
-    // A Simple RPC
-    //
     // Creates the web directory with js, html and the 
     // cache contents
     rpc createStaticWebDirectory (AlbumInfo) returns (Empty) {}

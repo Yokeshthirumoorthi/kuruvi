@@ -11,9 +11,8 @@
 
 var amqp = require('amqplib/callback_api');
 const {EXIF_QUEUE_ENDPOINT} = require('./common/config');
-const {exififyAlbum, organizePhotosByExif} = require('./services');
+const {exififyAlbum} = require('./services');
 const QUEUE_CONNECTION_STRING = `amqp://${EXIF_QUEUE_ENDPOINT}`;
-const END_OF_QUEUE = "EOQ";
 
 function runServices(message, sendAckToQueue) {
     console.log(" [x] Received %s", message);
@@ -50,7 +49,7 @@ function consumeQueue(albumName, callback) {
             channel.consume(queue, async function(msg) {
                 const message = JSON.parse(msg.content);
                 if (message.albumName === '' && message.photoName === '') {
-                    callback(null, await organizePhotosByExif());
+                    callback(null, () => {});
                 } else {
                     const sendAckToQueue = () => channel.ack(msg);
                     runServices(message, sendAckToQueue)

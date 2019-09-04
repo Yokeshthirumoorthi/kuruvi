@@ -9,7 +9,7 @@
  */
 
 const {kuruviProto, serverCredentials} = require('./src/common/grpc');
-const {createExifFolders, createStaticWebDirectory} = require('./src/services');
+const { createStaticWebDirectory} = require('./src/services');
 const { STATIC_GENERATOR_PORT } = require('./src/common/config');
 const grpc = require('grpc');
 
@@ -21,7 +21,6 @@ const grpc = require('grpc');
 function getServer() {
   var server = new grpc.Server();
   server.addService(kuruviProto.StaticGenerator.service, {
-    createExifFolders: createExifFolders,
     createStaticWebDirectory: createStaticWebDirectory
   });
   return server;

@@ -9,6 +9,13 @@
  */
 const db = require('./dbClient');
 
+async function insertExif(photoId, exif) {
+    const insertExifText = 'INSERT INTO exif (photo_id, make, model, create_on, width, height) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id';
+    const {make, model, createOn, width, height} = exif;
+    const insertExifValues = [photoId, make, model, createOn, width, height];
+    await db.query(insertExifText, insertExifValues)
+}
+
 async function insertAlbumDetails(albumDetails) {
     // note: we don't try/catch this because if connecting throws an exception
     // we don't need to dispose of the client (it will be undefined)
@@ -26,10 +33,9 @@ async function insertAlbumDetails(albumDetails) {
             const photoId = photoRes.rows[0].id;
             console.log("photoID: ", photoId);
             await Promise.all(photos.map(async photo => {
-                const insertExifText = 'INSERT INTO exif (photo_id, make, model, create_on, width, height) VALUES ($1, $2, $3, $4, $5, $6) RETURNING id';
-                const {make, model, createOn, width, height} = photo.exif;
-                const insertExifValues = [photoId, make, model, createOn, width, height];
-                await db.query(insertExifText, insertExifValues)
+                if (photo.exif) {
+                    await insertExif(photoId, photo.exif)
+                }                
             })); 
         }));        
         await db.query('COMMIT')

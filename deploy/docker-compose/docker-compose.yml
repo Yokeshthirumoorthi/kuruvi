@@ -58,7 +58,9 @@ services:
       - album-static-gen:/srv/album-static-gen
       - album-faces:/srv/album-faces
       - album-resized:/srv/album-resized
-    restart: on-failure
+    depends_on:
+      - storage-dgraph
+    restart: always
 
   storage-api:
     container_name: ${STORAGE_API_SERVICE}

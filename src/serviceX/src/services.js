@@ -19,6 +19,7 @@ const faceService = new kuruviProto.FaceApi(FACE_API_ENDPOINT, credentials);
 const resizeService = new kuruviProto.ResizeApi(RESIZE_API_ENDPOINT, credentials);
 const storageService = new kuruviProto.StorageApi(STORAGE_API_ENDPOINT, credentials);
 const pgsqlService = new kuruviProto.PgsqlApi(PGSQL_API_ENDPOINT, credentials);
+
 /**
  * This is the final callback in executing photo-uploads to
  * photo-static-album creation process.
@@ -35,24 +36,24 @@ function endWorkFlowCallback(err, response) {
     console.log('Executed workflow: ', response);
 }
 
-/**
- * After creating the exif folders,
- * run the scanner and copy the folders and
- * photos into appropriate static web folder's cache directory
- * 
- * @param {*} err Error message while creating exif based folders
- * @param {*} response Response on successful exif folder creation.
- */
-function exifFoldersGenCallback(err, response) {
-    if (err !== null) {
-        console.log(err);
-        return;
-    }
-    const albumInfo = response;
-    // Finally all the folders in album directory is scanned 
-    // and copied into the static web's cache directory
-    staticGeneratorService.createStaticWebDirectory(albumInfo, endWorkFlowCallback);
-}
+// /**
+//  * After creating the exif folders,
+//  * run the scanner and copy the folders and
+//  * photos into appropriate static web folder's cache directory
+//  * 
+//  * @param {*} err Error message while creating exif based folders
+//  * @param {*} response Response on successful exif folder creation.
+//  */
+// function exifFoldersGenCallback(err, response) {
+//     if (err !== null) {
+//         console.log(err);
+//         return;
+//     }
+//     const albumInfo = response;
+//     // Finally all the folders in album directory is scanned 
+//     // and copied into the static web's cache directory
+//     staticGeneratorService.createStaticWebDirectory(albumInfo, endWorkFlowCallback);
+// }
 
 /**
  * 
@@ -63,13 +64,14 @@ function exifFoldersGenCallback(err, response) {
  * each service in some defined order.
  * @param {*} albumFolders Contains the name of album to be processed
  */
-function startWorkFlow(err, response) {
-    const albumFolders = response;
-    console.log('Given Album Info: ', albumFolders);
+function startWorkFlow(albumUploadsFolder) {
+    console.log('Given Album Info: ', albumUploadsFolder);
 
     // Photos are grouped under various tags using the exif details.
     // Copy the photos in given folder:photos directory structure.
-    staticGeneratorService.createExifFolders(albumFolders, exifFoldersGenCallback);
+    // staticGeneratorService.createExifFolders(albumUploadsFolder, exifFoldersGenCallback);
+    const albumInfo = {name: albumUploadsFolder.albumName};
+    staticGeneratorService.createStaticWebDirectory(albumInfo, endWorkFlowCallback);
 }
 
 function organizeData(albumUploadsFolder) {
