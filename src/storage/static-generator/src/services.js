@@ -72,11 +72,11 @@ async function organizePhotosByExif(albumName) {
 }
 
 async function createStaticDirectory(AlbumInfo) {
-    console.log('Creating static web directory', AlbumInfo.name);
-    const exifFolders = await organizePhotosByExif(AlbumInfo.name);
+    console.log('Creating static web directory', AlbumInfo.albumName);
+    const exifFolders = await organizePhotosByExif(AlbumInfo.albumName);
     console.log("Organize folders: ", exifFolders);
     await utils.createExifFolders(exifFolders)
-    await utils.generateStaticPage(AlbumInfo.name);
+    await utils.generateStaticPage(AlbumInfo.albumName);
 }
 
 async function createStaticWebDirectory(call, callback) {

@@ -36,25 +36,6 @@ function endWorkFlowCallback(err, response) {
     console.log('Executed workflow: ', response);
 }
 
-// /**
-//  * After creating the exif folders,
-//  * run the scanner and copy the folders and
-//  * photos into appropriate static web folder's cache directory
-//  * 
-//  * @param {*} err Error message while creating exif based folders
-//  * @param {*} response Response on successful exif folder creation.
-//  */
-// function exifFoldersGenCallback(err, response) {
-//     if (err !== null) {
-//         console.log(err);
-//         return;
-//     }
-//     const albumInfo = response;
-//     // Finally all the folders in album directory is scanned 
-//     // and copied into the static web's cache directory
-//     staticGeneratorService.createStaticWebDirectory(albumInfo, endWorkFlowCallback);
-// }
-
 /**
  * 
  * After the photos are completely uploaded, 
@@ -66,12 +47,7 @@ function endWorkFlowCallback(err, response) {
  */
 function startWorkFlow(albumUploadsFolder) {
     console.log('Given Album Info: ', albumUploadsFolder);
-
-    // Photos are grouped under various tags using the exif details.
-    // Copy the photos in given folder:photos directory structure.
-    // staticGeneratorService.createExifFolders(albumUploadsFolder, exifFoldersGenCallback);
-    const albumInfo = {name: albumUploadsFolder.albumName};
-    staticGeneratorService.createStaticWebDirectory(albumInfo, endWorkFlowCallback);
+    staticGeneratorService.createStaticWebDirectory(albumUploadsFolder, endWorkFlowCallback);
 }
 
 function organizeData(albumUploadsFolder) {
@@ -106,8 +82,7 @@ function resizePhotos(albumUploadsFolder) {
 function saveFolderDetails(albumUploadsFolder) {
     storageService.saveFolderDetails(albumUploadsFolder, (err, res) => {
         console.log("saved to folder: ", res);
-        // resizePhotos(albumUploadsFolder);
-        extractExif(albumUploadsFolder)
+        resizePhotos(albumUploadsFolder);
     });
 }
 
