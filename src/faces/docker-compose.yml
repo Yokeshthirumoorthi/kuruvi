@@ -26,6 +26,15 @@ services:
         FACE_DETECT_PORT: ${FACE_DETECT_PORT}
     restart: on-failure
 
+  face-describe:
+    container_name: ${FACE_DESCRIBE_SERVICE}
+    build:
+      context: ./face-describe
+      dockerfile: Dockerfile
+      args:
+        FACE_DETECT_PORT: ${FACE_DESCRIBE_PORT}
+    restart: on-failure
+
   face-crop:
     container_name: ${FACE_CROP_SERVICE}
     build:

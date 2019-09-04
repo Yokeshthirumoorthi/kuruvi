@@ -55,6 +55,10 @@ message BoundingBoxes {
     repeated BoundingBox boxes=1;
 }
 
+message FacePoints {
+    repeated float points=1;
+}
+
 message CropFacesRequest {
     string albumName = 1;
     string photoName = 2;
@@ -119,6 +123,14 @@ service FaceCore {
     // Gets the face details of all photos in an album
     // and save it to database
     rpc detectFaces (PhotoURL) returns (BoundingBoxes) {}
+}
+
+service FaceDescribe {
+    // A Simple RPC
+    //
+    // Gets the face details of all photos in an album
+    // and save it to database
+    rpc describeFaces (PhotoURL) returns (FacePoints) {}
 }
 
 service FaceCrop {

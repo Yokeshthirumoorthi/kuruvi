@@ -215,6 +215,17 @@ services:
       - album-uploads:/srv/album-uploads
     restart: on-failure
 
+  face-describe:
+    container_name: ${FACE_DESCRIBE_SERVICE}
+    build:
+      context: ../../src/faces/face-describe
+      dockerfile: Dockerfile
+      args:
+        FACE_DETECT_PORT: ${FACE_DESCRIBE_PORT}
+    volumes:
+      - album-faces:/srv/album-faces
+    restart: on-failure
+
   face-crop:
     container_name: ${FACE_CROP_SERVICE}
     build:
