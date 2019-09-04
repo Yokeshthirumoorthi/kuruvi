@@ -12,86 +12,16 @@ syntax = "proto3";
 
 package kuruvi;
 
-// -----------------Common types that are almost similar to db schema def-----------------
-
-message Album {
-    int32 id = 1;
-    string name= 2;
-}
-
-message Photo {
-    int32 id= 1;
-    string albumId= 2;
-    string name= 3;
-}
-
-message PhotoDetails {
-    Album album= 1;
-    Photo photo= 2;
-    // Exif exif= 3;
-    // repeated BoundingBoxes boundingBoxes= 4;
-    // repeated Faces faces= 5;
-    // repeated FaceDescriptors faceDescriptors= 6;
-}
-
-
-// -----------------ServiceX grpc server functions-----------------
-
-// This message is sent by photo-upload-server
-// after saving all photos in the disk
-message SavePhotoRequest {
-    string albumName = 1;
-    string photoName = 2;
-}
-
-message InitWorkFlowRequest {
-    string albumName = 1;
-    repeated string photos = 2;
-}
-
-message AlbumInfo {
-    string name=1;
-}
+/********************************************************************************
+* Messages
+*********************************************************************************/
 
 message Empty {}
 
-service ServiceX {
-    // A Simple RPC
-    //
-    // Saves the album details and photo details in database
-    // rpc savePhoto (SavePhotoRequest) returns (PhotoDetails) {}
-    // A Simple RPC
-    //
-    // It will execute a set of workflow 
-    // and extracts more details about the photo
-    rpc initWorkFlow (InitWorkFlowRequest) returns (Empty) {}
-}
-
-// -----------------Static generator server functions-----------------
-
 message AlbumFolder {
     string albumName= 1;
-    string tagName=2;
     repeated string photos= 3;
 }
-
-message AlbumFolders {
-    repeated AlbumFolder albums =1;
-}
-
-service StaticGenerator {
-    // A Simple RPC
-    //
-    // Copies uploaded files to new folders based exif data
-    rpc createExifFolders (AlbumFolders) returns (AlbumInfo) {}
-    // A Simple RPC
-    //
-    // Creates the web directory with js, html and the 
-    // cache contents
-    rpc createStaticWebDirectory (AlbumInfo) returns (Empty) {}
-}
-
-// -----------------Exif functions-----------------
 
 // remote url of photo for exif extraction
 message PhotoURL {
@@ -106,33 +36,6 @@ message ExifData {
     int32 create_on= 4;
     int32 width= 5;
     int32 height= 6;
-}
-
-message ExififyAlbumRequest {
-    string albumName = 1;
-    repeated string photos = 2;
-}
-
-service ExifCore {
-    // A Simple RPC
-    // 
-    // Downloads photo from remote server and extracts exif 
-    rpc extractExif (PhotoURL) returns (ExifData) {}
-}
-
-service ExifApi {
-    // A Simple RPC
-    //
-    // Gets the exif details of all photos in an album
-    // and save it to database
-    rpc exififyAlbum (ExififyAlbumRequest) returns (AlbumFolders) {}
-}
-
-// -----------------Face Api functions-----------------
-
-message CropAlbumFacesRequest {
-    string albumName = 1;
-    repeated string photos = 2;
 }
 
 // message to acknowledge the status
@@ -158,12 +61,56 @@ message CropFacesRequest {
     repeated BoundingBox boundingBoxes =3; 
 }
 
+/********************************************************************************
+* Services
+*********************************************************************************/
+
+// -----------------ServiceX grpc server functions-----------------
+
+service ServiceX {
+    // A Simple RPC
+    //
+    // It will execute a set of workflow 
+    // and extracts more details about the photo
+    rpc initWorkFlow (AlbumFolder) returns (Empty) {}
+}
+
+// -----------------Static generator server functions-----------------
+
+
+service StaticGenerator {
+    // A Simple RPC
+    //
+    // Creates the web directory with js, html and the 
+    // cache contents
+    rpc createStaticWebDirectory (AlbumInfo) returns (Empty) {}
+}
+
+// -----------------Exif functions-----------------
+
+service ExifCore {
+    // A Simple RPC
+    // 
+    // Downloads photo from remote server and extracts exif 
+    rpc extractExif (PhotoURL) returns (ExifData) {}
+}
+
+service ExifApi {
+    // A Simple RPC
+    //
+    // Gets the exif details of all photos in an album
+    // and save it to database
+    rpc exififyAlbum (AlbumFolder) returns (JobStatus) {}
+}
+
+// -----------------Face Api functions-----------------
+
 service FaceApi {
     // A Simple RPC
     //
     // Gets the face details of all photos in an album
     // and save it to database
-    rpc cropAlbumFaces (CropAlbumFacesRequest) returns (JobStatus) {}
+    rpc cropAlbumFaces (AlbumFolder) returns (JobStatus) {}
 }
 
 service FaceCore {
