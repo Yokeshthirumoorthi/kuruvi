@@ -62,4 +62,12 @@ async function insertAlbumDetails(albumDetails) {
     }
 }
 
-module.exports = { insertAlbumDetails }
+async function getPhotos(albumName) {
+    const queryText = 'SELECT p.name FROM albums as a, photos as p, exif as e WHERE a.name = $1 AND p.id = e.photo_id';
+    const queryValues = [albumName];
+    const result = await db.query(queryText, queryValues);
+    console.log("get photos result: ", result);
+    return result.rows;
+}
+
+module.exports = { insertAlbumDetails, getPhotos }

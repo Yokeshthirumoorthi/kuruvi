@@ -11,24 +11,44 @@
 const utils = require('./utils');
 const {newTransaction, newMutation} = require('./dbClient');
 
-async function addPhoto(photoName, albumUID) {
-    const query = utils.getAddPhotoQuery(photoName, albumUID);
-    await createData(query);
+async function getPhotoUID(photoName) {
+    const query = `query photo($a: string) {
+        all(func: eq(name, $a)) {
+            uid
+        }
+    }`; 
+    const vars = { $a: photoName };
+    const res = await newTransaction().queryWithVars(query, vars);
+    const photoNode= res.getJson();
+
+    console.log("Photonode: ", photoNode);
+    const photoUID = photoNode.all[0].uid;
+
+    return photoUID;
 }
 
-async function getAlbumUID(albumName) {
-    const query = utils.getAlbumUIDQuery();
-    console.log(query);
-    const vars = { $a: albumName };
-    const res = await newTransaction().queryWithVars(query, vars);
-    const albumNode= res.getJson();
-
-    console.log("albumnode: ", albumNode);
-    if(albumNode.all.length > 0) {
-        return albumNode.all[0].uid;
-    }
-
-    return '';
+async function addTagNode(tagName, albumUID, photos) {
+    const tagPhotoRel = await Promise.all(photos.map(async photo => {
+        const photoUID = await getPhotoUID(photo);
+        return {
+            "uid": "_:tag", 
+            "photos": {
+                "uid": photoUID
+            }
+        }
+    }));
+    const query = [{
+        "uid": "_:tag",
+        "name": tagName
+    },
+    {
+        "uid": albumUID,
+        "tag": {
+            "uid": "_:tag"
+        }
+    }, ...tagPhotoRel];
+    console.log("Add tag node query", query);
+    await createData(query);
 }
 
 // Create data using JSON.
@@ -52,11 +72,6 @@ async function createData(data) {
     }
 }
 
-// async function createAlbum(albumName) {
-//     const query = utils.getCreateAlbumQuery(albumName);
-//     await createData(query);
-// }
-
 async function getAlbumDetails(albumName) {
     const query = utils.getAlbumDetailsQuery();
     console.log(albumName);
@@ -73,4 +88,4 @@ async function getAlbumDetails(albumName) {
     return ''; 
 }
 
-module.exports = {getAlbumDetails}
+module.exports = {getAlbumDetails, addTagNode}

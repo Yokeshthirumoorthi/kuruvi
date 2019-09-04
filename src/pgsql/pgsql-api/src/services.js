@@ -16,6 +16,10 @@ async function organizeAlbum(message, sendAckToQueue) {
     const albumDetails = await dgraph.getAlbumDetails(albumName);
     console.log(albumDetails);
     await pgsql.insertAlbumDetails(albumDetails);
+    const psqlTag1Photos = await pgsql.getPhotos(albumName);
+    const tagName = 'tag1';
+    const tag1Photots = psqlTag1Photos.map(photo => photo.name);
+    await dgraph.addTagNode(tagName, albumDetails.uid, tag1Photots);
     sendAckToQueue();
 }
 
