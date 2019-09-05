@@ -35,7 +35,7 @@ async function generateStaticPage(albumName) {
 }
 
 function createExifFolders(albumFolders) {
-    albumFolders.albums.map(async albumFolder => {
+    albumFolders.map(async albumFolder => {
         const {albumName, tagName, photos} = albumFolder;
         const paths = await albumfs.getExifTagFolderPaths(albumName, tagName);
         const src = paths.albumPath;

@@ -23,6 +23,13 @@ async function queryData(albumName) {
                     expand(_all_)
                 }
             }
+            tag {
+                name
+                photos {
+                    uid
+                    name
+                }
+            }
         }
     }`;
     const vars = { $a: albumName };
