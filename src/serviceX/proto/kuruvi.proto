@@ -130,7 +130,7 @@ service FaceDescribe {
     //
     // Gets the face details of all photos in an album
     // and save it to database
-    rpc describeFaces (PhotoURL) returns (FacePoints) {}
+    rpc describeFaces (AlbumFolder) returns (FacePoints) {}
 }
 
 service FaceCrop {
