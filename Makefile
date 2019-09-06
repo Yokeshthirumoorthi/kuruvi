@@ -104,6 +104,9 @@ down:
 # Misc
 ################################################################################
 
+logs:
+	docker-compose -f $(DOCKER_COMPOSE) logs $(filter-out $@,$(MAKECMDGOALS))
+
 clean:
 	# stop all containers
 	docker stop $$(docker ps -a -q)
