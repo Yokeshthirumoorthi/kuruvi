@@ -105,7 +105,6 @@ down:
 ################################################################################
 
 clean:
-	# ./scripts/docker-cleanup.sh
 	# stop all containers
 	docker stop $$(docker ps -a -q)
 	
