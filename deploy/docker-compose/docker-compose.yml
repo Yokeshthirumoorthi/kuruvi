@@ -9,6 +9,8 @@ services:
     build:
       context: ../../src/frontend 
       dockerfile: Dockerfile
+      args:
+        FRONTEND_PORT: ${FRONTEND_PORT}
     environment:
      - FRONTEND_PORT=${FRONTEND_PORT}
     ports:

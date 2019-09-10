@@ -6,6 +6,15 @@
 
 FROM abiosoft/caddy as base
 
+FROM base as builder
+
+ARG FRONTEND_PORT
+
 # copy index file into root of caddy
-COPY index.html .
+
+FROM base
+
 COPY Caddyfile /etc
+COPY index.html .
+
+EXPOSE $FRONTEND_PORT

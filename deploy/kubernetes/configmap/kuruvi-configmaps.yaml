@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: env-config
+  namespace: kuruvi
+data:
+  FRONTEND_PORT: "8079"
