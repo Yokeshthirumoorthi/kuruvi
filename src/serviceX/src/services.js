@@ -97,6 +97,7 @@ function saveFolderDetails(albumUploadsFolder) {
 }
 
 function initWorkFlow(call, callback) {
+    console.log("starting workflow: ", call.request);
     callback(null, saveFolderDetails(call.request));
 }
 
