@@ -9,29 +9,29 @@
  */
 const {kuruviProto, credentials} = require('./common/grpc');
 const { SERVICE_X_ENDPOINT } = require('./common/config');
-const database = require('./database');
+// const database = require('./database');
 
-function savePhotoCallback(err, response) {
-    if (err !== null) {
-        console.log("Error", err);
-        return;
-    }
-    console.log('Saved photo with id: ', response.photo.id);
-}
+// function savePhotoCallback(err, response) {
+//     if (err !== null) {
+//         console.log("Error", err);
+//         return;
+//     }
+//     console.log('Saved photo with id: ', response.photo.id);
+// }
 
-async function savePhoto(savePhotoRequest) {
-    console.log("Inside save photo", savePhotoRequest);
-    var albumUID;
-    albumUID = await database.getAlbumUID(savePhotoRequest.albumName);
-    console.log("AlbumUID: ", albumUID);
-    if (albumUID === '') {
-        await database.createAlbum(savePhotoRequest.albumName); 
-        albumUID = await database.getAlbumUID(savePhotoRequest.albumName); 
-    }
-    await database.addPhoto(savePhotoRequest.photoName, albumUID);
-    // const serviceX = new kuruviProto.ServiceX(SERVICE_X_ENDPOINT, credentials);
-    // serviceX.savePhoto(savePhotoRequest, savePhotoCallback);
-}
+// async function savePhoto(savePhotoRequest) {
+//     console.log("Inside save photo", savePhotoRequest);
+//     var albumUID;
+//     albumUID = await database.getAlbumUID(savePhotoRequest.albumName);
+//     console.log("AlbumUID: ", albumUID);
+//     if (albumUID === '') {
+//         await database.createAlbum(savePhotoRequest.albumName); 
+//         albumUID = await database.getAlbumUID(savePhotoRequest.albumName); 
+//     }
+//     await database.addPhoto(savePhotoRequest.photoName, albumUID);
+//     // const serviceX = new kuruviProto.ServiceX(SERVICE_X_ENDPOINT, credentials);
+//     // serviceX.savePhoto(savePhotoRequest, savePhotoCallback);
+// }
 
 function initWorkFlowCallback(err, response) {
     if (err !== null) {
@@ -47,4 +47,4 @@ function initWorkFlow(initWorkFlowRequest) {
  
 }
 
-module.exports = {savePhoto, initWorkFlow}
+module.exports = {initWorkFlow}

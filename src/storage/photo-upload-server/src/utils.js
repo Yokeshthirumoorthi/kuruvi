@@ -89,9 +89,9 @@ async function generateStaticPage(albumName) {
   services.initWorkFlow(message);
 }
 
-async function createNewAlbum(albumName) {
-  await services.createAlbum(albumName)
-}
+// async function createNewAlbum(albumName) {
+//   await services.createAlbum(albumName)
+// }
 /**
  * 
  * Album name and the list of files are passed as
@@ -135,13 +135,13 @@ async function getAlbumUploadsPath(albumName) {
   return albumPath;
 }
 
-function getSavePhotoRequest(fields) {
-  const savePhotoRequest = {
-    albumName: fields.albumName,
-    photoName: fields.name
-  };
+// function getSavePhotoRequest(fields) {
+//   const savePhotoRequest = {
+//     albumName: fields.albumName,
+//     photoName: fields.name
+//   };
 
-  return savePhotoRequest;
-}
+//   return savePhotoRequest;
+// }
 
-module.exports = {saveFileToDisk, generateStaticPage, createNewAlbum}
+module.exports = {saveFileToDisk, generateStaticPage }
