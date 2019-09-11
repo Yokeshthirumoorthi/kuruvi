@@ -3,7 +3,7 @@ apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: front-end
-  namespace: kuruvi
+  # namespace: kuruvi
 spec:
   replicas: 1
   template:
@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: front-end
-        image: yokesht/frontend:0.0.5
+        image: yokesht/frontend:0.0.11
         env:
           - name: FRONTEND_PORT
             valueFrom:

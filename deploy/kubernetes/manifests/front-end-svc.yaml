@@ -5,7 +5,7 @@ metadata:
   name: front-end
   labels:
     name: front-end
-  namespace: kuruvi
+  # namespace: kuruvi
 spec:
   type: LoadBalancer
   ports:

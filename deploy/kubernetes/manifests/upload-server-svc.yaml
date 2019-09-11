@@ -5,7 +5,7 @@ metadata:
   name: photo-upload-server
   labels:
     name: photo-upload-server
-  namespace: kuruvi
+  # namespace: kuruvi
 spec:
   ports:
   - port: 8000
