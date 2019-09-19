@@ -3,78 +3,19 @@ Copyright © 2019 Yokesh Thirumoorthi
 
 **WIP. Not ready for production !!!**
 
-This project is a multi-tier microservices application. The application
-is a web-based smart photo organization and management app called **Kuruvi**.
-Users can upload their unorganized photo albums to get it all resized, faces recognized and
-organized into new albums.
+**Kuruvi** is a smart photo organizer app. 
+Users can upload their unorganized photo albums to get it all resized, organized by day and location, faces cropped and recognized.
 
 ## Build and Deploy Instructions
-
-The Kuruvi application is packaged using a Docker Compose file.
-
-### Pre-requisites
-* Install Docker
-* Install Docker Compose
-* (Optional) Install [Weave Scope](https://www.weave.works/install-weave-scope/)
-
-```
-git clone https://github.com/Yokeshthirumoorthi/kuruvi
-cd kuruvi
-```
-
-### Launch Weave Scope
-
-Weave Scope (local instance)
-
-```
-sudo curl -L git.io/scope -o /usr/local/bin/scope
-sudo chmod a+x /usr/local/bin/scope
-scope launch
-```
-
-### Prepare for deploy
-
-```
-chmod +x ./scripts/freshstart.sh
-./scripts/freshstart.sh
-```
-
-### Provision infrastructure
-
-```
-docker-compose -f deploy/docker-compose/docker-compose.yml up -d
-```
-
-(Optional) Run with Fluentd logging
-If you want to run the application using a more advanced logging setup based on Fluentd + ELK stack, you can add the logging compose file to override some settings and add some extra containers:
-
-```
-docker-compose -f deploy/docker-compose/docker-compose.yml -f deploy/docker-compose/docker-compose.logging.yml up -d
-```
-
-Once deployed, you should be able to reach Kibana on http://localhost:5601.
-
-### Prepare Database
-
-```
-chmod +x ./scripts/dbmigrate.sh
-./scripts/dbmigrate.sh
-```
-
-### Cleaning up
-
-```
-docker-compose -f deploy/docker-compose/docker-compose.yml down
-```
+  - Using [Docker Compose](./docs/deploy/docker-compose.md)
 
 ## Service Architecture
 
-**Kuruvi** is composed of many microservices written in different
-languages that talk to each other over gRPC.
+This project is a multi-tier microservices application.
 Each microservice in Kuruvi does one thing and does it well.
 Kuruvi is a mostly a Node based application, completly containerized and ready to be installed and used in any Os, using Docker.
 
-
+<!-- 
 [![Architecture of
 microservices](./docs/img/architecture-diagram.png)](./docs/img/architecture-diagram.png)
 
@@ -87,12 +28,12 @@ microservices](./docs/img/architecture-diagram.png)](./docs/img/architecture-dia
 | [db adapter service](./database)                     | Node.js            | Interface for database  |
 | [fs adapter service](./filesystem)                     | Node.js            | Interface for filesystem|
 | [static web server](./static-site)                     | Node.js            | serve static files|
-
+ -->
 <!-- Find **Protocol Buffers Descriptions** at the [`./pb` directory](./pb). -->
 
 ## Features
 
-* Detect and compare human faces
+* Detect and compare faces
 * Organize images into groups based on similarities
 * Identify previously tagged people in images
 * Extract exif metadata from the images
@@ -110,7 +51,7 @@ The main principles of kuruvi are simplicity, scalability, speed, and security.
 - **[The Twelve-Factor App](https://12factor.net/)**
 - **[The Principles of Microservices (by Sam Newman)](https://learning.oreilly.com/videos/the-principles-of/9781491935811)**
 - **[GCP Microservices demo development principles](https://github.com/GoogleCloudPlatform/microservices-demo/blob/master/docs/development-principles.md)**
-
+<!-- 
 ## Measurements And Beanchmarks
 
 ### Profiling & Metrics - Done using Prometheus and Graphana
@@ -161,7 +102,7 @@ If you want to run the application using a more advanced logging setup based on 
 docker-compose -f deploy/docker-compose/docker-compose.yml -f deploy/docker-compose/docker-compose.logging.yml up -d
 ```
 
-Once deployed, you should be able to reach Kibana on http://localhost:5601.
+Once deployed, you should be able to reach Kibana on http://localhost:5601. -->
 
 ## Authur
 
