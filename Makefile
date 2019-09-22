@@ -19,6 +19,7 @@ RESIZE_API_SERVICE = resize-api
 RESIZE_CORE_SERVICE = resize-core
 PGSQL_API_SERVICE = pgsql-api
 PGSQL_CORE_SERVICE = pgsql-core
+DOCS_SITE_SERVICE = docs
 
 EXIF = $(EXIF_API_SERVICE) $(EXIF_CORE_SERVICE)
 FACES = $(FACE_API_SERVICE) $(FACE_DETECT_SERVICE) $(FACE_DESCRIBE_SERVICE) $(FACE_CROP_SERVICE) $(FACE_DESCRIBE_SERVICE_PY)
@@ -29,7 +30,7 @@ PGSQL = $(PGSQL_API_SERVICE)
 .PHONY: all dotenvgen deploy clean
 
 all: prepare deploy
-prepare: dotenvgen protogen exif faces resize storage servicex pgsql
+prepare: dotenvgen protogen exif faces resize storage servicex pgsql doc
 reset: down prepare deploy
 
 ################################################################################
@@ -76,8 +77,11 @@ pgsql:
 		cp -f .env ./src/pgsql/$$f; \
 	done
 
+doc:
+	cp -f .env ${DOCS_SITE_SERVICE}	
+
 protogen:
-	python -m grpc_tools.protoc -I./pb --python_out=./src/faces/$(FACE_DESCRIBE_SERVICE_PY) --grpc_python_out=./src/faces/$(FACE_DESCRIBE_SERVICE_PY) ./pb/kuruvi.proto
+	# python -m grpc_tools.protoc -I./pb --python_out=./src/faces/$(FACE_DESCRIBE_SERVICE_PY) --grpc_python_out=./src/faces/$(FACE_DESCRIBE_SERVICE_PY) ./pb/kuruvi.proto
 
 dotenvgen:
 	cp -f .env.sample .env
@@ -99,6 +103,9 @@ up:
 
 down:
 	docker-compose -f $(DOCKER_COMPOSE) down -v
+
+documentation:
+	docker-compose -f $(DOCS_SITE_SERVICE)/docker-compose.yml up -d --build
 
 ################################################################################
 # Misc

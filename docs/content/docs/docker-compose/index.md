@@ -1,3 +1,11 @@
+---
+title: 'Docker Compose'
+date: 2019-09-21T19:27:37+10:00
+draft: false
+weight: 2
+summary: Setup the project using docker compose. Typically used for development.
+---
+
 ## Kuruvi via Docker Compose
 
 The Kuruvi application is packaged using a [Docker Compose](https://docs.docker.com/compose/) file.

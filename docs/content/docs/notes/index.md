@@ -1,3 +1,11 @@
+---
+title: 'Notes'
+date: 2019-09-21T19:27:37+10:00
+draft: false
+weight: 4
+summary: Project notes - todos, links.
+---
+
 <!-- 
 DISCLAIMER: Simple notes, todos, best practises or my opinions and thoughts, 
 about the project, are saved in this document just for my own reference. So DONT 

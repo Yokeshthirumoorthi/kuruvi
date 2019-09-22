@@ -1,0 +1,13 @@
+version: '3.5'
+
+services:
+  docs:
+    container_name: ${DOCS_SITE_SERVICE}
+    build:
+      context: ./ 
+      dockerfile: Dockerfile
+    environment:
+      - DOCS_SITE_PORT=${DOCS_SITE_PORT}
+    ports:
+      - ${DOCS_SITE_PORT}:${DOCS_SITE_PORT}
+    restart: on-failure
