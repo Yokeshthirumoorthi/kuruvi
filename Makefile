@@ -30,7 +30,8 @@ PGSQL = $(PGSQL_API_SERVICE)
 .PHONY: all dotenvgen deploy clean
 
 all: prepare deploy
-prepare: dotenvgen protogen exif faces resize storage servicex pgsql doc
+prepare: dotenvgen protogen exif faces resize storage servicex pgsql
+documentation: doc doc-site
 reset: down prepare deploy
 
 ################################################################################
@@ -104,7 +105,7 @@ up:
 down:
 	docker-compose -f $(DOCKER_COMPOSE) down -v
 
-documentation:
+doc-site:
 	docker-compose -f $(DOCS_SITE_SERVICE)/docker-compose.yml up -d --build
 
 ################################################################################

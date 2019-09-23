@@ -10,8 +10,25 @@ When users upload a photo album, this app processes the photos in the album and 
 
 
 ## Build and Deploy Instructions
-  - Using [Docker Compose](./docs/content/docs/docker-compose/index.md)
-  - Using [Kubernetes](./docs/content/docs/kubernetes/index.md)
+
+
+  ### Pre-requisites
+
+  - Install [Docker](https://www.docker.com/products/overview)
+  - Install [Docker Compose](https://docs.docker.com/compose/install/)
+  - Install make
+
+  ### Installation
+
+  ```
+  git clone https://github.com/Yokeshthirumoorthi/kuruvi.git
+  cd kuruvi
+  make documentation
+  ```
+
+  This above instruction builds and runs the docs site. On successful build goto http://localhost:2019 and follow furthur instructions.
+
+  Note: This hassle of building a docs-website just to read instructions, will be gone after docs-website is hosted in netlify.
 
 ## Service Architecture
 
