@@ -33,7 +33,7 @@ spec:
           name: album-uploads
       volumes:
         - name: album-uploads
-          emptyDir:
-            medium: Memory
+          persistentVolumeClaim:
+            claimName: album-uploads-claim
       nodeSelector:
         beta.kubernetes.io/os: linux
