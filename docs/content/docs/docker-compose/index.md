@@ -44,3 +44,7 @@ make reset
 ```
 make clean
 ```
+
+### Run the site
+
+Once deployed goto http://localhost:8079

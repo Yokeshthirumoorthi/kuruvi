@@ -3,17 +3,21 @@ Copyright © 2019 Yokesh Thirumoorthi
 
 **WIP. Not ready for production !!!**
 
-**Kuruvi** is a smart photo organizer app. 
-Users can upload their unorganized photo albums to get it all resized, organized by day and location, faces cropped and recognized.
+**Kuruvi** is a smart photo management app.
+
+
+When users upload a photo album, this app processes the photos in the album and gets them resized, organized by date, time and location, detect faces and recognize faces. The processed album is then statically serverd back to users via web.
+
 
 ## Build and Deploy Instructions
-  - Using [Docker Compose](./docs/deploy/docker-compose.md)
+  - Using [Docker Compose](./docs/content/docs/docker-compose/index.md)
+  - Using [Kubernetes](./docs/content/docs/kubernetes/index.md)
 
 ## Service Architecture
 
-This project is a multi-tier microservices application.
-Each microservice in Kuruvi does one thing and does it well.
-Kuruvi is a mostly a Node based application, completly containerized and ready to be installed and used in any Os, using Docker.
+This project is developed as multi-tier microservices application. Yet each microservice in this app ensures to **Do one thing and do it well**.
+
+All services in Kuruvi is developed using Nodejs (Services will be refactored to Golong in future), and containerized using Docker.
 
 <!-- 
 [![Architecture of
@@ -33,24 +37,26 @@ microservices](./docs/img/architecture-diagram.png)](./docs/img/architecture-dia
 
 ## Features
 
+* Store photo albums securely in cloud
+* Organize photos based on time, date and location
+* Detect and recognize faces
+* Resize photos
+
+## Nice to have features
+
 * Detect and compare faces
-* Organize images into groups based on similarities
-* Identify previously tagged people in images
-* Extract exif metadata from the images
-* Fast and secure resizing
-* Organize with albums
-* Browse by date
 * Geolocate the photos on a map
-* Privacy on photos
 * Share and tag photos with friends
+* Identify previously tagged people in images
 
 ## Development Principles
 
-The main principles of kuruvi are simplicity, scalability, speed, and security.
+The main principles of kuruvi app are Simplicity, Scalability, Speed, and Security.
 
 - **[The Twelve-Factor App](https://12factor.net/)**
 - **[The Principles of Microservices (by Sam Newman)](https://learning.oreilly.com/videos/the-principles-of/9781491935811)**
 - **[GCP Microservices demo development principles](https://github.com/GoogleCloudPlatform/microservices-demo/blob/master/docs/development-principles.md)**
+
 <!-- 
 ## Measurements And Beanchmarks
 
