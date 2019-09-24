@@ -2,8 +2,39 @@ version: '3.5'
 
 services:
 ################################################################################
+# Frontend
+################################################################################
+  frontend:
+    container_name: ${FRONTEND_SERVICE}
+    build:
+      context: ../../src/frontend 
+      dockerfile: Dockerfile
+      args:
+        FRONTEND_PORT: ${FRONTEND_PORT}
+    environment:
+     - FRONTEND_PORT=${FRONTEND_PORT}
+    ports:
+     - ${FRONTEND_PORT}:${FRONTEND_PORT}
+    volumes:
+     - album-static-gen:/srv
+    restart: on-failure
+
+################################################################################
 # Storage
 ################################################################################    
+  photo-upload-server:
+      container_name: ${PHOTO_UPLOAD_SERVER_SERVICE}
+      build:
+        context: ../../src/storage/photo-upload-server
+        dockerfile: Dockerfile
+        args:
+          - PHOTO_UPLOAD_SERVER_PORT:${PHOTO_UPLOAD_SERVER_PORT}
+      volumes:
+        - album-uploads:/srv/album-uploads
+      ports:
+        - ${PHOTO_UPLOAD_SERVER_PORT}:${PHOTO_UPLOAD_SERVER_PORT}
+      restart: always
+
   caddy-server:
       container_name: ${CADDY_SERVER_SERVICE}
       build:
@@ -17,3 +48,4 @@ services:
 
 volumes:
   album-uploads:
+  album-static-gen:
