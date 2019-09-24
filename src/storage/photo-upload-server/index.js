@@ -10,6 +10,7 @@
 const http = require('http')
 const utils = require('./src/utils')
 const { parse } = require('querystring');
+const { PHOTO_UPLOAD_SERVER_PORT } = require('./src/common/config');
 
 const headers = {
   'Content-Type': 'application/json',
@@ -30,6 +31,11 @@ function collectRequestData(request, callback) {
 }
 
 http.createServer(function (req, res) {
+  if (req.method === 'GET') {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('Hello world');
+    return
+  }
   if (req.method === 'OPTIONS') {
     res.writeHead(204, headers)
     res.end()
@@ -59,6 +65,6 @@ http.createServer(function (req, res) {
     // parse a file upload
     utils.saveFileToDisk(req, onSuccess, onFailure);
   }
-}).listen(8000, () => {
+}).listen(PHOTO_UPLOAD_SERVER_PORT, () => {
   console.log('server started')
 })
