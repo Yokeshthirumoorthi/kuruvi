@@ -2,8 +2,6 @@ FROM node:12-alpine as base
 
 FROM base as builder
 
-ARG PHOTO_UPLOAD_SERVER_PORT
-
 # Create app directory
 WORKDIR /srv
 
@@ -22,6 +20,8 @@ COPY --from=builder /srv/node_modules ./node_modules
 
 # Bundle app source
 COPY . .
+
+ARG PHOTO_UPLOAD_SERVER_PORT
 
 EXPOSE $PHOTO_UPLOAD_SERVER_PORT
 

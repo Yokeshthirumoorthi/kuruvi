@@ -1,0 +1,11 @@
+0.0.0.0:{$CADDY_SERVER_PORT} {
+    log stdout
+    tls off  # set this as self-signed for https  
+
+    proxy / http://{$PHOTO_UPLOAD_SERVER_SERVICE}:{$PHOTO_UPLOAD_SERVER_PORT} {
+        transparent
+        header_upstream X-Marotagem  true
+        header_upstream Host  "0.0.0.0:{$CADDY_SERVER_PORT}"
+    }
+
+}

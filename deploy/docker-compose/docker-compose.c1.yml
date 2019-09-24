@@ -28,7 +28,7 @@ services:
         context: ../../src/storage/photo-upload-server
         dockerfile: Dockerfile
         args:
-          - PHOTO_UPLOAD_SERVER_PORT:${PHOTO_UPLOAD_SERVER_PORT}
+          PHOTO_UPLOAD_SERVER_PORT: ${PHOTO_UPLOAD_SERVER_PORT}
       volumes:
         - album-uploads:/srv/album-uploads
       ports:
@@ -40,6 +40,10 @@ services:
       build:
         context: ../../src/storage/caddy-server
         dockerfile: Dockerfile
+        args:
+          CADDY_SERVER_PORT: ${CADDY_SERVER_PORT}
+          PHOTO_UPLOAD_SERVER_SERVICE: ${PHOTO_UPLOAD_SERVER_SERVICE}
+          PHOTO_UPLOAD_SERVER_PORT: ${PHOTO_UPLOAD_SERVER_PORT}
       volumes:
         - album-uploads:/srv/album-uploads
       ports:
