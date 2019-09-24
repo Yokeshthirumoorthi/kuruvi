@@ -1,0 +1,19 @@
+version: '3.5'
+
+services:
+################################################################################
+# Storage
+################################################################################    
+  caddy-server:
+      container_name: ${CADDY_SERVER_SERVICE}
+      build:
+        context: ../../src/storage/caddy-server
+        dockerfile: Dockerfile
+      volumes:
+        - album-uploads:/srv/album-uploads
+      ports:
+        - ${CADDY_SERVER_PORT}:${CADDY_SERVER_PORT}
+      restart: on-failure
+
+volumes:
+  album-uploads:
