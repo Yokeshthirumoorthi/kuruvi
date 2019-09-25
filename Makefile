@@ -133,6 +133,25 @@ clean:
 	docker system prune
 
 ################################################################################
+# Upload Album
+################################################################################
+
+# Ref: https://stackoverflow.com/questions/6273608/how-to-pass-argument-to-makefile-from-command-line/6273809
+%:      # thanks to chakrit
+	@:    # thanks to William Pursell
+
+TEST_ALBUM_NAME = test-album
+TEST_ALBUM_PATH = $(filter-out $@,$(MAKECMDGOALS))
+upload-test-album:
+	for filename in ${TEST_ALBUM_PATH}/*.jpg; do \
+		curl \
+			-F "albumName=${TEST_ALBUM_NAME}" \
+			-F "files[]=@$$filename" \
+			-i -X POST -H "Content-Type: multipart/form-data" \
+			http://0.0.0.0:8000/upload; \
+	done
+
+################################################################################
 # Code Quality - TODO
 ################################################################################
 
