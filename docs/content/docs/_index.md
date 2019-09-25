@@ -1,7 +1,6 @@
 ---
-title: 'Overview'
-date: 2019-09-21T15:14:39+10:00
 weight: 1
+bookFlatSection: true
 ---
 
 ## Kuruvi Docs

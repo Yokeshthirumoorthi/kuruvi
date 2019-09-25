@@ -1,6 +1,6 @@
 ---
-title: 'Kuruvi Docs'
-date: 2018-11-28T15:14:39+10:00
+title: 'Overview'
+type: docs
 ---
 
 **Kuruvi** is a smart photo organizer app. 

@@ -24,18 +24,30 @@ RUN apt-get update && \
 
 WORKDIR /src
 
+## hugo whisper theme
+# RUN hugo new site mynewsite && \
+#     cd mynewsite && \
+#     git clone https://github.com/jugglerx/hugo-whisper-theme.git themes/hugo-whisper-theme && \
+#     cp -a themes/hugo-whisper-theme/exampleSite/. . && \
+#     rm -rvf content
+
+## higo book theme
 RUN hugo new site mynewsite && \
     cd mynewsite && \
-    git clone https://github.com/jugglerx/hugo-whisper-theme.git themes/hugo-whisper-theme && \
-    cp -a themes/hugo-whisper-theme/exampleSite/. . && \
+    git init && \
+    git submodule add https://github.com/alex-shpak/hugo-book themes/book && \
+    cp -R themes/book/exampleSite/content . && \
     rm -rvf content
 
 COPY . /src/mynewsite
 
 RUN cd /src/mynewsite && \
-    hugo
+    hugo --minify --theme book
 
 FROM base
+
+ARG DOCS_SITE_PORT
+ENV DOCS_SITE_PORT ${DOCS_SITE_PORT}
 
 COPY --from=builder /src/mynewsite/public /srv
 
