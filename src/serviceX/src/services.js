@@ -76,8 +76,8 @@ function describeFaces(albumUploadsFolder) {
 function extractFaces(albumUploadsFolder) {
     faceService.cropAlbumFaces(albumUploadsFolder, (err, res) => {
         console.log("Detect faces Res: ", res);
-        describeFaces(albumUploadsFolder);
-        // extractExif(albumUploadsFolder)
+        // describeFaces(albumUploadsFolder);
+        extractExif(albumUploadsFolder);
     })
 }
 

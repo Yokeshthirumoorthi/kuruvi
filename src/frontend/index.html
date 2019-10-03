@@ -19,7 +19,7 @@
                               { id: 'tag2', name: 'Tag2', placeholder: 'Mention tag 2' }
                             ] })
         .use(Uppy.Form, {target: '#upload-form'})
-        .use(Uppy.XHRUpload, { formData: true, endpoint: 'http://caddy-server:8000/upload' })
+        .use(Uppy.XHRUpload, { formData: true, endpoint: 'http://157.230.150.42:8000/upload' })
 
       uppy.on('complete', (result) => {
         if (result.failed.length === 0) {
@@ -27,7 +27,7 @@
           console.log(result);
           const albumName = result.successful[0].meta.albumName;
           var xhr = new XMLHttpRequest();
-          xhr.open('POST', `http://caddy-server:8000/static`, true);
+          xhr.open('POST', `http://157.230.150.42:8000/static`, true);
           xhr.send(`albumName=${albumName}`);
         } else {
           console.warn('Upload failed 😞')
