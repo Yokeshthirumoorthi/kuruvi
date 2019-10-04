@@ -1,41 +1,83 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <title></title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <!-- Uppy CSS -->
     <link href="https://transloadit.edgly.net/releases/uppy/v1.3.0/uppy.min.css" rel="stylesheet">
+    <title>Hello, world!</title>
   </head>
   <body>
-    <form id="upload-form" action='/'>
-      <input type="text" name="albumName" value="album2">
-    </form>
-    <script src="https://transloadit.edgly.net/releases/uppy/v1.3.0/uppy.min.js"></script>
-    <script>
-      const uppy = Uppy.Core({debug: true, autoProceed: false})
-        .use(Uppy.Dashboard, { inline: true, target: 'body', metaFields: [
-                              { id: 'name', name: 'Name', placeholder: 'file name' },
-                              { id: 'tag1', name: 'Tag1', placeholder: 'Mention tag 1' },
-                              { id: 'tag2', name: 'Tag2', placeholder: 'Mention tag 2' }
-                            ] })
-        .use(Uppy.Form, {target: '#upload-form'})
-        .use(Uppy.XHRUpload, { formData: true, endpoint: 'http://157.230.150.42:8000/upload' })
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-4" style="width: 18rem;">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Step 1:</h5>
+              <p class="card-text">Create your album with a new name. It is some alpha-numerical value.</p>
+              <form id="upload-form" action='/'>
+                <input type="text" name="albumName" value="album2">
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4" style="width: 18rem;">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Step 2:</h5>
+              <p class="card-text">Upload your photos for this album and get them processed.</p>
+              <div class="container">
+                <button id="uppyModalOpener" type="button" class="btn btn-primary">Upload</button>
+                <script src="https://transloadit.edgly.net/releases/uppy/v1.3.0/uppy.min.js"></script>
+                <script>
+                  const uppy = Uppy.Core({debug: true, autoProceed: false})
+                    .use(Uppy.Dashboard, { trigger: '#uppyModalOpener' })
+                    .use(Uppy.Form, {target: '#upload-form'})
+                    .use(Uppy.XHRUpload, { formData: true, endpoint: 'http://157.230.150.42:8000/upload' })
+                  uppy.on('success', (fileCount) => {
+                    console.log(`${fileCount} files uploaded`)
+                  })
+                  uppy.on('complete', (result) => {
+                    if (result.failed.length === 0) {
+                      console.log('Upload successful 😀')
+                      console.log(result);
+                      const albumName = result.successful[0].meta.albumName;
+                      document.getElementById("myAnchor").href = `http://157.230.150.42:8079/${albumName}`;
+                      var xhr = new XMLHttpRequest();
+                      xhr.open('POST', 'http://157.230.150.42:8000/static', true);
+                      xhr.send(`albumName=${albumName}`);
+                    } else {
+                      console.warn('Upload failed 😞')
+                    }
+                    console.log('successful files:', result.successful)
+                    console.log('failed files:', result.failed)
+                  })
+                </script>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4" style="width: 18rem;">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">Step 3:</h5>
+              <p class="card-text">Now you can see all the faces in uploaded photos</p>
+              <a href="#" id="myAnchor" class="btn btn-primary">View Album</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-      uppy.on('complete', (result) => {
-        if (result.failed.length === 0) {
-          console.log('Upload successful 😀')
-          console.log(result);
-          const albumName = result.successful[0].meta.albumName;
-          var xhr = new XMLHttpRequest();
-          xhr.open('POST', `http://157.230.150.42:8000/static`, true);
-          xhr.send(`albumName=${albumName}`);
-        } else {
-          console.warn('Upload failed 😞')
-        }
-        console.log('successful files:', result.successful)
-        console.log('failed files:', result.failed)
-      })
-
-    </script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   </body>
 </html>
