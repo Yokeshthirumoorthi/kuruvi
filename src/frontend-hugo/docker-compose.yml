@@ -1,0 +1,13 @@
+version: '3.5'
+
+services:
+  frontend:
+    container_name: ${FRONTEND_SERVICE}
+    build:
+      context: ./ 
+      dockerfile: Dockerfile
+    environment:
+     - FRONTEND_PORT=${FRONTEND_PORT}
+    ports:
+     - ${FRONTEND_PORT}:${FRONTEND_PORT}
+    restart: on-failure
