@@ -1,0 +1,12 @@
+baseURL = "http://example.org/"
+languageCode = "en-us"
+title = "My New Hugo Site"
+theme = "kuruvitheme"
+relativeURLs = true
+
+[menu]
+  [[menu.main]]
+    identifier = "photos"
+    name = "Photos"
+    url = "/photos/"
+    weight = 100
