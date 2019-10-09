@@ -4,14 +4,7 @@ title = "My New Hugo Site"
 theme = "kuruvitheme"
 relativeURLs = true
 
-[menu]
-  [[menu.main]]
-    identifier = "photos"
-    name = "Photos"
-    url = "/photos/"
-    weight = 100
-
 [[menu.main]]
-    name = "Try PhotoSwipe"
+    name = "Gallery"
     url = "/galleries/"
-    weight = 110
+    weight = 100
