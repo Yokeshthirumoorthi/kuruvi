@@ -1,5 +1,0 @@
-baseURL = "/"
-languageCode = "en-us"
-title = "Kuruvi App"
-themeDir = "themes"
-theme = "hugo-whisper-theme"
