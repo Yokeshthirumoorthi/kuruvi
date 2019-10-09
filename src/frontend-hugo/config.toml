@@ -10,3 +10,8 @@ relativeURLs = true
     name = "Photos"
     url = "/photos/"
     weight = 100
+
+[[menu.main]]
+    name = "Try PhotoSwipe"
+    url = "/galleries/"
+    weight = 110
