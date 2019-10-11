@@ -1,0 +1,68 @@
+version: '3.5'
+
+services:
+################################################################################
+# Frontend
+################################################################################
+  frontend:
+    container_name: ${FRONTEND_SERVICE}
+    build:
+      context: ../../src/frontend 
+      dockerfile: Dockerfile
+      args:
+        FRONTEND_PORT: ${FRONTEND_PORT}
+    environment:
+     - FRONTEND_PORT=${FRONTEND_PORT}
+    ports:
+     - ${FRONTEND_PORT}:${FRONTEND_PORT}
+    volumes:
+     - album-static-gen:/srv
+    restart: on-failure
+
+################################################################################
+# Storage
+################################################################################    
+  photo-upload-server:
+      container_name: ${PHOTO_UPLOAD_SERVER_SERVICE}
+      build:
+        context: ../../src/storage/photo-upload-server
+        dockerfile: Dockerfile
+        args:
+          PHOTO_UPLOAD_SERVER_PORT: ${PHOTO_UPLOAD_SERVER_PORT}
+      volumes:
+        - album-uploads:/srv/album-uploads
+      restart: always
+
+  caddy-server:
+      container_name: ${CADDY_SERVER_SERVICE}
+      build:
+        context: ../../src/storage/caddy-server
+        dockerfile: Dockerfile
+        args:
+          CADDY_SERVER_PORT: ${CADDY_SERVER_PORT}
+          PHOTO_UPLOAD_SERVER_SERVICE: ${PHOTO_UPLOAD_SERVER_SERVICE}
+          PHOTO_UPLOAD_SERVER_PORT: ${PHOTO_UPLOAD_SERVER_PORT}
+      volumes:
+        - album-uploads:/srv/album-uploads
+      ports:
+        - ${CADDY_SERVER_PORT}:${CADDY_SERVER_PORT}
+        - ${PHOTO_UPLOAD_SERVER_PORT}:${PHOTO_UPLOAD_SERVER_PORT}
+      restart: on-failure
+
+################################################################################
+# Cores
+################################################################################
+  exif-core:
+    container_name: ${EXIF_CORE_SERVICE}
+    build:
+      context: ../../src/exif/exif-core
+      dockerfile: Dockerfile
+      args:
+        EXIF_CORE_PORT: ${EXIF_CORE_PORT}
+    ports:
+        - ${EXIF_CORE_PORT}:${EXIF_CORE_PORT}
+    restart: on-failure
+
+volumes:
+  album-uploads:
+  album-static-gen:
