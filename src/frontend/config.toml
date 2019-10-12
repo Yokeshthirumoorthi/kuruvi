@@ -5,6 +5,11 @@ theme = "kuruvitheme"
 relativeURLs = true
 
 [[menu.main]]
+    name = "Faces"
+    url = "/faces/"
+    weight = 100
+
+[[menu.main]]
     name = "Gallery"
     url = "/galleries/"
-    weight = 100
+    weight = 110
