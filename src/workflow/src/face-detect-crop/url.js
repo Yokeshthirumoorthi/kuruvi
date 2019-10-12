@@ -14,7 +14,8 @@ const FACE_CROP_SERVER_ENDPOINT = RESIZE_CORE_ENDPOINT;
 function getCaddyURL(photoFSDetails) {
   const album = photoFSDetails.album;
   const photoPath = photoFSDetails.photo;
-  const URL =  `http://${CADDT_SERVER_ENDPOINT}/album-uploads/${album}/uploads/${photoPath}`;
+  // const URL =  `http://${CADDT_SERVER_ENDPOINT}/album-uploads/${album}/uploads/${photoPath}`;
+  const URL =  `http://${CADDT_SERVER_ENDPOINT}/album-resized/${album}/${photoPath}`;
   return URL; 
 }
 

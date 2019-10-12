@@ -116,6 +116,7 @@ services:
         - ${FACE_DETECT_PORT}:${FACE_DETECT_PORT}   
     volumes:
       - album-uploads:/srv/album-uploads
+      - album-resized:/srv/album-resized
     restart: on-failure
 
   face-describe:
