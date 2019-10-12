@@ -20,7 +20,12 @@ message Empty {}
 
 message AlbumFolder {
     string albumName= 1;
-    repeated string photos= 3;
+    repeated string photos= 2;
+}
+
+message DescribeFaceRequest {
+    string albumName= 1;
+    string photoName= 2;
 }
 
 // remote url of photo for exif extraction
@@ -130,7 +135,7 @@ service FaceDescribe {
     //
     // Gets the face details of all photos in an album
     // and save it to database
-    rpc describeFaces (AlbumFolder) returns (FacePoints) {}
+    rpc describeFaces (DescribeFaceRequest) returns (FacePoints) {}
 }
 
 service FaceCrop {
