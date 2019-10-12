@@ -98,14 +98,14 @@
 
 const {exififyAlbum} = require('./exif/service');
 const {resizeImageAndSave} = require('./resize/resize');
-const {detectFaces} = require('./face-detect/service');
+const {detectAndCropFaces} = require('./face-detect-crop/services');
 
 
 function initWorkFlow(message) {
     console.log("starting workflow");
-    exififyAlbum(message);
+    // exififyAlbum(message);
     // resizeImageAndSave(message);
-    detectFaces(message);
+    detectAndCropFaces(message);
 }
 
 module.exports = {initWorkFlow}
