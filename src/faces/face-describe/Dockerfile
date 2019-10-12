@@ -2,8 +2,6 @@ FROM node:8 as base
 
 FROM base as builder
 
-ARG FACE_DESCRIBE_PORT
-
 # Create app directory
 WORKDIR /srv
 
@@ -28,6 +26,8 @@ FROM base
 WORKDIR /srv
 
 COPY --from=builder /srv ./
+
+ARG FACE_DESCRIBE_PORT
 
 EXPOSE $FACE_DESCRIBE_PORT
 

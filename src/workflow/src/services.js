@@ -99,11 +99,18 @@
 const {exififyAlbum} = require('./exif/service');
 const {resizeImageAndSave} = require('./resize/resize');
 const {detectAndCropFaces} = require('./face-detect-crop/services');
+const {describeFacePoints} = require('./face-describe/service')
 
+function describeFaces(faceMessage) {
+    console.log("describe: ", faceMessage)
+    describeFacePoints(faceMessage, () => {
+        // Do next job here
+    })
+}
 
 function extractFaces(message) {
-    detectAndCropFaces(message, () => {
-        // describeFaces(message);
+    detectAndCropFaces(message, (faceMessage) => { 
+        describeFaces(faceMessage);
     })
 }
 

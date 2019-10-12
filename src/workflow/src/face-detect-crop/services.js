@@ -44,7 +44,7 @@ async function cropAndSaveFaces(photoDetails, nextJob) {
     const newPhotoDetails = {...photoDetails, faces: newFacesJson};
     console.log("Result", newPhotoDetails)
     // return newPhotoDetails;
-    nextJob()
+    nextJob(newPhotoDetails)
 }
 
 // /**
