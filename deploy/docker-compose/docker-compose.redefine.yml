@@ -59,8 +59,21 @@ services:
       dockerfile: Dockerfile
       args:
         EXIF_CORE_PORT: ${EXIF_CORE_PORT}
+    # TODO : Not to expose this port
     ports:
         - ${EXIF_CORE_PORT}:${EXIF_CORE_PORT}
+    restart: on-failure
+
+  resize-core:
+    container_name: ${RESIZE_CORE_SERVICE}
+    build:
+      context: ../../src/resize/resize-core
+      dockerfile: Dockerfile
+      args:
+        RESIZE_CORE_PORT: ${RESIZE_CORE_PORT}
+    # TODO : Not to expose this port    
+    ports:
+        - ${RESIZE_CORE_PORT}:${RESIZE_CORE_PORT}        
     restart: on-failure
 
 volumes:

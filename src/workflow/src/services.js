@@ -99,6 +99,7 @@
 const {kuruviProto, credentials} = require('./common/grpc');
 const {EXIF_CORE_ENDPOINT} = require('./common/config');
 const utils = require('./utils');
+const {resizeImageAndSave} = require('./resize/resize');
 
 /**
  * This callback is executed after exif extraction.
@@ -130,8 +131,9 @@ function exififyAlbum(message) {
     const extractExifRequest = {
         url: caddyURL
     }
-    exifCore.extractExif(extractExifRequest, (err, res) => {
+    exifCore.extractExif(extractExifRequest,async (err, res) => {
                 extractExifCallback(err, res);
+                const result = await resizeImageAndSave(message);
                 // Call next job here
             });
 }
