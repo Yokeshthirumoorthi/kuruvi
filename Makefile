@@ -21,6 +21,7 @@ PGSQL_API_SERVICE = pgsql-api
 PGSQL_CORE_SERVICE = pgsql-core
 DOCS_SITE_SERVICE = docs
 CADDY_SERVER_SERVICE = caddy-server
+WORKFLOW_SERVICE = workflow
 
 EXIF = $(EXIF_API_SERVICE) $(EXIF_CORE_SERVICE)
 FACES = $(FACE_API_SERVICE) $(FACE_DETECT_SERVICE) $(FACE_DESCRIBE_SERVICE) $(FACE_CROP_SERVICE) $(FACE_DESCRIBE_SERVICE_PY)
@@ -31,7 +32,7 @@ PGSQL = $(PGSQL_API_SERVICE)
 .PHONY: all dotenvgen deploy clean
 
 all: prepare deploy
-prepare: dotenvgen protogen exif faces resize storage servicex pgsql
+prepare: dotenvgen protogen exif faces resize storage servicex workflow pgsql
 documentation: doc doc-site
 reset: down prepare deploy
 
@@ -71,6 +72,11 @@ servicex:
 	mkdir -p ./src/serviceX/proto
 	cp ./pb/kuruvi.proto ./src/serviceX/proto
 	cp -f .env ./src/serviceX
+
+workflow:
+	mkdir -p ./src/workflow/proto
+	cp ./pb/kuruvi.proto ./src/workflow/proto
+	cp -f .env ./src/workflow
 
 pgsql:
 	for f in $(PGSQL); do	  \

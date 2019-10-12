@@ -50,6 +50,23 @@ services:
       restart: on-failure
 
 ################################################################################
+# Workflow
+################################################################################    
+  workflow:
+    container_name: ${WORKFLOW_SERVICE}
+    build:
+      context: ../../src/workflow 
+      dockerfile: Dockerfile
+      args:
+        WORKFLOW_PORT: ${WORKFLOW_PORT}      
+    volumes:
+      - album-uploads:/srv/album-uploads
+      - album-static-gen:/srv/album-static-gen
+      - album-faces:/srv/album-faces
+      - album-resized:/srv/album-resized      
+    restart: on-failure
+
+################################################################################
 # Cores
 ################################################################################
   exif-core:
@@ -93,3 +110,5 @@ services:
 volumes:
   album-uploads:
   album-static-gen:
+  album-faces:
+  album-resized:
