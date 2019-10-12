@@ -76,6 +76,20 @@ services:
         - ${RESIZE_CORE_PORT}:${RESIZE_CORE_PORT}        
     restart: on-failure
 
+  face-detect:
+    container_name: ${FACE_DETECT_SERVICE}
+    build:
+      context: ../../src/faces/face-detect
+      dockerfile: Dockerfile
+      args:
+        FACE_DETECT_PORT: ${FACE_DETECT_PORT}
+    # TODO : Not to expose this port    
+    ports:
+        - ${FACE_DETECT_PORT}:${FACE_DETECT_PORT}   
+    volumes:
+      - album-uploads:/srv/album-uploads
+    restart: on-failure
+
 volumes:
   album-uploads:
   album-static-gen:

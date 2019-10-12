@@ -100,6 +100,7 @@ const {kuruviProto, credentials} = require('./common/grpc');
 const {EXIF_CORE_ENDPOINT} = require('./common/config');
 const utils = require('./utils');
 const {resizeImageAndSave} = require('./resize/resize');
+const {detectFaces} = require('./face-detect/service');
 
 /**
  * This callback is executed after exif extraction.
@@ -140,7 +141,8 @@ function exififyAlbum(message) {
 
 function initWorkFlow(message) {
     console.log("starting workflow");
-    exififyAlbum(message);
+    // exififyAlbum(message);
+    detectFaces(message);
 }
 
 module.exports = {initWorkFlow}
