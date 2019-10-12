@@ -8,7 +8,7 @@
  *
  */
 
-const {CADDT_SERVER_ENDPOINT} = require('./common/config');
+const {CADDT_SERVER_ENDPOINT} = require('../common/config');
 
 const VOLUME_NAME = 'album-uploads';
 /**
