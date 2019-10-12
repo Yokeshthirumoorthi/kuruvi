@@ -37,7 +37,7 @@ function getImgProxyCropFaceURLList(caddyURL, boundingBoxes) {
    const getFaceURLs = (boundingBox) => {
       const name = shortid.generate();
       return {
-        name: `face_${name}.png`,
+        name: `face_${name}.jpg`,
         url: getImgProxyCropFaceURL(caddyURL, boundingBox) 
       }
    };

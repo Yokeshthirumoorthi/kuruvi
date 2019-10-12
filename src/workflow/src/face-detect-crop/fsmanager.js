@@ -20,7 +20,7 @@ function createFolderIfNotExits(path) {
 
 function getAlbumPath(photoFSDetails, folderName) {
   const album = photoFSDetails.album;
-  const albumPath = path.join(__dirname, '../', folderName, album);
+  const albumPath = path.join(folderName, album);
 
   createFolderIfNotExits(albumPath);
 

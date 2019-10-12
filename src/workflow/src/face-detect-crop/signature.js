@@ -26,22 +26,6 @@ const sign = (salt, target, secret) => {
   return urlSafeBase64(hmac.digest())
 }
 
-const getSignedImgURL = (actualImgURL) => {
-  const url = actualImgURL;
-  const resizing_type = 'fill';
-  const width = 300;
-  const height = 300;
-  const gravity = 'no';
-  const enlarge = 1;
-  const extension = 'png';
-  const encoded_url = urlSafeBase64(url);
-  const path = `/${resizing_type}/${width}/${height}/${gravity}/${enlarge}/${encoded_url}.${extension}`;
-
-  const signature = sign(SALT, path, KEY);
-  const result = `/${signature}${path}`;
-  return result;
-}
-
 const getSignedImgCropURL= (caddyURL, boundingBox) => {
   const url = caddyURL;
   const resizing_type = 'fit';
@@ -51,7 +35,7 @@ const getSignedImgCropURL= (caddyURL, boundingBox) => {
   const h = boundingBox.height;
   const gravity = `nowe:${x}:${y}`;
   const enlarge = 0;
-  const extension = 'png';
+  const extension = 'jpg';
   const encoded_url = urlSafeBase64(url);
   const path = `/rt:${resizing_type}/c:${w}:${h}:${gravity}/el:${enlarge}/${encoded_url}.${extension}`;
 
@@ -60,4 +44,4 @@ const getSignedImgCropURL= (caddyURL, boundingBox) => {
   return result;
 }
 
-module.exports = {getSignedImgURL, getSignedImgCropURL}
+module.exports = {getSignedImgCropURL}

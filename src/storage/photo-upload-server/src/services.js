@@ -9,6 +9,7 @@
  */
 const {kuruviProto, credentials} = require('./common/grpc');
 const { SERVICE_X_ENDPOINT } = require('./common/config');
+const sendtoqueue = require('./sendtoqueue');
 // const database = require('./database');
 
 // function savePhotoCallback(err, response) {
@@ -44,7 +45,10 @@ function initWorkFlowCallback(err, response) {
 function initWorkFlow(initWorkFlowRequest) {
     const serviceX = new kuruviProto.ServiceX(SERVICE_X_ENDPOINT, credentials);
     serviceX.initWorkFlow(initWorkFlowRequest, initWorkFlowCallback);
- 
 }
 
-module.exports = {initWorkFlow}
+function initWorkFlowViaQueue(initWorkFlowRequest) {
+    sendtoqueue.initWorkFlow(initWorkFlowRequest);
+}
+
+module.exports = {initWorkFlow, initWorkFlowViaQueue}

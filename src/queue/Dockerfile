@@ -1,0 +1,3 @@
+FROM rabbitmq:3.7-alpine
+ARG QUEUE_PORT
+EXPOSE $QUEUE_PORT

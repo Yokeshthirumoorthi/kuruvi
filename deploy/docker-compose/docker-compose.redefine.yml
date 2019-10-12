@@ -44,6 +44,8 @@ services:
           PHOTO_UPLOAD_SERVER_PORT: ${PHOTO_UPLOAD_SERVER_PORT}
       volumes:
         - album-uploads:/srv/album-uploads
+        - album-faces:/srv/album-faces
+        - album-resized:/srv/album-resized     
       ports:
         - ${CADDY_SERVER_PORT}:${CADDY_SERVER_PORT}
         - ${PHOTO_UPLOAD_SERVER_PORT}:${PHOTO_UPLOAD_SERVER_PORT}
@@ -64,6 +66,15 @@ services:
       - album-static-gen:/srv/album-static-gen
       - album-faces:/srv/album-faces
       - album-resized:/srv/album-resized      
+    restart: on-failure
+
+  queue:
+    container_name: ${QUEUE_SERVICE}
+    build:
+      context: ../../src/queue
+      dockerfile: Dockerfile
+      args:
+        QUEUE_PORT: ${QUEUE_PORT}  
     restart: on-failure
 
 ################################################################################

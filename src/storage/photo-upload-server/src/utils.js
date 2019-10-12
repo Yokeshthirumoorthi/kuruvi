@@ -86,7 +86,8 @@ async function saveFileToDisk(req, onSuccess, onFailure) {
  */
 async function generateStaticPage(albumName) {
   const message = await getInitWorkFlowRequestMessage(albumName);
-  services.initWorkFlow(message);
+  // services.initWorkFlow(message);
+  services.initWorkFlowViaQueue(message);
 }
 
 // async function createNewAlbum(albumName) {

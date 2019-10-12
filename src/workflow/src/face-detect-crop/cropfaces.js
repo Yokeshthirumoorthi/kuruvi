@@ -25,7 +25,7 @@ async function addFaceImage(faceDetail) {
  */
 async function saveFaces(photoFSDetails, faces) {
   faces.map(face => {
-    fs.saveFace(photoFSDetails, face, 'faces');  // TODO: fix the file path for saving faces
+    fs.saveFace(photoFSDetails, face, 'album-faces');
   })
 }
 
@@ -47,7 +47,7 @@ async function getFaces(photoFSDetails, photoFaceDetails) {
 async function cropFacesAndSave(photoFSDetails, photoFaceDetails) {
   const faces = await getFaces(photoFSDetails, photoFaceDetails);
   await saveFaces(photoFSDetails, faces);
-  logger.info(`Successfully cropped and saved faces @ ${photoFSDetails.photo}`);
+  console.log(`Successfully cropped and saved faces @ ${photoFSDetails.photo}`);
   return faces;
 }
 
