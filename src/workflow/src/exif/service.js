@@ -24,7 +24,7 @@ async function extractExifCallback(err, response) {
  * exif for all the photos in a given album.
  * @param {*} message 
  */
-function exififyAlbum(message) {
+function exififyAlbum(message, nextJob) {
     const exifCore= new kuruviProto.ExifCore(EXIF_CORE_ENDPOINT, credentials);
     const {albumName, photoName} = message;
     const caddyURL = utils.getCaddyURL(albumName, photoName);
@@ -35,6 +35,7 @@ function exififyAlbum(message) {
     exifCore.extractExif(extractExifRequest,async (err, res) => {
                 extractExifCallback(err, res);
                 // Call next job here
+                nextJob()
             });
 }
 

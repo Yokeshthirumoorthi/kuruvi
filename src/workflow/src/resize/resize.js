@@ -27,10 +27,11 @@ async function getResizedImage(photoFSDetails) {
  * Callback to be executed after getting photoFSDetails
  * from postgresql grpc call
  */
-async function resizeImageAndSave(photoFSDetails) {
+async function resizeImageAndSave(photoFSDetails, nextJob) {
   const resizedPhoto = await getResizedImage(photoFSDetails);
   await fs.saveResizedPhoto(photoFSDetails, resizedPhoto, "album-resized");
   console.log(`Successfully resized and saved photo @ ${photoFSDetails.photo}`);
+  nextJob()
 }
 
 module.exports = {resizeImageAndSave}

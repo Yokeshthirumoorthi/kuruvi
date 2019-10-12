@@ -101,11 +101,27 @@ const {resizeImageAndSave} = require('./resize/resize');
 const {detectAndCropFaces} = require('./face-detect-crop/services');
 
 
+function extractFaces(message) {
+    detectAndCropFaces(message, () => {
+        // describeFaces(message);
+    })
+}
+
+function resizePhotos(message) {
+    resizeImageAndSave(message, () => {
+        extractFaces(message);
+    });
+}
+
+function extractExif(message) {
+    exififyAlbum(message, () => {
+        resizePhotos(message);
+    });
+}
+
 function initWorkFlow(message) {
     console.log("starting workflow");
-    exififyAlbum(message);
-    resizeImageAndSave(message);
-    detectAndCropFaces(message);
+    extractExif(message);
 }
 
 module.exports = {initWorkFlow}

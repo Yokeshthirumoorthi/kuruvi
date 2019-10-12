@@ -31,7 +31,7 @@ function sanitizeFacesJson(faces) {
  * Implements the sequence of steps 
  * for cropping and saving faces in a photo
  */
-async function cropAndSaveFaces(photoDetails) {
+async function cropAndSaveFaces(photoDetails, nextJob) {
     const photoFSDetails = {
         album: photoDetails.albumName,
         photo: photoDetails.photoName
@@ -43,7 +43,8 @@ async function cropAndSaveFaces(photoDetails) {
     const newFacesJson = sanitizeFacesJson(faces);
     const newPhotoDetails = {...photoDetails, faces: newFacesJson};
     console.log("Result", newPhotoDetails)
-    return newPhotoDetails;
+    // return newPhotoDetails;
+    nextJob()
 }
 
 // /**
@@ -55,7 +56,7 @@ async function cropAndSaveFaces(photoDetails) {
 // }
 
 
-function detectFacesCallback(err, response, message) {
+function detectFacesCallback(err, response, message, nextJob) {
     if (err !== null) {
         console.log(err);
         return;
@@ -71,11 +72,11 @@ function detectFacesCallback(err, response, message) {
         ...message,
         boundingBoxes: response.boxes
     }
-    cropAndSaveFaces(cropFacesRequest);
+    cropAndSaveFaces(cropFacesRequest, nextJob);
 }
 
 
-function detectAndCropFaces(message) {
+function detectAndCropFaces(message, nextJob) {
     const faceCore= new kuruviProto.FaceCore(FACE_DETECT_ENDPOINT, credentials);
     const {albumName, photoName} = message;
     const fsURL = utils.fsURL(albumName, photoName);
@@ -84,7 +85,7 @@ function detectAndCropFaces(message) {
         url: fsURL
     }
     faceCore.detectFaces(photoURL,
-        (err, response) => detectFacesCallback(err, response, message));
+        (err, response) => detectFacesCallback(err, response, message, nextJob));
 }
 
 
