@@ -103,8 +103,8 @@ const {detectAndCropFaces} = require('./face-detect-crop/services');
 
 function initWorkFlow(message) {
     console.log("starting workflow");
-    // exififyAlbum(message);
-    // resizeImageAndSave(message);
+    exififyAlbum(message);
+    resizeImageAndSave(message);
     detectAndCropFaces(message);
 }
 
