@@ -17,6 +17,9 @@ services:
      - ${FRONTEND_PORT}:${FRONTEND_PORT}
     volumes:
      - album-static-gen:/srv
+     - galleries:/srv/content/galleries
+     - album-faces:/srv/content/faces
+     - album-resized:/srv/static/pics
     restart: on-failure
 
 ################################################################################
@@ -45,7 +48,8 @@ services:
       volumes:
         - album-uploads:/srv/album-uploads
         - album-faces:/srv/album-faces
-        - album-resized:/srv/album-resized     
+        - album-resized:/srv/album-resized
+        - galleries:/srv/galleries     
       ports:
         - ${CADDY_SERVER_PORT}:${CADDY_SERVER_PORT}
         - ${PHOTO_UPLOAD_SERVER_PORT}:${PHOTO_UPLOAD_SERVER_PORT}
@@ -65,7 +69,8 @@ services:
       - album-uploads:/srv/album-uploads
       - album-static-gen:/srv/album-static-gen
       - album-faces:/srv/album-faces
-      - album-resized:/srv/album-resized      
+      - album-resized:/srv/album-resized
+      - galleries:/srv/galleries     
     restart: on-failure
 
   queue:
@@ -135,3 +140,4 @@ volumes:
   album-static-gen:
   album-faces:
   album-resized:
+  galleries:
