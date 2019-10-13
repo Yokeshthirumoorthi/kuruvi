@@ -99,7 +99,8 @@
 const {exififyAlbum} = require('./services/exif');
 const {resizeImageAndSave} = require('./services/resize');
 const {detectAndCropFaces} = require('./services/face-detect-crop');
-const {describeFacePoints} = require('./services/face-describe')
+const {describeFacePoints} = require('./services/face-describe');
+const staticGen = require('./services/static-gen');
 
 function describeFaces(faceMessage) {
     console.log("describe: ", faceMessage)
@@ -109,13 +110,15 @@ function describeFaces(faceMessage) {
 }
 
 function extractFaces(message) {
-    detectAndCropFaces(message, (faceMessage) => { 
+    detectAndCropFaces(message, (faceMessage) => {
+        staticGen.createFaceContent(message); 
         describeFaces(faceMessage);
     })
 }
 
 function resizePhotos(message) {
     resizeImageAndSave(message, () => {
+        staticGen.createAlbumContent(message);
         extractFaces(message);
     });
 }

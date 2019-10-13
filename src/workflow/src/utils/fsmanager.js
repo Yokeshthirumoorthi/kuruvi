@@ -68,4 +68,36 @@ async function getImage(imgProxyURL) {
   return image; 
 }
 
-module.exports = {saveFace, saveResizedPhoto, getImage}
+function createMDFile(filePath, albumName) {
+  createFolderIfNotExits(filePath);
+  const file = `${filePath}/index.md`
+  const content = 
+`---
+title: "${albumName}"
+date: "${new Date()}"
+description: "/pics/family/coverimage.jpg"
+---`;
+  fs.writeFileSync(file, content); 
+}
+
+async function createFaceMDFile(albumName, photoName) {
+  const filePath = `album-faces/${albumName}`;
+  createMDFile(filePath, albumName) 
+}
+
+async function createAlbumMDFile(albumName, photoName) {
+  const filePath = `galleries/${albumName}`;
+  const file = `${filePath}/index.md`
+  const content = `\n
+  {{< photo href="/pics/${albumName}/${photoName}" largeDim="1600x1600" smallUrl="/pics/${albumName}/${photoName}" smallDim="800x800" alt="None" thumbSize="256x256" thumbUrl="/pics/${albumName}/${photoName}" caption="" copyright="" >}}
+  `;
+  fs.exists(file, function (exists) {
+    if(!exists)
+    {
+      createMDFile(filePath, albumName);
+    }
+  });
+  fs.appendFileSync(file, content); 
+}
+
+module.exports = {saveFace, saveResizedPhoto, getImage, createFaceMDFile, createAlbumMDFile}
