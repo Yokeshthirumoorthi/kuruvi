@@ -7,7 +7,7 @@
  * distribution of this software for license terms.
  *
  */
-const fs = require('./fsmanager');
+const fs = require('../fsmanager');
 const URL = require('./url');
 
 /**

@@ -8,7 +8,7 @@
  *
  */
 
-const fs = require('./fsmanager');
+const fs = require('../fsmanager');
 const URL = require('../url');
 
 /**

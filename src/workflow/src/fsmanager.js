@@ -41,6 +41,21 @@ async function saveFace (photoFSDetails, face, folderName) {
   })
 }
 
+async function saveResizedPhoto (photoFSDetails, response, folderName) {
+  const albumPath = getAlbumPath(photoFSDetails, folderName);
+  const fileName = photoFSDetails.photoName;
+  const imagePath = path.resolve(albumPath, fileName);
+  console.log("Image path",imagePath);
+  const writer = fs.createWriteStream(imagePath)
+
+  response.data.pipe(writer)
+
+  return new Promise((resolve, reject) => {
+    writer.on('finish', resolve)
+    writer.on('error', reject)
+  })
+}
+
 /**
  * Get image from imgProxy
  */
@@ -54,4 +69,4 @@ async function getImage(imgProxyURL) {
   return image; 
 }
 
-module.exports = {saveFace, getImage}
+module.exports = {saveFace, saveResizedPhoto, getImage}
