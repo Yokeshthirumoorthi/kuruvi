@@ -8,12 +8,13 @@
  *
  */
 
-const {CADDT_SERVER_ENDPOINT} = require('./common/config');
 const signature = require('./signature');
 const {
   RESIZE_CORE_ENDPOINT,
   CADDT_SERVER_ENDPOINT
-} = require('./common/config');
+} = require('../common/config');
+const shortid = require('shortid');
+const FACE_CROP_SERVER_ENDPOINT = RESIZE_CORE_ENDPOINT;
 
 const UPLOADS_VOL = 'album-uploads';
 const RESIZED_VOL = 'album-resized';

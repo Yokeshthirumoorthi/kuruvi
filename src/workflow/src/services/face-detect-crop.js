@@ -10,9 +10,9 @@
 
 const { FACE_DETECT_ENDPOINT } = require('../common/config');
 const {kuruviProto, credentials} = require('../common/grpc');
-const URL = require('../url');
+const URL = require('../utils/url');
 
-const cropfaces = require('./cropfaces');
+const cropfaces = require('../utils/cropfaces');
 
 /**
  * Sanitize faces json to save in database 
@@ -33,8 +33,8 @@ function sanitizeFacesJson(faces) {
  */
 async function cropAndSaveFaces(photoDetails, nextJob) {
     const photoFSDetails = {
-        album: photoDetails.albumName,
-        photo: photoDetails.photoName
+        albumName: photoDetails.albumName,
+        photoName: photoDetails.photoName
     };
     const photoFaceDetails = {
         bounding_boxes: photoDetails.boundingBoxes

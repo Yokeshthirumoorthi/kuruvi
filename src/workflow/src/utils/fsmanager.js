@@ -19,8 +19,8 @@ function createFolderIfNotExits(path) {
 }
 
 function getAlbumPath(photoFSDetails, folderName) {
-  const album = photoFSDetails.album;
-  const albumPath = path.join(folderName, album);
+  const albumName = photoFSDetails.albumName;
+  const albumPath = path.join(folderName, albumName);
 
   createFolderIfNotExits(albumPath);
 
@@ -41,7 +41,7 @@ async function saveFace (photoFSDetails, face, folderName) {
   })
 }
 
-async function saveResizedPhoto (photoFSDetails, response, folderName) {
+async function saveResizedPhoto(photoFSDetails, response, folderName) {
   const albumPath = getAlbumPath(photoFSDetails, folderName);
   const fileName = photoFSDetails.photoName;
   const imagePath = path.resolve(albumPath, fileName);
@@ -65,7 +65,6 @@ async function getImage(imgProxyURL) {
     method: 'GET',
     responseType: 'stream'
   });
-
   return image; 
 }
 

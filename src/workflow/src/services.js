@@ -96,10 +96,10 @@
 //     });
 // }
 
-const {exififyAlbum} = require('./exif/service');
-const {resizeImageAndSave} = require('./resize/service');
-const {detectAndCropFaces} = require('./face-detect-crop/services');
-const {describeFacePoints} = require('./face-describe/service')
+const {exififyAlbum} = require('./services/exif');
+const {resizeImageAndSave} = require('./services/resize');
+const {detectAndCropFaces} = require('./services/face-detect-crop');
+const {describeFacePoints} = require('./services/face-describe')
 
 function describeFaces(faceMessage) {
     console.log("describe: ", faceMessage)

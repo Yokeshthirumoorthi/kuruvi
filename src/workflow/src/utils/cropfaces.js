@@ -7,8 +7,8 @@
  * distribution of this software for license terms.
  *
  */
-const fs = require('../fsmanager');
-const URL = require('../url');
+const fs = require('./fsmanager');
+const URL = require('./url');
 
 /**
  * Append face image to face details 
@@ -33,7 +33,8 @@ async function saveFaces(photoFSDetails, faces) {
  * Crop the faces from photo 
  */
 async function getFaces(photoFSDetails, photoFaceDetails) {
-  const caddyURL = URL.uploadURL(photoFSDetails);
+  const {albumName, photoName} = photoFSDetails;
+  const caddyURL = URL.resizedURL(albumName, photoName);
   const boundingBoxes = photoFaceDetails.bounding_boxes;
   const faceDetails = URL.getImgProxyCropFaceURLList(caddyURL, boundingBoxes);
   const faceDetailsWithFaces = await Promise.all(faceDetails.map(addFaceImage));

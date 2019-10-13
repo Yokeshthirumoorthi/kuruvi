@@ -1,6 +1,6 @@
 const {kuruviProto, credentials} = require('../common/grpc');
 const {EXIF_CORE_ENDPOINT} = require('../common/config');
-const URL = require('../url')
+const URL = require('../utils/url')
 
 /**
  * This callback is executed after exif extraction.

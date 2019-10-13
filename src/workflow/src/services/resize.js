@@ -8,8 +8,8 @@
  *
  */
 
-const fs = require('../fsmanager');
-const URL = require('../url');
+const fs = require('../utils/fsmanager');
+const URL = require('../utils/url');
 
 /**
  * Given photo file system details,
@@ -17,9 +17,10 @@ const URL = require('../url');
  * and resize it using imgproxy
  */
 async function getResizedImage(photoFSDetails) {
-   const caddyURL = URL.uploadURL(photoFSDetails);
+   const {albumName, photoName} = photoFSDetails;
+   const caddyURL = URL.uploadURL(albumName, photoName);
    const imgProxyURL = URL.getImgProxyPhotoResizeURL(caddyURL);
-   const resizedImage = fs.getImage(imgProxyURL);
+   const resizedImage = await fs.getImage(imgProxyURL);
    return resizedImage;
 }
 

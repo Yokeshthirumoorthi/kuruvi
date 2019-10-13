@@ -9,17 +9,6 @@
  *
  */
 
-
-// if (require.main === module) {
-//     // If this is run as a script, start a server on an unused port
-//     console.log("Workflow started");
-//     const message = {
-//         albumName: 'test-album', 
-//         photoName: 'bbt5.jpg'
-//     }
-//     initWorkFlow(message);
-// }
-
 var amqp = require('amqplib/callback_api');
 const {initWorkFlow} = require('./src/services');
 const {QUEUE_ENDPOINT} = require('./src/common/config');
