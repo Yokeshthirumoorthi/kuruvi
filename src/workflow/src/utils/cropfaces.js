@@ -9,13 +9,14 @@
  */
 const fs = require('./fsmanager');
 const URL = require('./url');
+const http = require('./http');
 
 /**
  * Append face image to face details 
  */
 async function addFaceImage(faceDetail) {
   const url = faceDetail.url;
-  const faceImage = await fs.getImage(url);
+  const faceImage = await http.getImage(url);
   const updatedFaceDetail = {...faceDetail, image: faceImage};
   return updatedFaceDetail;
 }

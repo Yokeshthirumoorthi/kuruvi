@@ -15,10 +15,12 @@ function initWorkFlow(message) {
             }
 
             var queue = 'workflow_queue';
-            // const msg = {
-            //     albumName: 'test-album', 
-            //     photoName: 'bbt5.jpg'
-            // }
+            
+            const endMessage = {
+                albumName: '',
+                photoName: ''
+            };
+
             var msgs = message.photos.map(
                 photoName => {
                     return {
@@ -32,7 +34,7 @@ function initWorkFlow(message) {
                 durable: false
             });
 
-            msgs.map(msg => {
+            [...msgs, endMessage].map(msg => {
                 channel.sendToQueue(queue, Buffer.from(JSON.stringify(msg)));
 
                 console.log(" [x] Sent %s", msg);

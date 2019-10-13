@@ -11,6 +11,7 @@
 
 var amqp = require('amqplib/callback_api');
 const {initWorkFlow} = require('./src/services');
+const staticGen = require('./src/services/static-gen');
 const {QUEUE_ENDPOINT} = require('./src/common/config');
 const QUEUE_CONNECTION_STRING = `amqp://${QUEUE_ENDPOINT}`;
 
@@ -34,7 +35,11 @@ amqp.connect(QUEUE_CONNECTION_STRING, function(error0, connection) {
         channel.consume(queue, function(msg) {
             const message = JSON.parse(msg.content);
             console.log(" [x] Received %s", message);
-            initWorkFlow(message);
+            if (message.albumName === '' && message.photoName === '') {
+                staticGen.buildHugo();
+            } else {
+                initWorkFlow(message);
+            }
         }, {
             noAck: true
         });

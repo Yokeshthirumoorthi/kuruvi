@@ -10,7 +10,6 @@
 
 const fs = require('fs');
 const path = require('path');
-const Axios = require('axios');
 
 function createFolderIfNotExits(path) {
   if (!fs.existsSync(path, { recursive: true })) {
@@ -56,18 +55,6 @@ async function saveResizedPhoto(photoFSDetails, response, folderName) {
   })
 }
 
-/**
- * Get image from imgProxy
- */
-async function getImage(imgProxyURL) {
-  const image = await Axios({
-    url: imgProxyURL,
-    method: 'GET',
-    responseType: 'stream'
-  });
-  return image; 
-}
-
 function createMDFile(filePath, albumName) {
   createFolderIfNotExits(filePath);
   const file = `${filePath}/index.md`
@@ -100,4 +87,4 @@ async function createAlbumMDFile(albumName, photoName) {
   fs.appendFileSync(file, content); 
 }
 
-module.exports = {saveFace, saveResizedPhoto, getImage, createFaceMDFile, createAlbumMDFile}
+module.exports = {saveFace, saveResizedPhoto, createFaceMDFile, createAlbumMDFile}
