@@ -8,7 +8,7 @@
  *
  */
 const fs = require('../fsmanager');
-const URL = require('./url');
+const URL = require('../url');
 
 /**
  * Append face image to face details 
@@ -33,7 +33,7 @@ async function saveFaces(photoFSDetails, faces) {
  * Crop the faces from photo 
  */
 async function getFaces(photoFSDetails, photoFaceDetails) {
-  const caddyURL = URL.getCaddyURL(photoFSDetails);
+  const caddyURL = URL.uploadURL(photoFSDetails);
   const boundingBoxes = photoFaceDetails.bounding_boxes;
   const faceDetails = URL.getImgProxyCropFaceURLList(caddyURL, boundingBoxes);
   const faceDetailsWithFaces = await Promise.all(faceDetails.map(addFaceImage));

@@ -10,7 +10,7 @@
 
 const { FACE_DETECT_ENDPOINT } = require('../common/config');
 const {kuruviProto, credentials} = require('../common/grpc');
-const utils = require('./utils');
+const URL = require('../url');
 
 const cropfaces = require('./cropfaces');
 
@@ -79,7 +79,7 @@ function detectFacesCallback(err, response, message, nextJob) {
 function detectAndCropFaces(message, nextJob) {
     const faceCore= new kuruviProto.FaceCore(FACE_DETECT_ENDPOINT, credentials);
     const {albumName, photoName} = message;
-    const fsURL = utils.fsURL(albumName, photoName);
+    const fsURL = URL.fsURL(albumName, photoName);
     console.log("fs url  : ", fsURL);
     const photoURL = {
         url: fsURL
