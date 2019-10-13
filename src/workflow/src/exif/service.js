@@ -1,6 +1,6 @@
 const {kuruviProto, credentials} = require('../common/grpc');
 const {EXIF_CORE_ENDPOINT} = require('../common/config');
-const utils = require('./utils');
+const URL = require('../url')
 
 /**
  * This callback is executed after exif extraction.
@@ -27,7 +27,7 @@ async function extractExifCallback(err, response) {
 function exififyAlbum(message, nextJob) {
     const exifCore= new kuruviProto.ExifCore(EXIF_CORE_ENDPOINT, credentials);
     const {albumName, photoName} = message;
-    const caddyURL = utils.getCaddyURL(albumName, photoName);
+    const caddyURL = URL.uploadURL(albumName, photoName);
     console.log("remote urls are : ", caddyURL);
     const extractExifRequest = {
         url: caddyURL

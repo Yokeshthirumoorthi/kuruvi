@@ -97,7 +97,7 @@
 // }
 
 const {exififyAlbum} = require('./exif/service');
-const {resizeImageAndSave} = require('./resize/resize');
+const {resizeImageAndSave} = require('./resize/service');
 const {detectAndCropFaces} = require('./face-detect-crop/services');
 const {describeFacePoints} = require('./face-describe/service')
 
