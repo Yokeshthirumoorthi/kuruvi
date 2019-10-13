@@ -4,8 +4,7 @@
 #  Please see the file LICENSE in the source
 #  distribution of this software for license terms.
 
-FROM abiosoft/caddy AS base
-FROM debian:10-slim AS builder
+FROM golang:1.12-alpine AS builder
 
 ARG HUGO_VERSION="0.58.1"
 ARG HUGO_NAME="hugo_${HUGO_VERSION}_Linux-64bit"
@@ -14,28 +13,25 @@ ARG BUILD_DEPS="wget"
 
 WORKDIR /hugo
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+RUN apk add \
+    --no-cache \
+    ca-certificates \
     ${BUILD_DEPS} \
-    git \
-    ca-certificates && \
+    git && \
     wget "${HUGO_URL}" && \
     tar -zxvf "${HUGO_NAME}.tar.gz" && \
     mv ./hugo /usr/bin/hugo && \
-    apt-get remove -y ${BUILD_DEPS} && \
-    apt-get autoremove -y && \
-    rm -rf /var/lib/apt/lists/* && \
     cd / && \
     rm -rf /hugo
 
-WORKDIR /src
+
+WORKDIR /srv
 
 COPY . .
 
-RUN hugo
+RUN hugo && \
+    go build -o main .
 
-FROM base
+EXPOSE 8079
 
-COPY --from=builder /src/public /srv
-
-COPY Caddyfile /etc
+CMD ["./main"]
