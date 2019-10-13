@@ -44,4 +44,20 @@ const getSignedImgCropURL= (caddyURL, boundingBox) => {
   return result;
 }
 
-module.exports = {getSignedImgCropURL}
+const getSignedImgURL = (actualImgURL) => {
+    const url = actualImgURL;
+    const resizing_type = 'fill';
+    const width = 300;
+    const height = 300;
+    const gravity = 'no';
+    const enlarge = 1;
+    const extension = 'png';
+    const encoded_url = urlSafeBase64(url);
+    const path = `/${resizing_type}/${width}/${height}/${gravity}/${enlarge}/${encoded_url}.${extension}`;
+  
+    const signature = sign(SALT, path, KEY);
+    const result = `/${signature}${path}`;
+    return result;
+  }
+  
+module.exports = {getSignedImgCropURL, getSignedImgURL}
