@@ -1,0 +1,12 @@
+#  Copyright © 2019 Yokesh Thirumoorthi.
+#
+#  [This program is licensed under the "MIT License"]
+#  Please see the file LICENSE in the source
+#  distribution of this software for license terms.
+
+0.0.0.0:{$CADDY_FRONTEND_PORT}
+browse
+ext .html   # Clean URLs
+log stdout
+errors stdout
+tls off  # set this as self-signed for https  

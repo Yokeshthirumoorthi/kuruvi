@@ -4,6 +4,19 @@ services:
 ################################################################################
 # Frontend
 ################################################################################
+  caddy-frontend:
+    container_name: ${CADDY_FRONTEND_SERVICE}
+    build:
+      context: ../../src/caddy-frontend 
+      dockerfile: Dockerfile
+    environment:
+     - CADDY_FRONTEND_PORT=${CADDY_FRONTEND_PORT}
+    ports:
+     - ${CADDY_FRONTEND_PORT}:${CADDY_FRONTEND_PORT}
+    volumes:
+     - static-site:/srv 
+    restart: on-failure
+
   frontend:
     container_name: ${FRONTEND_SERVICE}
     build:
@@ -16,7 +29,7 @@ services:
     ports:
      - ${FRONTEND_PORT}:${FRONTEND_PORT}
     volumes:
-     - album-static-gen:/srv
+     - static-site:/srv/public
      - galleries:/srv/content/galleries
      - album-faces:/srv/content/faces
      - album-resized:/srv/static/pics
@@ -67,7 +80,6 @@ services:
         WORKFLOW_PORT: ${WORKFLOW_PORT}      
     volumes:
       - album-uploads:/srv/album-uploads
-      - album-static-gen:/srv/album-static-gen
       - album-faces:/srv/album-faces
       - album-resized:/srv/album-resized
       - galleries:/srv/galleries     
@@ -137,7 +149,7 @@ services:
 
 volumes:
   album-uploads:
-  album-static-gen:
+  static-site:
   album-faces:
   album-resized:
   galleries:

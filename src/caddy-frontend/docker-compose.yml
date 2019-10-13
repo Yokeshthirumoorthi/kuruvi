@@ -1,0 +1,13 @@
+version: '3.5'
+
+services:
+  caddy-frontend:
+    container_name: ${CADDY_FRONTEND_SERVICE}
+    build:
+      context: ./ 
+      dockerfile: Dockerfile
+    environment:
+     - CADDY_FRONTEND_PORT=${CADDY_FRONTEND_PORT}
+    ports:
+     - ${CADDY_FRONTEND_PORT}:${CADDY_FRONTEND_PORT}
+    restart: on-failure
