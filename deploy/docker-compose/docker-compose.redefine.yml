@@ -142,7 +142,10 @@ services:
       context: ../../src/faces/face-describe
       dockerfile: Dockerfile
       args:
-        FACE_DETECT_PORT: ${FACE_DESCRIBE_PORT}
+        FACE_DESCRIBE_PORT: ${FACE_DESCRIBE_PORT}
+    # TODO : Not to expose this port    
+    ports:
+        - ${FACE_DESCRIBE_PORT}:${FACE_DESCRIBE_PORT}
     volumes:
       - album-faces:/srv/album-faces
     restart: on-failure
