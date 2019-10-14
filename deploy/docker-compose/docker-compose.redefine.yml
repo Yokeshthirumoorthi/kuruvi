@@ -92,6 +92,9 @@ services:
       dockerfile: Dockerfile
       args:
         QUEUE_PORT: ${QUEUE_PORT}  
+    # TODO : Not to expose this port    
+    ports:
+        - ${QUEUE_PORT}:${QUEUE_PORT}        
     restart: on-failure
 
 ################################################################################

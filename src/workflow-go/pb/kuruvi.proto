@@ -1,0 +1,168 @@
+/*
+ *
+ * Copyright © 2019 Yokesh Thirumoorthi.
+ *
+ * [This program is licensed under the "MIT License"]
+ * Please see the file LICENSE in the source
+ * distribution of this software for license terms.
+ *
+ */
+
+syntax = "proto3";
+
+package kuruvi;
+
+/********************************************************************************
+* Messages
+*********************************************************************************/
+
+message Empty {}
+
+message AlbumFolder {
+    string albumName= 1;
+    repeated string photos= 2;
+}
+
+message DescribeFaceRequest {
+    string albumName= 1;
+    string photoName= 2;
+}
+
+// remote url of photo for exif extraction
+message PhotoURL {
+    string url= 1;
+}
+
+// exif details extracted from a photo
+message ExifData {
+    string name= 1;
+    string make= 2;
+    string model= 3;
+    int32 create_on= 4;
+    int32 width= 5;
+    int32 height= 6;
+}
+
+// message to acknowledge the status
+message JobStatus {
+    int32 success =1;
+    int32 error =2;
+}
+
+message BoundingBox {
+    float x= 2;
+    float y= 3;
+    int32 width= 4;
+    int32 height= 5;
+}
+
+message BoundingBoxes {
+    repeated BoundingBox boxes=1;
+}
+
+message FacePoints {
+    repeated float points=1;
+}
+
+message CropFacesRequest {
+    string albumName = 1;
+    string photoName = 2;
+    repeated BoundingBox boundingBoxes =3; 
+}
+
+/********************************************************************************
+* Services
+*********************************************************************************/
+
+// -----------------ServiceX grpc server functions-----------------
+
+service ServiceX {
+    // A Simple RPC
+    //
+    // It will execute a set of workflow 
+    // and extracts more details about the photo
+    rpc initWorkFlow (AlbumFolder) returns (Empty) {}
+}
+
+// -----------------Static generator server functions-----------------
+
+
+service StaticGenerator {
+    // A Simple RPC
+    //
+    // Creates the web directory with js, html and the 
+    // cache contents
+    rpc createStaticWebDirectory (AlbumFolder) returns (Empty) {}
+}
+
+// -----------------Exif functions-----------------
+
+service ExifCore {
+    // A Simple RPC
+    // 
+    // Downloads photo from remote server and extracts exif 
+    rpc extractExif (PhotoURL) returns (ExifData) {}
+}
+
+service ExifApi {
+    // A Simple RPC
+    //
+    // Gets the exif details of all photos in an album
+    // and save it to database
+    rpc exififyAlbum (AlbumFolder) returns (JobStatus) {}
+}
+
+// -----------------Face Api functions-----------------
+
+service FaceApi {
+    // A Simple RPC
+    //
+    // Gets the face details of all photos in an album
+    // and save it to database
+    rpc cropAlbumFaces (AlbumFolder) returns (JobStatus) {}
+}
+
+service FaceCore {
+    // A Simple RPC
+    //
+    // Gets the face details of all photos in an album
+    // and save it to database
+    rpc detectFaces (PhotoURL) returns (BoundingBoxes) {}
+}
+
+service FaceDescribe {
+    // A Simple RPC
+    //
+    // Gets the face details of all photos in an album
+    // and save it to database
+    rpc describeFaces (DescribeFaceRequest) returns (FacePoints) {}
+}
+
+service FaceCrop {
+    // A Simple RPC
+    //
+    // For the given photodetails and bounding boxes,
+    // crop and save faces
+    rpc cropFaces (CropFacesRequest) returns (JobStatus) {}
+}
+
+service ResizeApi {
+    // A Simple RPC
+    //
+    // For the given album, resize and save to disk
+    rpc resizePhotos (AlbumFolder) returns (JobStatus) {}
+}
+
+service StorageApi {
+    // A Simple RPC
+    //
+    // Saves the album details and photo details in database
+    rpc saveFolderDetails (AlbumFolder) returns (JobStatus) {}
+}
+
+service PgsqlApi {
+    // A Simple RPC
+    //
+    // Saves the album details and photo details in database
+    rpc organizeData (AlbumFolder) returns (JobStatus) {}
+}
