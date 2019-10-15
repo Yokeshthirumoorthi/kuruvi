@@ -74,7 +74,7 @@ services:
   workflow:
     container_name: ${WORKFLOW_SERVICE}
     build:
-      context: ../../src/workflow 
+      context: ../../src/workflow-go
       dockerfile: Dockerfile
       args:
         WORKFLOW_PORT: ${WORKFLOW_PORT}      

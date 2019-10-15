@@ -4,7 +4,7 @@ RUN apk add --no-cache ca-certificates git && \
       wget -qO/go/bin/dep https://github.com/golang/dep/releases/download/v0.5.0/dep-linux-amd64 && \
       chmod +x /go/bin/dep
 
-ENV PROJECT github.com/yokeshthirumoorthi/kuruvi/src/workflow-go
+ENV PROJECT github.com/yokeshthirumoorthi/workflow-go
 WORKDIR /go/src/$PROJECT
 
 # restore dependencies
@@ -22,8 +22,8 @@ RUN apk add --no-cache ca-certificates
 #     wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
 #     chmod +x /bin/grpc_health_probe
 
-WORKDIR /workflow-go
+WORKDIR /srv
 COPY --from=builder /workflow-go ./server
 
 EXPOSE 1515
-ENTRYPOINT ["/workflow-go/main"]
+ENTRYPOINT ["/srv/server"]

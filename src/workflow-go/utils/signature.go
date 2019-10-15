@@ -7,7 +7,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"log"
-	pb "github.com/kuruvi-bits/transform/pb"
+	pb "github.com/yokeshthirumoorthi/workflow-go/pb"
 )
 
 func GetSignedPathForFaceCrop(url string, boundingBox *pb.BoundingBox) string {

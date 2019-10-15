@@ -9,8 +9,8 @@ import (
 	// "encoding/json"
 	"google.golang.org/grpc"
 	// pb "google.golang.org/grpc/examples/helloworld/helloworld"
-	pb "github.com/kuruvi-bits/transform/pb"
-	utils "github.com/kuruvi-bits/transform/utils"
+	pb "github.com/yokeshthirumoorthi/workflow-go/pb"
+	utils "github.com/yokeshthirumoorthi/workflow-go/utils"
 )
 
 const (

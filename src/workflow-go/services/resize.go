@@ -6,7 +6,7 @@ import (
     "log"
     "net/http"
     "os"
-	utils "github.com/kuruvi-bits/transform/utils"
+	utils "github.com/yokeshthirumoorthi/workflow-go/utils"
 )
 
 // Resize is a function used to resize photo

@@ -12,13 +12,15 @@ import (
 	// "encoding/json"
 	"google.golang.org/grpc"
 	// pb "google.golang.org/grpc/examples/helloworld/helloworld"
-	pb "github.com/kuruvi-bits/transform/pb"
-	utils "github.com/kuruvi-bits/transform/utils"
+	pb "github.com/yokeshthirumoorthi/workflow-go/pb"
+	utils "github.com/yokeshthirumoorthi/workflow-go/utils"
 )
 
 const (
-	faceDetectEndpoint = "192.168.1.100:8006"
-	faceDescribeEndpoint = "192.168.1.100:8009"
+	// faceDetectEndpoint = "192.168.1.100:8006"
+	// faceDescribeEndpoint = "192.168.1.100:8009"
+	faceDetectEndpoint = "face-detect:8006"
+	faceDescribeEndpoint = "face-describe:8009"
 )
 
 //DescribeFace extracts face description points 

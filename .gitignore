@@ -66,3 +66,5 @@ out
 src/faceapi/**/*.js
 target
 **.gv
+
+vendor

@@ -1,16 +1,17 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
+
 	"github.com/streadway/amqp"
-	"encoding/json"
-	"github.com/kuruvi-bits/transform/services"
-	"github.com/kuruvi-bits/transform/utils"
+	"github.com/yokeshthirumoorthi/workflow-go/services"
+	"github.com/yokeshthirumoorthi/workflow-go/utils"
 )
 
 const (
-	queueConnString = "amqp://192.168.1.100:5672/"
+	queueConnString = "amqp://queue:5672/"
 )
 
 func failOnError(err error, msg string) {
@@ -40,11 +41,11 @@ func main() {
 
 	q, err := ch.QueueDeclare(
 		"workflow_queue", // name
-		false,   // durable
-		false,   // delete when unused
-		false,   // exclusive
-		false,   // no-wait
-		nil,     // arguments
+		false,            // durable
+		false,            // delete when unused
+		false,            // exclusive
+		false,            // no-wait
+		nil,              // arguments
 	)
 	failOnError(err, "Failed to declare a queue")
 

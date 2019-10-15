@@ -2,12 +2,14 @@ package utils
 
 import (
 	"fmt"
-	pb "github.com/kuruvi-bits/transform/pb"
+	pb "github.com/yokeshthirumoorthi/workflow-go/pb"
 )
 
 const (
-	CADDT_SERVER_ENDPOINT = "192.168.1.100:2015"
-	RESIZE_SERVER_ENDPOINT = "192.168.1.100:8080"
+	// CADDT_SERVER_ENDPOINT = "192.168.1.100:2015"
+	// RESIZE_SERVER_ENDPOINT = "192.168.1.100:8080"
+	CADDT_SERVER_ENDPOINT = "caddy-server:2015"
+	RESIZE_SERVER_ENDPOINT = "resize-core:8080"
 	UPLOADS_VOL = "album-uploads"
 	RESIZED_VOL = "album-resized"	
 	FACES_VOL = "album-faces"
