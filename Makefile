@@ -146,7 +146,7 @@ clean:
 %:      # thanks to chakrit
 	@:    # thanks to William Pursell
 
-TEST_ALBUM_NAME = test-album-7
+TEST_ALBUM_NAME = test-album-3
 TEST_ALBUM_PATH = $(filter-out $@,$(MAKECMDGOALS))
 upload-test-album:
 	for filename in ${TEST_ALBUM_PATH}/*.jpg; do \

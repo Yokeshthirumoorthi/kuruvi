@@ -6,8 +6,6 @@ import (
 )
 
 const (
-	// CADDT_SERVER_ENDPOINT = "192.168.1.100:2015"
-	// RESIZE_SERVER_ENDPOINT = "192.168.1.100:8080"
 	CADDT_SERVER_ENDPOINT = "caddy-server:2015"
 	RESIZE_SERVER_ENDPOINT = "resize-core:8080"
 	UPLOADS_VOL = "album-uploads"
@@ -46,7 +44,7 @@ func GetResizeURL(message Message) string {
 	caddyURL := GetURL(message).Upload
     fmt.Println("Caddy URL", caddyURL)
 	signedURL := GetSignedPathForResize(caddyURL)
-	resizedURL := "http://" + CADDT_SERVER_ENDPOINT + "/" + signedURL
+	resizedURL := "http://" + RESIZE_SERVER_ENDPOINT + "/" + signedURL
 	return resizedURL
 }
 
@@ -54,7 +52,7 @@ func GetFaceCropURL(message Message, boundingBox *pb.BoundingBox) string {
 	caddyURL := GetURL(message).Resized
     fmt.Println("Caddy URL", caddyURL)
 	signedURL := GetSignedPathForFaceCrop(caddyURL, boundingBox)
-	resizedURL := "http://" + CADDT_SERVER_ENDPOINT + "/" + signedURL
+	resizedURL := "http://" + RESIZE_SERVER_ENDPOINT + "/" + signedURL
 	return resizedURL
 }
 

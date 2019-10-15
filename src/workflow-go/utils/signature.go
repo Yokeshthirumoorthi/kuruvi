@@ -25,7 +25,7 @@ func GetSignedPathForFaceCrop(url string, boundingBox *pb.BoundingBox) string {
 		log.Fatal("Salt expected to be hex-encoded string")
 	}
 
-	resize := "fill"
+	resize := "fit"
 	width := boundingBox.Width 
 	height := boundingBox.Height
 	gravity := fmt.Sprintf("nowe:%f:%f", boundingBox.X, boundingBox.Y)

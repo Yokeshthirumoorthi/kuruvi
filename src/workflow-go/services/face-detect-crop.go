@@ -9,48 +9,45 @@ import (
 	"time"
     "io"
     "net/http"
-	// "encoding/json"
 	"google.golang.org/grpc"
-	// pb "google.golang.org/grpc/examples/helloworld/helloworld"
 	pb "github.com/yokeshthirumoorthi/workflow-go/pb"
 	utils "github.com/yokeshthirumoorthi/workflow-go/utils"
 )
 
 const (
-	// faceDetectEndpoint = "192.168.1.100:8006"
-	// faceDescribeEndpoint = "192.168.1.100:8009"
 	faceDetectEndpoint = "face-detect:8006"
 	faceDescribeEndpoint = "face-describe:8009"
 )
 
-//DescribeFace extracts face description points 
-// from a face picture
-func DescribeFace(message utils.Message) {
-	// Set up a connection to the server.
-	conn, err := grpc.Dial(faceDescribeEndpoint, grpc.WithInsecure())
-	if err != nil {
-		log.Fatalf("did not connect: %v", err)
-	}
-	defer conn.Close()
-	c := pb.NewFaceDescribeClient(conn)
+// TODO: Uncomment after fixing imgproxy facecrop
+// //DescribeFace extracts face description points 
+// // from a face picture
+// func DescribeFace(message utils.Message) {
+// 	// Set up a connection to the server.
+// 	conn, err := grpc.Dial(faceDescribeEndpoint, grpc.WithInsecure())
+// 	if err != nil {
+// 		log.Fatalf("did not connect: %v", err)
+// 	}
+// 	defer conn.Close()
+// 	c := pb.NewFaceDescribeClient(conn)
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
-	defer cancel()
+// 	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+// 	defer cancel()
 
-	// Url := utils.GetResizedVolPath(message)
+// 	// Url := utils.GetResizedVolPath(message)
 
-	faceDescription, err := c.DescribeFaces(ctx, &pb.DescribeFaceRequest{
-		AlbumName: message.AlbumName,
-		PhotoName: message.PhotoName,
-	})
+// 	faceDescription, err := c.DescribeFaces(ctx, &pb.DescribeFaceRequest{
+// 		AlbumName: message.AlbumName,
+// 		PhotoName: message.PhotoName,
+// 	})
 
-	if err != nil {
-		log.Fatalf("could not greet: %v", err)
-	}
+// 	if err != nil {
+// 		log.Fatalf("could not greet: %v", err)
+// 	}
 
-	fmt.Println("Face describe", faceDescription)
-	// return faceBoxes	
-}
+// 	fmt.Println("Face describe", faceDescription)
+// 	// return faceBoxes	
+// }
 
 // CropFace uses the Boundingbox to crop and save faces in a photo
 func CropFace(message utils.Message, boundingBox *pb.BoundingBox, index int) {
@@ -80,12 +77,13 @@ func CropFace(message utils.Message, boundingBox *pb.BoundingBox, index int) {
         log.Fatal(err)
 	}
 	
-	faceMessage := utils.Message{
-		AlbumName: message.AlbumName,
-		PhotoName: fileName,
-	}
+	// TODO: Uncomment after fixing imgproxy facecrop
+	// faceMessage := utils.Message{
+	// 	AlbumName: message.AlbumName,
+	// 	PhotoName: fileName,
+	// }
 
-	DescribeFace(faceMessage)
+	// DescribeFace(faceMessage)
 
     fmt.Println("Success!")
 }
