@@ -12,6 +12,7 @@ certifi==2019.6.16        # via requests
 chardet==3.0.4            # via requests
 enum34==1.1.6             # via absl-py, grpcio, tensorflow
 funcsigs==1.0.2           # via mock
+functools32==3.2.3.post2  # via tensorflow
 futures==3.3.0            # via google-api-core, grpcio, tensorboard
 gast==0.2.2               # via tensorflow
 google-api-core==1.6.0
@@ -26,6 +27,7 @@ keras-preprocessing==1.1.0  # via tensorflow
 markdown==3.1.1           # via tensorboard
 mock==3.0.5               # via tensorflow
 numpy==1.16.5
+opt-einsum==2.3.2         # via tensorflow
 pillow==6.1.0
 protobuf==3.9.1           # via google-api-core, googleapis-common-protos, tensorboard, tensorflow
 pyasn1-modules==0.2.6     # via google-auth
@@ -37,9 +39,9 @@ requests==2.22.0          # via google-api-core
 rsa==4.0                  # via google-auth
 scipy==1.2.2
 six==1.12.0               # via absl-py, google-api-core, google-auth, grpcio, h5py, keras-preprocessing, mock, protobuf, tensorboard, tensorflow
-tensorboard==1.14.0       # via tensorflow
-tensorflow-estimator==1.14.0  # via tensorflow
-tensorflow==1.14.0
+tensorboard==1.15.0       # via tensorflow
+tensorflow-estimator==1.15.1  # via tensorflow
+tensorflow==1.15.0
 termcolor==1.1.0          # via tensorflow
 typing==3.7.4.1           # via python-dotenv
 urllib3==1.25.3           # via requests
@@ -48,4 +50,4 @@ wheel==0.33.6             # via tensorboard, tensorflow
 wrapt==1.11.2             # via tensorflow
 
 # The following packages are considered to be unsafe in a requirements file:
-# setuptools==41.2.0        # via google-api-core, markdown, protobuf, python-json-logger, tensorboard
+# setuptools
